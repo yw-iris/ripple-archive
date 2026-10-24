@@ -95,11 +95,18 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 .astro.spin{animation:spin 60s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
-/* ===== timeline event cards ===== */
-.flow{position:relative; z-index:5; flex:1; margin-top:20px; overflow-x:hidden; overflow-y:auto;
+/* ===== 内容卡片：毛玻璃（高级感） ===== */
+.flow{position:relative; z-index:5; flex:1; margin-top:18px; overflow-x:hidden; overflow-y:auto;
   -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none;
-  display:flex; flex-direction:column}
+  display:flex; flex-direction:column;
+  background:rgba(255,255,255,.42);
+  -webkit-backdrop-filter:blur(16px) saturate(1.05);
+  backdrop-filter:blur(16px) saturate(1.05);
+  border:1px solid rgba(255,255,255,.6); border-radius:20px;
+  box-shadow:0 12px 40px rgba(30,32,38,.10); padding:20px 18px}
 .flow::-webkit-scrollbar{display:none}
+body[data-theme="dark"] .flow{background:rgba(18,22,32,.42); border-color:rgba(255,255,255,.12);
+  box-shadow:0 12px 40px rgba(0,0,0,.35)}
 /* --- about-me (verbatim copy) --- */
 .about-me{align-items:center; justify-content:center}
 .am{width:100%; padding:0 6px 0 22px; text-align:left; border-left:2px solid var(--accent); margin-left:2px}
@@ -115,18 +122,21 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 }
 /* spacer trick: center content when short, collapse + scroll when long */
 .flow::before,.flow::after{content:""; flex:1 0 0}
-.ev{position:relative; padding-left:36px; margin-bottom:22px}
-.ev::before{content:""; position:absolute; left:6px; top:4px; width:12px; height:12px;
-  border-radius:50%; border:1.5px solid var(--accent); background:var(--paper)}
-.ev::after{content:""; position:absolute; left:12px; top:22px; bottom:-26px;
-  border-left:1px dashed var(--faint)}
+.ev{position:relative; padding-left:34px; margin-bottom:26px}
+.ev::before{content:""; position:absolute; left:7px; top:5px; width:9px; height:9px;
+  border-radius:50%; border:2px solid var(--accent); background:var(--paper);
+  box-shadow:0 0 0 3px rgba(168,67,58,.10)}
+.ev::after{content:""; position:absolute; left:11px; top:20px; bottom:-30px;
+  border-left:1px solid rgba(25,27,32,.14)}
+body[data-theme="dark"] .ev::after{border-left-color:rgba(234,232,224,.16)}
 .ev:last-child::after{display:none}
 .ev .date{display:flex; justify-content:space-between; align-items:baseline;
-  font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.24em;
+  font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.26em;
   color:var(--soft); text-transform:uppercase;
-  border-bottom:1px solid var(--line); padding-bottom:7px; margin-bottom:3px}
-.ev .date b{font-weight:400; font-size:9px; color:var(--ink)}
-.ev h4{font-size:17px; font-weight:700; margin:6px 0 5px; letter-spacing:.02em; line-height:1.45; color:var(--ink)}
+  border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:9px}
+.ev .date b{font-weight:400; font-size:9px; color:var(--body)}
+.ev h4{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:17px; font-weight:700;
+  margin:6px 0 6px; letter-spacing:.02em; line-height:1.45; color:var(--ink)}
 .ev h4 em{font-weight:400}
 .ev p{font-size:13px; line-height:1.9; color:var(--body)}
 .ev p b{color:var(--accent); font-weight:600}
@@ -143,11 +153,13 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 @media (min-height:700px){.cks li{font-size:12.5px}}
 
 /* ===== tags ===== */
-.tags{position:relative; z-index:5; display:flex; justify-content:center; gap:10px;
-  margin:8px 0 14px; flex-wrap:wrap}
-.tags span{border:1px solid var(--line); border-radius:16px; background:var(--card);
-  font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.22em;
-  padding:7px 14px; color:var(--soft); text-transform:uppercase}
+.tags{position:relative; z-index:5; display:flex; justify-content:center; gap:9px;
+  margin:10px 0 14px; flex-wrap:wrap}
+.tags span{border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.5);
+  -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+  font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.26em;
+  padding:6px 13px; color:var(--body); text-transform:uppercase}
+body[data-theme="dark"] .tags span{background:rgba(255,255,255,.07)}
 
 /* ===== jump links (external) ===== */
 .links{position:relative; z-index:5; display:flex; justify-content:center; gap:12px;
