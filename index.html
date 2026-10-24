@@ -3,560 +3,498 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>别皱眉 · KEPT IN STARS</title>
+<title>别皱眉 · Milestone</title>
 <style>
 :root{
-  --paper:#f7f6f3; --ink:#16181d; --soft:#8a8d94; --line:rgba(22,24,29,.16);
-  --card:#ffffff; --accent:#a8433a; --planet:#b9b9b9;
+  --paper:#f6f5f2; --ink:#191b20; --soft:#90929a; --faint:rgba(25,27,32,.12);
+  --line:rgba(25,27,32,.16); --card:#fffefb; --accent:#a8433a;
   --shadow:rgba(20,22,26,.10);
 }
 body[data-theme="dark"]{
-  --paper:#0c0f16; --ink:#e9e7df; --soft:#7e8492; --line:rgba(233,231,223,.16);
-  --card:#131722; --accent:#c9705c; --planet:#8d8d8d;
+  --paper:#0b0e15; --ink:#eae8e0; --soft:#7c8190; --faint:rgba(234,232,224,.12);
+  --line:rgba(234,232,224,.18); --card:#121621; --accent:#c9705c;
   --shadow:rgba(0,0,0,.5);
 }
 *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
-html,body{height:100%}
-body{
-  background:#101014; color:var(--ink);
-  font-family:Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif;
-  overflow:hidden;
-}
-.grain{
-  position:fixed; inset:0; z-index:70; pointer-events:none; opacity:.5; mix-blend-mode:multiply;
-  background-repeat:repeat;
-}
-body[data-theme="dark"] .grain{mix-blend-mode:screen; opacity:.16}
-/* stars canvas */
-#stars{position:fixed; inset:0; z-index:1; pointer-events:none}
-/* ===== frame ===== */
-.frame{
-  position:relative; z-index:2; width:100%; height:100vh; height:100dvh; margin:0 auto;
-  background:var(--paper); overflow:hidden;
-  transition:background .6s;
-  display:flex; flex-direction:column;
-}
+html,body{height:100%; overflow:hidden}
+body{background:#101014; color:var(--ink);
+  font-family:Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif}
+.mono{font-family:ui-monospace,Menlo,Consolas,monospace}
+#noise{position:fixed; top:0; left:0; width:100%; height:100%; z-index:80; pointer-events:none; opacity:.5; mix-blend-mode:multiply}
+body[data-theme="dark"] #noise{mix-blend-mode:screen; opacity:.13}
+
+.stage{position:relative; z-index:2; width:100%; height:100vh; height:100dvh; margin:0 auto;
+  background:var(--paper); overflow:hidden; transition:background .5s}
 @media (min-width:700px){
-  .frame{width:414px; height:92vh; margin-top:4vh; border-radius:28px;
-    box-shadow:0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.05)}
+  .stage{width:414px; height:92vh; margin-top:4vh; border-radius:30px;
+    box-shadow:0 34px 90px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.06)}
 }
-/* ===== fixed bars ===== */
-.topbar{
-  position:relative; z-index:40; display:flex; justify-content:space-between; align-items:center;
-  padding:14px 18px 10px;
-}
-.topbar .brand{font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.34em; color:var(--soft); text-transform:uppercase}
-.topbar .tb-r{display:flex; align-items:center; gap:10px}
-.circlebtn{
-  width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
-  background:var(--card); color:var(--ink); font-size:13px; cursor:pointer; transition:.3s;
-  box-shadow:0 4px 14px var(--shadow);
-}
-.pillbtn{
-  font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.26em;
-  border:1px solid var(--line); background:transparent; color:var(--ink);
-  border-radius:20px; padding:9px 14px; cursor:pointer; transition:.3s;
-}
-.pillbtn:hover,.circlebtn:hover{transform:translateY(-1px)}
-.botbar{
-  position:relative; z-index:40; display:flex; justify-content:space-between; align-items:center;
-  padding:10px 18px calc(10px + env(safe-area-inset-bottom));
-  border-top:1px solid var(--line);
-  font-family:ui-monospace,Menlo,monospace; font-size:8.5px; letter-spacing:.28em; color:var(--soft);
-}
-/* pager sits under topbar */
-.pager{
-  position:absolute; top:64px; right:18px; z-index:40; text-align:right; pointer-events:none;
-  font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.3em; color:var(--soft);
-}
-.pager b{color:var(--ink); font-size:12px; font-weight:600}
-/* ===== scroller ===== */
-main{flex:1; position:relative; z-index:5; overflow-y:scroll; scroll-snap-type:y mandatory; scrollbar-width:none}
-main::-webkit-scrollbar{display:none}
-section{
-  height:100%; scroll-snap-align:start; scroll-snap-stop:always;
-  position:relative; overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
-  padding:34px 26px 46px;
-}
-section::-webkit-scrollbar{display:none}
-/* reveal */
-.rv{opacity:0; transform:translateY(14px); transition:opacity .9s ease, transform .9s ease}
-.in .rv{opacity:1; transform:none}
-.in .rv.d1{transition-delay:.1s}.in .rv.d2{transition-delay:.2s}
-.in .rv.d3{transition-delay:.32s}.in .rv.d4{transition-delay:.44s}
-/* ===== planets (pure CSS) ===== */
-.moon{
-  position:absolute; z-index:0; border-radius:50%; pointer-events:none;
-  background:
-    radial-gradient(circle at 63% 34%, rgba(0,0,0,.16) 0 7%, transparent 8.5%),
-    radial-gradient(circle at 42% 58%, rgba(0,0,0,.13) 0 5%, transparent 6.5%),
-    radial-gradient(circle at 72% 62%, rgba(0,0,0,.11) 0 9%, transparent 10.5%),
-    radial-gradient(circle at 30% 32%, rgba(0,0,0,.09) 0 4.5%, transparent 6%),
-    radial-gradient(circle at 55% 78%, rgba(0,0,0,.08) 0 6%, transparent 7.5%),
-    radial-gradient(circle at 36% 34%, #f4f4f4, #cbcbcb 52%, #8f8f8f 100%);
-  box-shadow:inset -16px -12px 34px rgba(0,0,0,.22);
-  filter:grayscale(1);
-}
-.saturn{
-  position:absolute; z-index:0; border-radius:50%; pointer-events:none;
-  background:radial-gradient(circle at 38% 36%, #f1f1f1, #c2c2c2 55%, #858585 100%);
-  box-shadow:inset -10px -8px 22px rgba(0,0,0,.18);
-  filter:grayscale(1);
-}
-.saturn::after{
-  content:""; position:absolute; left:-30%; top:42%; width:160%; height:42%;
-  border:1.5px solid rgba(90,90,90,.55); border-radius:50%;
-  transform:rotate(-16deg);
-}
-body[data-theme="dark"] .saturn::after{border-color:rgba(220,215,200,.4)}
-.earth{
-  position:absolute; z-index:0; border-radius:50%; pointer-events:none; overflow:hidden;
-  background:radial-gradient(circle at 36% 32%, #fafafa, #cfcfcf 48%, #7e7e7e 100%);
-  box-shadow:inset -14px -10px 30px rgba(0,0,0,.25);
-  filter:grayscale(1);
-}
-.earth::before{
-  content:""; position:absolute; inset:0; border-radius:50%;
-  background:
-    radial-gradient(ellipse 34% 22% at 30% 42%, rgba(255,255,255,.5), transparent 70%),
-    radial-gradient(ellipse 40% 26% at 62% 62%, rgba(0,0,0,.18), transparent 70%),
-    radial-gradient(ellipse 26% 18% at 48% 24%, rgba(0,0,0,.12), transparent 70%);
-}
-.plusmark{position:absolute; z-index:0; color:var(--soft); opacity:.55; font-size:15px; font-weight:300; pointer-events:none}
-/* ===== page head (poster type) ===== */
-.eyebrow{
-  display:flex; justify-content:space-between; align-items:baseline;
-  font-family:ui-monospace,Menlo,monospace; font-size:8.5px; letter-spacing:.4em;
-  color:var(--soft); text-transform:uppercase; margin-bottom:22px;
-}
-.big{
-  font-size:40px; line-height:1.04; letter-spacing:.01em; font-weight:700; color:var(--ink);
-}
-.big em{
-  display:block; font-style:italic; font-weight:400; color:var(--ink); opacity:.92; letter-spacing:.01em;
-}
-.sub{
-  margin-top:14px; font-style:italic; font-size:14.5px; color:var(--soft); letter-spacing:.02em; line-height:1.7;
-}
-.foot-tag{
-  position:absolute; left:0; right:0; bottom:16px; text-align:center;
-  font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.44em; color:var(--soft);
-  text-transform:uppercase; pointer-events:none;
-}
-/* ===== phone mockups (CSS only) ===== */
-.phones{position:relative; margin-top:30px; height:400px}
-.phone{
-  position:absolute; border:2px solid #191b1f; border-radius:24px;
-  background:var(--card); overflow:hidden;
-  box-shadow:0 22px 44px var(--shadow);
-  transition:transform .8s ease, box-shadow .8s ease;
-}
-.phone .notch{
-  position:absolute; top:7px; left:50%; transform:translateX(-50%);
-  width:34%; height:9px; border-radius:8px; background:#191b1f; z-index:3;
-}
-.phone .scr{height:100%; overflow:hidden; padding:24px 12px 10px; display:flex; flex-direction:column}
-.scr .s-top{display:flex; justify-content:space-between; font-family:ui-monospace,Menlo,monospace; font-size:5.5px; letter-spacing:.2em; color:var(--soft)}
-.scr .s-num{font-size:30px; font-weight:700; letter-spacing:.02em; margin-top:8px; line-height:1}
-.scr .s-cap{font-family:ui-monospace,Menlo,monospace; font-size:5px; letter-spacing:.24em; color:var(--soft); margin-top:3px}
-.scr .s-item{border-top:1px solid var(--line); padding:7px 0 2px; margin-top:8px}
-.scr .s-item b{display:block; font-size:8.5px; letter-spacing:.14em; font-weight:600}
-.scr .s-item span{display:block; font-size:6.5px; color:var(--soft); line-height:1.7; margin-top:2px}
-.scr .s-sign{text-align:center; font-family:ui-monospace,Menlo,monospace; font-size:5px; letter-spacing:.3em; color:var(--soft); margin-top:auto; padding:6px 0 4px}
-.ph-a{width:44%; left:0; top:56px; height:62%}
-.ph-b{width:56%; left:24%; top:0; height:88%; z-index:2; animation:floaty 7s ease-in-out infinite}
-.ph-c{width:42%; right:0; top:74px; height:58%}
-@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
-/* ===== content blocks ===== */
-.chips{display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 0}
-.chips span{
-  border:1px solid var(--line); background:var(--card); padding:7px 13px;
-  font-size:12px; letter-spacing:.16em; border-radius:2px;
-}
-.kv{margin-top:22px}
-.kv .row{
-  display:flex; justify-content:space-between; align-items:baseline; gap:14px;
-  padding:13px 2px; border-bottom:1px solid var(--line);
-}
-.kv .row b{font-size:14.5px; letter-spacing:.18em; font-weight:600; white-space:nowrap}
-.kv .row s{text-decoration:none; font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.12em; color:var(--soft); white-space:nowrap}
-.kv .row .desc{font-size:11px; color:var(--soft); letter-spacing:.1em; line-height:1.8; flex:1; text-align:right}
-.note{font-size:11px; color:var(--soft); letter-spacing:.14em; line-height:2; margin-top:14px}
-.note b{color:var(--accent)}
-.bodytext{margin-top:22px; font-size:14px; line-height:2.05; letter-spacing:.06em}
-.bodytext p{margin-bottom:12px}
-.bodytext .k{font-weight:700; letter-spacing:.14em}
-.bodytext .red{color:var(--accent); font-weight:700}
-.bodytext .dim{color:var(--soft)}
-.check{list-style:none; margin-top:20px}
-.check li{
-  display:flex; gap:12px; align-items:flex-start; padding:13px 2px;
-  border-bottom:1px dashed var(--line); font-size:13.5px; line-height:1.9; letter-spacing:.08em;
-}
-.check li::before{content:"+"; flex:0 0 14px; font-family:ui-monospace,Menlo,monospace; color:var(--soft); font-size:13px; margin-top:2px}
-.photo{margin:22px 0 0; position:relative; border:1px solid var(--line); background:var(--card); padding:8px}
-.photo img{width:100%; display:block; filter:grayscale(1) contrast(.96); opacity:.94}
-.photo figcaption{
-  display:flex; justify-content:space-between; padding-top:7px;
-  font-family:ui-monospace,Menlo,monospace; font-size:7.5px; letter-spacing:.3em; color:var(--soft);
-  text-transform:uppercase;
-}
-/* music card */
-.music{
-  margin-top:24px; border:1px solid var(--line); background:var(--card);
-  padding:18px 18px 15px; cursor:pointer; box-shadow:0 14px 30px var(--shadow);
-}
-.music .m-eyebrow{font-family:ui-monospace,Menlo,monospace; font-size:7.5px; letter-spacing:.4em; color:var(--soft)}
-.music h3{font-size:17.5px; margin:9px 0 4px; letter-spacing:.02em; font-weight:600; font-style:italic}
-.music .m-artist{font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.2em; color:var(--soft)}
-.music .m-row{display:flex; align-items:center; justify-content:space-between; margin-top:15px}
-.eq{display:flex; align-items:flex-end; gap:3px; height:16px}
-.eq i{width:3px; background:var(--ink); height:4px; opacity:.75}
-.playing .eq i{animation:eq 1s ease-in-out infinite}
+#track{display:flex; height:100%; will-change:transform}
+.panel{position:relative; flex:0 0 100%; height:100%; overflow:hidden;
+  padding:16px 24px 58px; display:flex; flex-direction:column}
+
+/* ===== HUD ===== */
+.hud{position:absolute; z-index:60; top:0; left:0; right:0;
+  display:flex; align-items:center; justify-content:space-between; padding:13px 16px 0}
+.hud button{width:33px; height:33px; border-radius:50%; border:1px solid var(--line);
+  background:var(--card); color:var(--ink); font-size:13px; cursor:pointer;
+  box-shadow:0 4px 14px var(--shadow); transition:.3s; font-family:ui-monospace,Menlo,monospace}
+.hud button:hover{transform:translateY(-1px)}
+.hud .count{font-family:ui-monospace,Menlo,monospace; font-size:9.5px; letter-spacing:.3em; color:var(--soft)}
+
+/* ===== app top bar (in-screen style) ===== */
+.appbar{display:flex; align-items:center; justify-content:space-between;
+  padding:6px 2px 12px; border-bottom:1px solid var(--faint); position:relative; z-index:5}
+.appbar .back{font-size:15px; color:var(--soft); width:26px}
+.appbar .app{font-size:14px; font-weight:700; letter-spacing:.04em}
+.appbar .time{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.18em; color:var(--soft)}
+
+/* ===== stat block ===== */
+.stat{position:relative; z-index:5; margin-top:18px}
+.stat .n{font-size:64px; font-weight:700; letter-spacing:-.03em; line-height:.95}
+.stat .n small{font-size:22px; font-weight:400; vertical-align:18px; margin-left:4px}
+.stat .lab{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.3em;
+  color:var(--soft); margin-top:8px; text-transform:uppercase}
+.stat .lab2{font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.22em;
+  color:var(--soft); opacity:.7; margin-top:3px}
+
+/* ===== astro dashed circles (no SVG) ===== */
+.astro{position:absolute; border-radius:50%; pointer-events:none; z-index:1;
+  border:1px dashed rgba(120,122,130,.4)}
+.astro::before{content:""; position:absolute; inset:14%; border-radius:50%;
+  border:1px dashed rgba(120,122,130,.3)}
+.astro::after{content:""; position:absolute; inset:32%; border-radius:50%;
+  border:1px dashed rgba(120,122,130,.22)}
+.astro .dot{position:absolute; width:5px; height:5px; border-radius:50%;
+  background:rgba(120,122,130,.5); top:-3px; left:50%}
+body[data-theme="dark"] .astro{border-color:rgba(234,232,224,.28)}
+body[data-theme="dark"] .astro::before{border-color:rgba(234,232,224,.2)}
+body[data-theme="dark"] .astro::after{border-color:rgba(234,232,224,.15)}
+body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
+.astro.spin{animation:spin 60s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+/* ===== timeline event cards ===== */
+.flow{position:relative; z-index:5; flex:1; margin-top:20px; overflow:hidden}
+.ev{position:relative; padding-left:36px; margin-bottom:22px}
+.ev::before{content:""; position:absolute; left:6px; top:4px; width:12px; height:12px;
+  border-radius:50%; border:1.4px dashed var(--soft); background:var(--paper)}
+.ev::after{content:""; position:absolute; left:12px; top:22px; bottom:-26px;
+  border-left:1px dashed var(--faint)}
+.ev:last-child::after{display:none}
+.ev .date{display:flex; justify-content:space-between; align-items:baseline;
+  font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.24em;
+  color:var(--soft); text-transform:uppercase}
+.ev .date b{font-weight:400; font-size:9px; color:var(--ink)}
+.ev h4{font-size:15.5px; font-weight:700; margin:5px 0 4px; letter-spacing:.01em}
+.ev h4 em{font-weight:400}
+.ev p{font-size:11px; line-height:1.85; color:var(--soft)}
+.ev p b{color:var(--accent); font-weight:400}
+.ev .pic{width:104px; border-radius:6px; filter:grayscale(1); display:block; margin:8px 0 2px}
+
+/* ===== tags ===== */
+.tags{position:relative; z-index:5; display:flex; justify-content:center; gap:10px;
+  margin:8px 0 14px; flex-wrap:wrap}
+.tags span{border:1px solid var(--line); border-radius:16px; background:var(--card);
+  font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.22em;
+  padding:7px 14px; color:var(--soft); text-transform:uppercase}
+
+/* ===== foot ===== */
+.foot{position:absolute; z-index:5; left:0; right:0; bottom:20px; text-align:center;
+  font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.34em; color:var(--soft);
+  text-transform:uppercase}
+.foot b{color:var(--ink); font-weight:400}
+.corner{position:absolute; z-index:5; right:18px; bottom:16px; width:30px; height:30px;
+  border-radius:50%; border:1px solid var(--line); background:var(--card);
+  display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--soft);
+  box-shadow:0 4px 12px var(--shadow); cursor:pointer; font-family:ui-monospace,monospace}
+
+/* ===== edges ===== */
+.edge{position:absolute; z-index:55; top:50%; width:36px; height:64px; margin-top:-32px;
+  display:flex; align-items:center; justify-content:center; cursor:pointer;
+  color:var(--soft); font-size:20px; opacity:.7; transition:.3s; user-select:none}
+.edge:hover{opacity:1}
+.edge.l{left:5px}.edge.r{right:5px}
+
+/* ===== reveal ===== */
+.panel .rv{opacity:0; transform:translateY(16px); transition:opacity .7s, transform .7s}
+.panel.active .rv{opacity:1; transform:none}
+.panel.active .rv.d1{transition-delay:.07s}.panel.active .rv.d2{transition-delay:.16s}
+.panel.active .rv.d3{transition-delay:.26s}.panel.active .rv.d4{transition-delay:.36s}
+
+/* ===== menu ===== */
+.menu{position:absolute; inset:0; z-index:90; background:var(--paper); display:flex;
+  flex-direction:column; justify-content:center; padding:0 34px; opacity:0;
+  pointer-events:none; transition:opacity .4s}
+.menu.open{opacity:1; pointer-events:auto}
+.menu h3{font-family:ui-monospace,monospace; font-size:9px; letter-spacing:.34em;
+  color:var(--soft); margin-bottom:20px; font-weight:400}
+.menu a{display:flex; justify-content:space-between; align-items:baseline;
+  color:var(--ink); text-decoration:none; padding:12px 0; border-bottom:1px solid var(--line); font-size:18px}
+.menu a small{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.26em; color:var(--soft)}
+
+/* ===== cassette ===== */
+.tape{width:min(74%,270px); background:#22252c; border-radius:13px; padding:11px; cursor:pointer;
+  box-shadow:0 22px 46px var(--shadow); position:relative; z-index:5; margin:6px auto 0}
+.tape .shell{background:var(--card); border-radius:7px; padding:11px 11px 9px}
+.tape .lab{border:1.5px solid var(--ink); border-radius:4px; padding:6px 10px 7px; position:relative}
+.tape .lab .a{position:absolute; right:8px; top:6px; width:19px; height:19px; border-radius:50%;
+  border:1.5px solid var(--ink); font-family:ui-monospace,monospace; font-size:8.5px;
+  display:flex; align-items:center; justify-content:center}
+.tape .lab .t{font-weight:700; font-size:16px}
+.tape .lab .s{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.2em;
+  color:var(--soft); margin-top:2px}
+.tape .win{display:flex; align-items:center; justify-content:center; gap:24px; margin-top:9px;
+  border:1px solid var(--faint); border-radius:5px; padding:9px 0; background:rgba(0,0,0,.03)}
+body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
+.reel{width:31px; height:31px; border-radius:50%; border:3px solid #3a3d44; position:relative;
+  background:repeating-conic-gradient(#3a3d44 0 8deg, transparent 8deg 30deg)}
+.reel::after{content:""; position:absolute; inset:8px; border-radius:50%;
+  background:var(--card); border:2px solid #3a3d44}
+.tape.playing .reel{animation:spin 1.6s linear infinite}
+.tape .holes{display:flex; justify-content:space-between; padding:7px 5px 0}
+.tape .holes i{width:11px; height:7px; background:#22252c; border-radius:2px}
+.tape-meta{display:flex; justify-content:center; gap:18px; margin-top:12px;
+  font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.2em; color:var(--soft); position:relative; z-index:5}
+.eq{display:inline-flex; gap:2.5px; align-items:flex-end; height:9px; margin-right:6px}
+.eq i{width:2.5px; background:var(--accent); height:30%}
+.tape.playing ~ .tape-meta .eq i,
+.playing .eq i{animation:eq .7s ease-in-out infinite alternate}
 .eq i:nth-child(2){animation-delay:.15s}.eq i:nth-child(3){animation-delay:.3s}
-.eq i:nth-child(4){animation-delay:.45s}.eq i:nth-child(5){animation-delay:.6s}
-@keyframes eq{0%,100%{height:4px}50%{height:16px}}
-.m-play{width:36px; height:36px; border-radius:50%; border:1px solid var(--line); display:grid; place-items:center; font-size:11px; font-family:ui-monospace,Menlo,monospace}
-.music:hover .m-play{background:var(--ink); color:var(--paper)}
-.m-prog{height:2px; background:var(--line); margin-top:15px; overflow:hidden}
-.m-prog i{display:block; height:100%; width:0%; background:var(--ink); transition:width .3s linear}
-.m-time{display:flex; justify-content:space-between; font-family:ui-monospace,Menlo,monospace; font-size:8px; color:var(--soft); margin-top:6px; letter-spacing:.18em}
-/* dots */
-.dots{display:flex; gap:7px; margin-top:26px}
-.dots i{width:4.5px; height:4.5px; border-radius:50%; background:var(--line)}
-.dots i.on{background:var(--ink)}
-/* menu */
-.menu{
-  position:absolute; inset:0; z-index:60; background:var(--paper);
-  display:flex; flex-direction:column; justify-content:center; padding:0 44px;
-  opacity:0; visibility:hidden; transition:opacity .45s, visibility .45s;
-}
-.menu.open{opacity:1; visibility:visible}
-.menu .m-tag{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.4em; color:var(--soft); margin-bottom:22px}
-.menu nav a{
-  display:flex; justify-content:space-between; align-items:baseline; text-decoration:none; color:var(--ink);
-  padding:13px 0; border-bottom:1px solid var(--line); font-size:16px; letter-spacing:.22em;
-}
-.menu nav a small{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.28em; color:var(--soft)}
-.menu nav a:hover{color:var(--accent)}
-.menu .m-close{position:absolute; top:16px; right:18px}
+@keyframes eq{from{height:20%}to{height:100%}}
 </style>
 </head>
 <body data-theme="light">
-<div class="grain" id="grain"></div>
-<canvas id="stars"></canvas>
+<canvas id="noise"></canvas>
 
-<div class="frame">
-  <div class="topbar">
-    <span class="brand">别皱眉 Archive · Glass</span>
-    <div class="tb-r">
-      <button class="pillbtn" id="menuBtn">MENU</button>
-      <button class="circlebtn" id="themeBtn" title="明暗">☾</button>
-    </div>
+<div class="stage">
+  <div class="hud">
+    <button id="menuBtn">✕</button>
+    <div class="count" id="count">01 / 07</div>
+    <button id="themeBtn">☾</button>
   </div>
-  <div class="pager"><b id="pgNow">01</b> / <span id="pgAll">07</span></div>
+  <div class="edge l" id="prevBtn">‹</div>
+  <div class="edge r" id="nextBtn">›</div>
 
-  <main id="scroller">
-    <!-- 0 COVER -->
-    <section data-label="COVER · SWIPE THE CONSTELLATION">
-      <div class="moon" style="width:210px;height:210px;top:-84px;right:-76px"></div>
-      <div class="saturn" style="width:96px;height:96px;left:-40px;top:37%"></div>
-      <span class="plusmark" style="top:26%;right:12%">+</span>
-      <span class="plusmark" style="top:64%;left:9%">+</span>
-      <span class="plusmark" style="top:16%;left:16%;font-size:11px">+</span>
-      <div class="eyebrow rv"><span>01 — 别皱眉 · Glass</span><span>Vol.01</span></div>
-      <h2 class="big rv d1">Every night,<em>kept in stars</em></h2>
-      <p class="sub rv d2">Whatever happens, I'll remember for both of us.</p>
-      <div class="phones rv d3">
-        <div class="phone ph-a">
-          <div class="notch"></div>
-          <div class="scr">
-            <div class="s-top"><span>9:41</span><span>水波语录</span></div>
-            <div class="s-num">40<small style="font-size:10px">/h</small></div>
-            <div class="s-cap">普病 · HALF 21</div>
-            <div class="s-item"><b>修罗 52/h</b><span>反修 48/h · Dom 45/h</span></div>
-            <div class="s-item"><b>恋物价 59/h</b><span>半单口 +5 · 全单 +10</span></div>
-            <div class="s-sign">FROWN LESS · VOL.01</div>
+  <div id="track">
+
+    <!-- 01 Milestone 封面 -->
+    <section class="panel active">
+      <div class="astro spin" style="width:230px;height:230px;top:-40px;right:-60px"><i class="dot"></i></div>
+      <div class="astro" style="width:120px;height:120px;bottom:70px;left:-46px"><i class="dot"></i></div>
+      <div class="appbar rv">
+        <span class="back">‹</span><span class="app">Milestone</span><span class="time">9:41</span>
+      </div>
+      <div class="stat rv d1">
+        <div class="n">21<small>★</small></div>
+        <div class="lab">水心 · SUIXIN — GLASS EDITION</div>
+        <div class="lab2">INTJ · VIRGO · LIBRA RISING</div>
+      </div>
+      <div class="flow rv d2">
+        <div class="ev">
+          <div class="date">START HERE <b>01</b></div>
+          <h4>模糊的明绿只为聚焦集</h4>
+          <p>触碰的所有东西，都可以不用返回键。往下滑，按星座翻页 — 每一页都是一段现下的天气。</p>
+        </div>
+        <div class="ev">
+          <div class="date">NOTE <b>02</b></div>
+          <h4>别皱眉</h4>
+          <p><b>即使你说错也没事，我会告诉你。</b>想要就是想要，不需要理由；慢一点，别赶路。</p>
+        </div>
+      </div>
+      <div class="tags rv d3"><span>Milestone</span><span>Glass</span><span>Swiper</span></div>
+      <div class="foot"><b>MILESTONE</b> · SWIPE THE CONSTELLATION</div>
+      <div class="corner" data-next="1">›</div>
+    </section>
+
+    <!-- 02 关于我 -->
+    <section class="panel">
+      <div class="astro" style="width:200px;height:200px;top:-30px;right:-70px"><i class="dot"></i></div>
+      <div class="appbar rv">
+        <span class="back">‹</span><span class="app">关于我</span><span class="time">9:41</span>
+      </div>
+      <div class="stat rv d1">
+        <div class="n">21t</div>
+        <div class="lab">ABOUT · HER QUIET ORBIT</div>
+        <div class="lab2">土象处女 · 上升天秤</div>
+      </div>
+      <div class="flow rv d2">
+        <div class="ev">
+          <div class="date">PROFILE <b>01</b></div>
+          <h4>水心 <em>— everything as it is</em></h4>
+          <p>年纪 21t · 人格 INTJ · 星座土象处女、上升天秤。常驻建模，出门 1 号耳坠、高马尾。</p>
+          <img class="pic" src="assets/flowers-soft.jpg" alt="">
+        </div>
+        <div class="ev">
+          <div class="date">HONEST NOTE <b>02</b></div>
+          <h4>虚荣 <em>— and unapologetic</em></h4>
+          <p>虚荣，且毫不掩饰。触碰的所有东西，都可以不用返回键。</p>
+        </div>
+      </div>
+      <div class="tags rv d3"><span>INTJ</span><span>21t</span><span>高马尾</span><span>1号耳坠</span></div>
+      <div class="foot"><b>ABOUT</b> · 21T · INTJ · VIRGO RISING</div>
+      <div class="corner" data-next="1">›</div>
+    </section>
+
+    <!-- 03 风格特点 -->
+    <section class="panel">
+      <div class="astro spin" style="width:180px;height:180px;top:8%;left:-70px"><i class="dot"></i></div>
+      <div class="appbar rv">
+        <span class="back">‹</span><span class="app">风格特点</span><span class="time">9:41</span>
+      </div>
+      <div class="stat rv d1">
+        <div class="n">02</div>
+        <div class="lab">STYLE · SALT &amp; RAIN</div>
+        <div class="lab2">互相尊重为基本</div>
+      </div>
+      <div class="flow rv d2">
+        <div class="ev">
+          <div class="date">MAIN TONE <b>主调</b></div>
+          <h4>清冷疏离挂</h4>
+          <p>话不多，但每句都在场。情绪给得克制，浓度靠后半程。</p>
+        </div>
+        <div class="ev">
+          <div class="date">SUB TONE <b>副调</b></div>
+          <h4>偶尔发疯，偶尔温柔</h4>
+          <p>发疯文学上线时不讲道理，温柔上线时不设防备。</p>
+        </div>
+        <div class="ev">
+          <div class="date">INCLUDED <b>包含风格</b></div>
+          <h4>普病 / 修罗 / 反修 / Dom / 恋物</h4>
+          <p><b>备注：互相尊重为基本。</b>边界感请自己带好，越界一次即下线。</p>
+        </div>
+      </div>
+      <div class="tags rv d3"><span>普病</span><span>修罗</span><span>反修</span><span>Dom</span><span>恋物</span></div>
+      <div class="foot"><b>STYLE</b> · MUTUAL RESPECT FIRST</div>
+      <div class="corner" data-next="1">›</div>
+    </section>
+
+    <!-- 04 须知价格表 -->
+    <section class="panel">
+      <div class="astro" style="width:210px;height:210px;top:-36px;right:-64px"><i class="dot"></i></div>
+      <div class="appbar rv">
+        <span class="back">‹</span><span class="app">须知价格表</span><span class="time">9:41</span>
+      </div>
+      <div class="stat rv d1">
+        <div class="n">40<small>/h</small></div>
+        <div class="lab">PRICE · COUNT THE HOURS</div>
+        <div class="lab2">YOUR HOUR ON TOP · MINE BELOW</div>
+      </div>
+      <div class="flow rv d2">
+        <div class="ev">
+          <div class="date">LIST A <b>01</b></div>
+          <h4>普病 40/h <em>半 21</em> · 修罗 52/h <em>半 27</em></h4>
+          <p>反修 48/h 半 25 · Dom 45/h 半 24 · 恋物价 59/h 半 31。</p>
+        </div>
+        <div class="ev">
+          <div class="date">EXTRA <b>02</b></div>
+          <h4>半单口 +5 · 全单口 +10</h4>
+          <p>旁观位：半 10 / 全 20，超半小时另算；旁观位单口同样 +5 / +10。</p>
+        </div>
+      </div>
+      <div class="tags rv d3"><span>SCORE 40</span><span>NOCTURNE 52</span><span>RESONATE 59</span></div>
+      <div class="foot"><b>PRICE</b> · ONE BAR AN HOUR</div>
+      <div class="corner" data-next="1">›</div>
+    </section>
+
+    <!-- 05 单前后注意事项 -->
+    <section class="panel">
+      <div class="astro spin" style="width:190px;height:190px;bottom:60px;right:-70px"><i class="dot"></i></div>
+      <div class="appbar rv">
+        <span class="back">‹</span><span class="app">单前后注意事项</span><span class="time">9:41</span>
+      </div>
+      <div class="stat rv d1">
+        <div class="n">06</div>
+        <div class="lab">NOTES · BEFORE WE START</div>
+        <div class="lab2">SIX LITTLE RULES</div>
+      </div>
+      <div class="flow rv d2">
+        <div class="ev">
+          <div class="date">BEFORE <b>单前</b></div>
+          <h4>01 — 03</h4>
+          <p>1. 先看价格表，确认风格再拍。2. 时间以约定为准，迟到不补。3. 尊重是双向的，请自带边界感。</p>
+        </div>
+        <div class="ev">
+          <div class="date">AFTER <b>单后</b></div>
+          <h4>04 — 06</h4>
+          <p>4. 结束即止，不加戏不追问。5. 好评自愿，别拿评价绑架。6. 再来提前预约，档期以回复为准。</p>
+        </div>
+      </div>
+      <div class="tags rv d3"><span>Read first</span><span>No re-do</span><span>Be kind</span></div>
+      <div class="foot"><b>NOTES</b> · SIX LITTLE RULES</div>
+      <div class="corner" data-next="1">›</div>
+    </section>
+
+    <!-- 06 观我久往 -->
+    <section class="panel">
+      <div class="astro spin" style="width:250px;height:250px;top:50%;left:50%;margin:-125px 0 0 -125px"><i class="dot"></i></div>
+      <div class="appbar rv">
+        <span class="back">‹</span><span class="app">观我久往</span><span class="time">9:41</span>
+      </div>
+      <div class="stat rv d1">
+        <div class="n">115<small>★</small></div>
+        <div class="lab">REGARDS · KEPT WORDS</div>
+        <div class="lab2">FORMERLY KNOWN AS CAMUS</div>
+      </div>
+      <div class="flow rv d2">
+        <div class="ev">
+          <div class="date">KEPT <b>01</b></div>
+          <h4>线缠着心</h4>
+          <p>一句话一件事，攒着攒着就成了星空。说过的都收在这里 — 115 ★。</p>
+          <img class="pic" src="assets/thread-heart.jpg" alt="">
+        </div>
+        <div class="ev">
+          <div class="date">ARCHIVE <b>02</b></div>
+          <h4>曾用名 加缪</h4>
+          <p>旧名字沉在星空下面，话还亮着。</p>
+        </div>
+      </div>
+      <div class="tags rv d3"><span>115 ★</span><span>Camus</span><span>Kept</span></div>
+      <div class="foot"><b>REGARDS</b> · FORMERLY CAMUS</div>
+      <div class="corner" data-next="1">›</div>
+    </section>
+
+    <!-- 07 话术堆砌 · Casette -->
+    <section class="panel">
+      <div class="astro" style="width:190px;height:190px;top:-30px;left:-66px"><i class="dot"></i></div>
+      <div class="appbar rv">
+        <span class="back">‹</span><span class="app">话术堆砌</span><span class="time">9:41</span>
+      </div>
+      <div class="stat rv d1">
+        <div class="n">0:09</div>
+        <div class="lab">RIPPLES · ROLLED UP</div>
+        <div class="lab2">THE LAKE WAS ALWAYS THERE — YOU GAVE IT SHAPE</div>
+      </div>
+      <div class="flow rv d2" style="display:flex; flex-direction:column; align-items:center; justify-content:center">
+        <div class="tape" id="tape">
+          <div class="shell">
+            <div class="lab">
+              <span class="a">A</span>
+              <div class="t">Sunsets</div>
+              <div class="s">CIGARETTES AFTER SEX · SIDE A · 0:09 LOOP</div>
+            </div>
+            <div class="win"><span class="reel"></span><span class="reel"></span></div>
+            <div class="holes"><i></i><i></i></div>
           </div>
         </div>
-        <div class="phone ph-b">
-          <div class="notch"></div>
-          <div class="scr">
-            <div class="s-top"><span>9:41</span><span>Milestone</span></div>
-            <div class="s-num" style="font-size:34px">水心</div>
-            <div class="s-cap">21t · INTJ · 土象处女 · 上升天秤</div>
-            <div class="s-item"><b>常驻建模 · 1号耳坠</b><span>高马尾 · 虚荣 · 见人说人话，见鬼说鬼话。</span></div>
-            <div class="s-item"><b>风 格 特 点</b><span>中恋剖析 / dom / 低无逻辑 / 高恋引导 · 副调 温病 · 白骑士 · 病虐</span></div>
-            <div class="s-item"><b>互 相 尊 重 为 基 本</b><span>你呈现的样子决定我们的过程。</span></div>
-            <div class="s-sign">别皱眉 · SWIPE THE CONSTELLATION</div>
-          </div>
-        </div>
-        <div class="phone ph-c">
-          <div class="notch"></div>
-          <div class="scr">
-            <div class="s-top"><span>9:41</span><span>话术堆砌</span></div>
-            <div class="s-num" style="font-size:22px">0:09</div>
-            <div class="s-cap">SUNSETS ON REPEAT</div>
-            <div class="s-item"><b>单前后 · 六条</b><span>单前整理好情绪 · 结束后欢迎交流</span></div>
-            <div class="s-item"><b>观我久往</b><span>曾用名 加缪</span></div>
-            <div class="s-sign">KEPT IN STARS · 2026</div>
-          </div>
+        <div class="tape-meta" id="tapeMeta">
+          <span id="tapeState"><span class="eq"><i></i><i></i><i></i></span>STOPPED</span>
+          <span id="tapeTime">0:00 / 0:09</span>
         </div>
       </div>
-      <div class="foot-tag">别皱眉 · Swipe the Constellation</div>
+      <div class="tags rv d3"><span>Side A</span><span>Side B</span><span>Loop</span></div>
+      <div class="foot"><b>CASSETTE</b> · SIDE A STORIES · SIDE B DAY</div>
+      <div class="corner" data-next="0">↺</div>
     </section>
 
-    <!-- 1 关于我 -->
-    <section data-label="ABOUT · SALT, AND ALL THE RAIN AFTER">
-      <div class="earth" style="width:150px;height:150px;top:-64px;right:-58px"></div>
-      <span class="plusmark" style="top:38%;right:10%">+</span>
-      <div class="eyebrow rv"><span>02 — 关于我 · About</span><span>◽ 关于我</span></div>
-      <h2 class="big rv d1">From where<em>the water begins</em></h2>
-      <p class="sub rv d2">别皱眉的人，先把星星数完。</p>
-      <div class="bodytext rv d2">
-        <p><span class="k">水心</span>&nbsp;&nbsp;<span class="dim">21t&nbsp;&nbsp;INTJ</span></p>
-      </div>
-      <div class="chips rv d3">
-        <span>土象处女</span><span>上升天秤</span><span>常驻建模</span><span>1号耳坠</span><span>高马尾</span><span>虚荣</span>
-      </div>
-      <figure class="photo rv d3">
-        <img src="assets/flowers-soft.jpg" alt="灰调花影">
-        <figcaption><span>FIG.01 — 模糊花影</span><span>GLASS</span></figcaption>
-      </figure>
-      <div class="dots rv d4"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
-      <div class="foot-tag">About · Salt, and all the rain after</div>
-    </section>
-
-    <!-- 2 风格特点 -->
-    <section data-label="STYLE · A GLASS TIDE, TURNED BY HAND">
-      <div class="moon" style="width:120px;height:120px;top:-30px;left:-34px"></div>
-      <span class="plusmark" style="top:30%;right:12%">+</span>
-      <div class="eyebrow rv"><span>03 — 风格特点 · Style</span><span>◽ 风格特点</span></div>
-      <h2 class="big rv d1">Tone &amp; tide,<em>softly spoken</em></h2>
-      <p class="sub rv d2">见人说人话，见鬼说鬼话。</p>
-      <div class="kv rv d2">
-        <div class="row"><b>主调</b><span class="desc">中恋剖析 / dom / 低无逻辑 / 高恋引导</span></div>
-        <div class="row"><b>副调</b><span class="desc">温病 · 白骑士 · 病虐</span></div>
-        <div class="row"><b>包含风格</b><span class="desc">反差 · 低转高 · 引导</span></div>
-        <div class="row"><b>备注</b><span class="desc">全风格都有体现</span></div>
-      </div>
-      <div class="bodytext rv d3">
-        <p>表达形式多以平铺直叙或隐晦转折为基调，追求话语的完整性和观赏度。</p>
-        <p>非常规型病恋，可以以爱为基调，也可以以你的特别为主体。你呈现的样子决定我们的过程，没有迁就你的习惯，但也可以因你的态度折腰，<span class="red">互相尊重为基本</span>。</p>
-        <p class="dim">非指定风格加价，不接下位。</p>
-      </div>
-      <div class="dots rv d4"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
-      <div class="foot-tag">Style · A glass tide, turned by hand</div>
-    </section>
-
-    <!-- 3 价格表 -->
-    <section data-label="PRICE · COUNTED IN QUIET HOURS">
-      <div class="saturn" style="width:84px;height:84px;right:-30px;top:12%"></div>
-      <span class="plusmark" style="top:44%;left:8%">+</span>
-      <div class="eyebrow rv"><span>04 — 须知价格表 · Price</span><span>◽ 价格表</span></div>
-      <h2 class="big rv d1">Count the<em>hours, not stars</em></h2>
-      <p class="sub rv d2">低于这个价格自带 —— 星光也要按小时计。</p>
-      <div class="kv rv d2">
-        <div class="row"><b>普病</b><s>40/h · 半 21</s></div>
-        <div class="row"><b>修罗 / 反修</b><s>52/h · 半 27 ｜ 48/h · 半 25</s></div>
-        <div class="row"><b>Dom</b><s>45/h · 半 24</s></div>
-        <div class="row"><b>恋物价</b><s>59/h · 半 31</s></div>
-      </div>
-      <div class="note rv d3">
-        注＊ 普病有团走团，旁观位 <b>＋8</b>；修罗 / 反修 旁观位 <b>＋10</b>；Dom 高擦 · 纯调 · 纯风格自带。<br>
-        半单口 <b>＋5</b>&nbsp;&nbsp;全单 <b>＋10</b>；旁观位多一人，按旁观价格二分之一依次<b>＋</b>
-      </div>
-      <div class="dots rv d4"><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div>
-      <div class="foot-tag">Price · Counted in quiet hours</div>
-    </section>
-
-    <!-- 4 注意事项 -->
-    <section data-label="NOTES · KNOCK SOFTLY, ENTER SLOWLY">
-      <div class="moon" style="width:110px;height:110px;bottom:8%;right:-30px"></div>
-      <div class="eyebrow rv"><span>05 — 单前后 · Notes</span><span>◽ 注意事项</span></div>
-      <h2 class="big rv d1">Read before<em>you knock</em></h2>
-      <p class="sub rv d2">敲门轻一点，进门慢一点。</p>
-      <ul class="check">
-        <li class="rv d2">单前整理好自己的情绪，把我代入任何人，看出来请加钱</li>
-        <li class="rv d2">单间提及他人，自动视为转普</li>
-        <li class="rv d3">如果你寻求你来我往的对峙恋感，默认高开低走</li>
-        <li class="rv d3">非指定下位恶意压我，有权直退</li>
-        <li class="rv d4">同行请互相尊重</li>
-        <li class="rv d4">结束后欢迎和我交流，你也可以是我的老师</li>
-      </ul>
-      <div class="dots rv d4"><i></i><i></i><i></i><i class="on"></i><i></i><i></i></div>
-      <div class="foot-tag">Notes · Knock softly, enter slowly</div>
-    </section>
-
-    <!-- 5 观我久往 -->
-    <section data-label="REGARDS · THREAD AROUND A SMALL HEART">
-      <div class="earth" style="width:130px;height:130px;top:-34px;left:-30px"></div>
-      <span class="plusmark" style="top:34%;right:10%">+</span>
-      <div class="eyebrow rv"><span>06 — 观我久往 · Regards</span><span>◽ 评价</span></div>
-      <h2 class="big rv d1">Long regards,<em>tied in thread</em></h2>
-      <p class="sub rv d2">来过的人都留了一根线，缠成一颗心。</p>
-      <div class="bodytext rv d2">
-        <p>曾用名&nbsp;&nbsp;<span class="k">加缪</span></p>
-      </div>
-      <figure class="photo rv d3">
-        <img src="assets/thread-heart.jpg" alt="线缠成的心">
-        <figcaption><span>FIG.02 — 线与心</span><span>KEPT</span></figcaption>
-      </figure>
-      <div class="dots rv d4"><i></i><i></i><i></i><i></i><i class="on"></i><i></i></div>
-      <div class="foot-tag">Regards · Thread around a small heart</div>
-    </section>
-
-    <!-- 6 话术堆砌 -->
-    <section data-label="WORDS · SUNSETS ON REPEAT">
-      <div class="moon" style="width:140px;height:140px;top:-62px;right:-60px"></div>
-      <span class="plusmark" style="top:52%;left:9%">+</span>
-      <div class="eyebrow rv"><span>07 — 话术堆砌 · Words</span><span>◽ 话术堆砌</span></div>
-      <h2 class="big rv d1">Words kept,<em>nine seconds long</em></h2>
-      <p class="sub rv d2">点击字体查看 · 放的是近期。</p>
-      <div class="music rv d2" id="musicCard">
-        <div class="m-eyebrow">NOW ON REPEAT</div>
-        <h3>Sunsets</h3>
-        <div class="m-artist">CIGARETTES AFTER SEX · 0:09 LOOP</div>
-        <div class="m-row">
-          <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
-          <div class="m-play" id="playIcon">▶</div>
-        </div>
-        <div class="m-prog"><i id="progBar"></i></div>
-        <div class="m-time"><span id="tCur">0:00</span><span>0:09</span></div>
-      </div>
-      <figure class="photo rv d3" style="margin-top:16px">
-        <img src="assets/flowers-strip.jpg" alt="近期话术">
-        <figcaption><span>FIG.03 — 近期话术</span><span>RECENT</span></figcaption>
-      </figure>
-      <div class="dots rv d4"><i></i><i></i><i></i><i></i><i></i><i class="on"></i></div>
-      <div class="foot-tag">Words · Sunsets on repeat</div>
-    </section>
-  </main>
-
-  <div class="botbar">
-    <span id="coords">X 000 · Y 000</span>
-    <span id="footLabel">COVER · SWIPE THE CONSTELLATION</span>
   </div>
 
   <div class="menu" id="menu">
-    <button class="circlebtn m-close" id="menuClose">✕</button>
-    <div class="m-tag">// 别皱眉 ARCHIVE · INDEX</div>
-    <nav>
-      <a href="#" data-go="0">封面 <small>COVER</small></a>
+    <button id="menuClose" style="position:absolute; top:16px; right:16px">✕</button>
+    <h3>INDEX — MILESTONE</h3>
+    <nav id="menuNav">
+      <a href="#" data-go="0">封面 <small>MILESTONE</small></a>
       <a href="#" data-go="1">关于我 <small>ABOUT</small></a>
       <a href="#" data-go="2">风格特点 <small>STYLE</small></a>
       <a href="#" data-go="3">须知价格表 <small>PRICE</small></a>
       <a href="#" data-go="4">单前后注意事项 <small>NOTES</small></a>
       <a href="#" data-go="5">观我久往 <small>REGARDS</small></a>
-      <a href="#" data-go="6">话术堆砌 <small>WORDS</small></a>
+      <a href="#" data-go="6">话术堆砌 <small>CASSETTE</small></a>
     </nav>
   </div>
 </div>
 
 <script>
-/* ========= grain texture — generated on canvas, no SVG ========= */
+/* ===== noise (canvas, no SVG) ===== */
 (function(){
-  const g = document.createElement('canvas'); g.width = g.height = 120;
-  const c = g.getContext('2d');
-  const img = c.createImageData(120, 120);
-  for (let i = 0; i < img.data.length; i += 4) {
-    const v = 118 + Math.random() * 70;
-    img.data[i] = img.data[i+1] = img.data[i+2] = v;
-    img.data[i+3] = 26 + Math.random() * 26;
+  const n = document.getElementById('noise');
+  function build(){
+    const c = document.createElement('canvas'); c.width = c.height = 140;
+    const x = c.getContext('2d');
+    const d = x.createImageData(140,140);
+    const dark = document.body.dataset.theme === 'dark';
+    for(let i=0;i<d.data.length;i+=4){
+      const v = dark ? 200 + Math.random()*55 : Math.random()*70;
+      d.data[i]=d.data[i+1]=d.data[i+2]=v;
+      d.data[i+3]= dark ? 16+Math.random()*24 : 24+Math.random()*30;
+    }
+    x.putImageData(d,0,0);
+    n.style.background = 'url('+c.toDataURL()+')';
   }
-  c.putImageData(img, 0, 0);
-  document.getElementById('grain').style.backgroundImage = 'url(' + g.toDataURL() + ')';
+  window.__rebuildNoise = build;
+  build();
 })();
 
-/* ========= stars canvas — dots + plus marks ========= */
-const scv = document.getElementById('stars');
-const sctx = scv.getContext('2d');
-function drawStars(){
-  scv.width = innerWidth; scv.height = innerHeight;
-  const dark = document.body.dataset.theme === 'dark';
-  sctx.clearRect(0, 0, scv.width, scv.height);
-  const n = Math.floor(scv.width * scv.height / 9000);
-  for (let i = 0; i < n; i++) {
-    const x = Math.random() * scv.width, y = Math.random() * scv.height;
-    const r = Math.random() * 1.1 + .2;
-    sctx.fillStyle = dark ? 'rgba(233,231,223,' + (.18 + Math.random() * .5) + ')'
-                          : 'rgba(30,32,40,' + (.10 + Math.random() * .30) + ')';
-    sctx.beginPath(); sctx.arc(x, y, r, 0, 7); sctx.fill();
-  }
-  sctx.strokeStyle = dark ? 'rgba(233,231,223,.4)' : 'rgba(30,32,40,.3)';
-  sctx.lineWidth = 1;
-  for (let i = 0; i < 6; i++) {
-    const x = Math.random() * scv.width, y = Math.random() * scv.height, s = 3 + Math.random() * 3;
-    sctx.beginPath();
-    sctx.moveTo(x - s, y); sctx.lineTo(x + s, y);
-    sctx.moveTo(x, y - s); sctx.lineTo(x, y + s);
-    sctx.stroke();
-  }
+/* ===== horizontal swipe ===== */
+const track = document.getElementById('track');
+const panels = [...document.querySelectorAll('.panel')];
+const count = document.getElementById('count');
+let idx = 0, lock = false;
+const pad = n => n<10 ? '0'+n : ''+n;
+function go(i, instant){
+  i = Math.max(0, Math.min(panels.length-1, i));
+  idx = i;
+  track.style.transition = instant ? 'none' : 'transform .65s cubic-bezier(.7,0,.2,1)';
+  track.style.transform = 'translateX(' + (-i*100) + '%)';
+  panels.forEach((p,k)=>p.classList.toggle('active', k===i));
+  count.textContent = pad(i+1) + ' / ' + pad(panels.length);
+  lock = true; setTimeout(()=>lock=false, 700);
 }
-drawStars();
-window.addEventListener('resize', drawStars);
-
-/* ========= theme ========= */
-const themeBtn = document.getElementById('themeBtn');
-themeBtn.addEventListener('click', () => {
-  const b = document.body;
-  b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
-  themeBtn.textContent = b.dataset.theme === 'dark' ? '☀' : '☾';
-  drawStars();
+document.getElementById('nextBtn').onclick = ()=>go(idx+1);
+document.getElementById('prevBtn').onclick = ()=>go(idx-1);
+document.querySelectorAll('.corner').forEach(b=>{
+  b.onclick = ()=>go((idx + (+b.dataset.next)) % panels.length);
 });
-
-/* ========= menu ========= */
+let tx=0, ty=0, tt=0;
+addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; ty=e.touches[0].clientY; tt=Date.now(); }, {passive:true});
+addEventListener('touchend', e=>{
+  const dx = e.changedTouches[0].clientX - tx;
+  const dy = e.changedTouches[0].clientY - ty;
+  if(Math.abs(dx) > 52 && Math.abs(dx) > Math.abs(dy)*1.4 && Date.now()-tt < 800) go(idx + (dx<0?1:-1));
+}, {passive:true});
+let wl = 0;
+addEventListener('wheel', e=>{
+  const now = Date.now(); if(now - wl < 650 || lock) return; wl = now;
+  if(Math.abs(e.deltaY) > 24 || Math.abs(e.deltaX) > 24) go(idx + (e.deltaY>0 || e.deltaX>0 ? 1 : -1));
+}, {passive:true});
+addEventListener('keydown', e=>{
+  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(idx+1);
+  if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(idx-1);
+});
+/* menu */
 const menu = document.getElementById('menu');
-document.getElementById('menuBtn').addEventListener('click', () => menu.classList.add('open'));
-document.getElementById('menuClose').addEventListener('click', () => menu.classList.remove('open'));
-const scroller = document.getElementById('scroller');
-menu.querySelectorAll('a[data-go]').forEach(a => a.addEventListener('click', e => {
-  e.preventDefault();
-  scroller.scrollTo({ top: +a.dataset.go * scroller.clientHeight, behavior: 'smooth' });
-  menu.classList.remove('open');
-}));
-
-/* ========= pager + reveal ========= */
-const sections = [...scroller.querySelectorAll('section')];
-document.getElementById('pgAll').textContent = String(sections.length).padStart(2, '0');
-const io = new IntersectionObserver(es => es.forEach(en => {
-  const i = sections.indexOf(en.target);
-  if (en.isIntersecting && en.intersectionRatio > .55) {
-    en.target.classList.add('in');
-    document.getElementById('pgNow').textContent = String(i + 1).padStart(2, '0');
-    document.getElementById('footLabel').textContent = en.target.dataset.label;
-  }
-}), { root: scroller, threshold: [.55] });
-sections.forEach(s => io.observe(s));
-
-/* ========= coords ========= */
-const coords = document.getElementById('coords');
-const frame = document.querySelector('.frame');
-frame.addEventListener('pointermove', e => {
-  const r = frame.getBoundingClientRect();
-  coords.textContent = 'X ' + String(Math.round(e.clientX - r.left)).padStart(3, '0') +
-                     ' · Y ' + String(Math.round(e.clientY - r.top)).padStart(3, '0');
+document.getElementById('menuBtn').onclick = ()=>menu.classList.add('open');
+document.getElementById('menuClose').onclick = ()=>menu.classList.remove('open');
+document.querySelectorAll('#menuNav a').forEach(a=>{
+  a.onclick = e=>{ e.preventDefault(); menu.classList.remove('open'); go(+a.dataset.go); };
 });
-
-/* ========= music card ========= */
-const card = document.getElementById('musicCard');
-const bar = document.getElementById('progBar');
-const tCur = document.getElementById('tCur');
-const icon = document.getElementById('playIcon');
-let playing = false, pos = 0, timer = null;
-const DUR = 9;
-function tick(){
-  pos += .1; if (pos >= DUR) pos = 0;
-  bar.style.width = (pos / DUR * 100) + '%';
-  tCur.textContent = '0:' + String(Math.floor(pos)).padStart(2, '0');
-}
-card.addEventListener('click', () => {
-  playing = !playing;
-  card.classList.toggle('playing', playing);
-  icon.textContent = playing ? '❚❚' : '▶';
-  clearInterval(timer);
-  if (playing) timer = setInterval(tick, 100);
-});
+/* theme */
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.onclick = ()=>{
+  const b = document.body;
+  b.dataset.theme = b.dataset.theme==='light' ? 'dark' : 'light';
+  themeBtn.textContent = b.dataset.theme==='light' ? '☾' : '☀';
+  window.__rebuildNoise();
+};
+/* cassette */
+(function(){
+  const tape = document.getElementById('tape');
+  const meta = document.getElementById('tapeMeta');
+  const st = document.getElementById('tapeState');
+  const tm = document.getElementById('tapeTime');
+  let playing = false, t = 0, timer = null;
+  tape.onclick = ()=>{
+    playing = !playing;
+    tape.classList.toggle('playing', playing);
+    meta.classList.toggle('playing', playing);
+    st.innerHTML = '<span class="eq"><i></i><i></i><i></i></span>' + (playing?'PLAYING':'STOPPED');
+    clearInterval(timer);
+    if(playing){
+      timer = setInterval(()=>{ t=(t+0.1)%9.3; tm.textContent='0:0'+Math.floor(t)+' / 0:09'; },100);
+    } else tm.textContent = '0:00 / 0:09';
+  };
+})();
+go(0, true);
 </script>
 </body>
 </html>
