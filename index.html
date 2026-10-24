@@ -89,6 +89,19 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
   -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none;
   display:flex; flex-direction:column}
 .flow::-webkit-scrollbar{display:none}
+/* --- about-me (verbatim copy) --- */
+.about-me{align-items:center; justify-content:center}
+.am{width:100%; padding:0 6px; text-align:left}
+.am-1{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:30px; font-weight:700;
+  letter-spacing:.06em; line-height:1.5; color:var(--ink)}
+.am-2{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:18px; font-weight:600;
+  letter-spacing:.05em; line-height:2; color:var(--ink); margin-top:14px}
+.am-3{font-size:16px; font-weight:600; letter-spacing:.04em; line-height:2; color:var(--soft); margin-top:6px}
+@media (min-height:700px){
+  .am-1{font-size:34px}
+  .am-2{font-size:20px}
+  .am-3{font-size:17px}
+}
 /* spacer trick: center content when short, collapse + scroll when long */
 .flow::before,.flow::after{content:""; flex:1 0 0}
 .ev{position:relative; padding-left:36px; margin-bottom:22px}
@@ -477,26 +490,15 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
       <div class="appbar rv">
         <span class="back">‹</span><span class="app">关于我</span><span class="time">9:41</span>
       </div>
-      <div class="stat rv d1">
-        <div class="n">21t</div>
-        <div class="lab">ABOUT · 水心 — EVERYTHING AS IT IS</div>
-        <div class="lab2">土象处女 · 上升天秤</div>
-      </div>
-      <div class="flow rv d2">
-        <div class="ev">
-          <div class="date">PROFILE <b>01</b></div>
-          <h4>水心 <em>— 21t · INTJ</em></h4>
-          <p>年纪 21t · 人格 INTJ · 星座土象处女、上升天秤。常驻建模，出门 1 号耳坠、高马尾。</p>
-          <img class="pic" src="assets/flowers-soft.jpg" alt="">
-        </div>
-        <div class="ev">
-          <div class="date">HONEST NOTE <b>02</b></div>
-          <h4>虚荣 <em>— and unapologetic</em></h4>
-          <p>虚荣，且毫不掩饰。触碰的所有东西，都可以不用返回键。</p>
+      <div class="flow rv d2 about-me">
+        <div class="am">
+          <div class="am-1">水心&nbsp;&nbsp;21t&nbsp;&nbsp;INTJ</div>
+          <div class="am-2">土象处女&nbsp;上升天秤</div>
+          <div class="am-3">常驻建模1号耳坠高马尾&nbsp;虚荣</div>
         </div>
       </div>
       <div class="tags rv d3"><span>水心</span><span>21t</span><span>INTJ</span><span>1号耳坠</span><span>高马尾</span></div>
-      <div class="foot"><b>ABOUT</b> · 21T · INTJ · VIRGO RISING</div>
+      <div class="foot"><b>ABOUT</b> · 21T · INTJ · 土象处女 上升天秤</div>
       <div class="corner" data-next="1">›</div>
     </section>
 
