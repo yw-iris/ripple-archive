@@ -107,6 +107,16 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 .ev p b{color:var(--accent); font-weight:400}
 .ev .pic{width:104px; border-radius:6px; filter:grayscale(1); display:block; margin:8px 0 2px}
 
+/* ===== checkbox list ===== */
+.cks{margin-top:8px}
+.cks li{list-style:none; display:flex; gap:9px; align-items:flex-start;
+  font-size:11.5px; line-height:1.8; color:var(--soft); padding:5px 0}
+.cks li b{color:var(--accent); font-weight:400}
+.cks li i{flex:0 0 13px; width:13px; height:13px; margin-top:4px;
+  border:1.4px solid var(--soft); border-radius:3px; position:relative}
+.cks li em{font-style:normal; color:var(--ink)}
+@media (min-height:700px){.cks li{font-size:12.5px}}
+
 /* ===== tags ===== */
 .tags{position:relative; z-index:5; display:flex; justify-content:center; gap:10px;
   margin:8px 0 14px; flex-wrap:wrap}
@@ -170,7 +180,9 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 
 /* ===== cassette ===== */
 .tape{width:min(74%,270px); background:#22252c; border-radius:13px; padding:11px; cursor:pointer;
-  box-shadow:0 22px 46px var(--shadow); position:relative; z-index:5; margin:6px auto 0}
+  box-shadow:0 22px 46px var(--shadow); position:relative; z-index:5; margin:6px auto 0;
+  display:block; text-decoration:none; color:inherit; transition:transform .3s}
+.tape:hover{transform:translateY(-3px)}
 .tape .shell{background:var(--card); border-radius:7px; padding:11px 11px 9px}
 .tape .lab{border:1.5px solid var(--ink); border-radius:4px; padding:6px 10px 7px; position:relative}
 .tape .lab .a{position:absolute; right:8px; top:6px; width:19px; height:19px; border-radius:50%;
@@ -186,7 +198,8 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   background:repeating-conic-gradient(#3a3d44 0 8deg, transparent 8deg 30deg)}
 .reel::after{content:""; position:absolute; inset:8px; border-radius:50%;
   background:var(--card); border:2px solid #3a3d44}
-.tape.playing .reel{animation:spin 1.6s linear infinite}
+.tape.playing .reel,
+.tape:hover .reel{animation:spin 1.6s linear infinite}
 .tape .holes{display:flex; justify-content:space-between; padding:7px 5px 0}
 .tape .holes i{width:11px; height:7px; background:#22252c; border-radius:2px}
 .tape-meta{display:flex; justify-content:center; gap:18px; margin-top:12px;
@@ -285,13 +298,13 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
       </div>
       <div class="stat rv d1">
         <div class="n">21t</div>
-        <div class="lab">ABOUT · HER QUIET ORBIT</div>
+        <div class="lab">ABOUT · 水心 — EVERYTHING AS IT IS</div>
         <div class="lab2">土象处女 · 上升天秤</div>
       </div>
       <div class="flow rv d2">
         <div class="ev">
           <div class="date">PROFILE <b>01</b></div>
-          <h4>水心 <em>— everything as it is</em></h4>
+          <h4>水心 <em>— 21t · INTJ</em></h4>
           <p>年纪 21t · 人格 INTJ · 星座土象处女、上升天秤。常驻建模，出门 1 号耳坠、高马尾。</p>
           <img class="pic" src="assets/flowers-soft.jpg" alt="">
         </div>
@@ -301,7 +314,7 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
           <p>虚荣，且毫不掩饰。触碰的所有东西，都可以不用返回键。</p>
         </div>
       </div>
-      <div class="tags rv d3"><span>INTJ</span><span>21t</span><span>高马尾</span><span>1号耳坠</span></div>
+      <div class="tags rv d3"><span>水心</span><span>21t</span><span>INTJ</span><span>1号耳坠</span><span>高马尾</span></div>
       <div class="foot"><b>ABOUT</b> · 21T · INTJ · VIRGO RISING</div>
       <div class="corner" data-next="1">›</div>
     </section>
@@ -314,27 +327,29 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
       </div>
       <div class="stat rv d1">
         <div class="n">02</div>
-        <div class="lab">STYLE · SALT &amp; RAIN</div>
-        <div class="lab2">互相尊重为基本</div>
+        <div class="lab">STYLE · 主调 × 副调</div>
+        <div class="lab2">见人说人话 · 见鬼说鬼话</div>
       </div>
       <div class="flow rv d2">
         <div class="ev">
           <div class="date">MAIN TONE <b>主调</b></div>
-          <h4>清冷疏离挂</h4>
-          <p>话不多，但每句都在场。情绪给得克制，浓度靠后半程。</p>
+          <h4>中恋剖析 / Dom / 低无逻辑 / 高恋引导</h4>
         </div>
         <div class="ev">
           <div class="date">SUB TONE <b>副调</b></div>
-          <h4>偶尔发疯，偶尔温柔</h4>
-          <p>发疯文学上线时不讲道理，温柔上线时不设防备。</p>
+          <h4>温病 · 白骑士 · 病虐</h4>
         </div>
         <div class="ev">
           <div class="date">INCLUDED <b>包含风格</b></div>
-          <h4>普病 / 修罗 / 反修 / Dom / 恋物</h4>
-          <p><b>备注：互相尊重为基本。</b>边界感请自己带好，越界一次即下线。</p>
+          <h4>反差 / 低转高 / 引导</h4>
+        </div>
+        <div class="ev">
+          <div class="date">REMARK <b>备注</b></div>
+          <p>全风格都有体现，<b>见人说人话，见鬼说鬼话</b>。表达形式多以平铺直叙或隐晦转折为基调，追求话语的完整性和观赏度。</p>
+          <p style="margin-top:6px">非常规型病恋 — 可以以爱为基调，也可以以你的特别为主体。你呈现的样子决定我们的过程：没有迁就你的习惯，但也可以因你的态度折腰。<b>互相尊重为基本。</b>非指定风格加价不接下位。</p>
         </div>
       </div>
-      <div class="tags rv d3"><span>普病</span><span>修罗</span><span>反修</span><span>Dom</span><span>恋物</span></div>
+      <div class="tags rv d3"><span>中恋剖析</span><span>Dom</span><span>温病</span><span>白骑士</span><span>病虐</span><span>反差</span><span>低转高</span><span>引导</span></div>
       <div class="foot"><b>STYLE</b> · MUTUAL RESPECT FIRST</div>
       <div class="corner" data-next="1">›</div>
     </section>
@@ -347,22 +362,32 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
       </div>
       <div class="stat rv d1">
         <div class="n">40<small>/h</small></div>
-        <div class="lab">PRICE · COUNT THE HOURS</div>
+        <div class="lab">PRICE · 价格表</div>
         <div class="lab2">YOUR HOUR ON TOP · MINE BELOW</div>
       </div>
       <div class="flow rv d2">
         <div class="ev">
           <div class="date">LIST A <b>01</b></div>
-          <h4>普病 40/h <em>半 21</em> · 修罗 52/h <em>半 27</em></h4>
-          <p>反修 48/h 半 25 · Dom 45/h 半 24 · 恋物价 59/h 半 31。</p>
+          <h4>普病 40/h <em>半 21</em></h4>
+          <p>有团走团，低于这个价格自带。<b>旁观位 +8</b>。</p>
         </div>
         <div class="ev">
-          <div class="date">EXTRA <b>02</b></div>
-          <h4>半单口 +5 · 全单口 +10</h4>
-          <p>旁观位：半 10 / 全 20，超半小时另算；旁观位单口同样 +5 / +10。</p>
+          <div class="date">LIST B <b>02</b></div>
+          <h4>修罗 52/h <em>半 27</em> · 反修 48/h <em>半 25</em></h4>
+          <p><b>旁观位 +10</b>。</p>
+        </div>
+        <div class="ev">
+          <div class="date">LIST C <b>03</b></div>
+          <h4>Dom 45/h <em>半 24</em> · 恋物价 59/h <em>半 31</em></h4>
+          <p>Dom：高擦、纯调、纯风格自带。</p>
+        </div>
+        <div class="ev">
+          <div class="date">EXTRA <b>04</b></div>
+          <h4>注* 半单口 +5 · 全单 +10</h4>
+          <p>旁观位多一人，按旁观价格二分之一依次 +。</p>
         </div>
       </div>
-      <div class="tags rv d3"><span>SCORE 40</span><span>NOCTURNE 52</span><span>RESONATE 59</span></div>
+      <div class="tags rv d3"><span>普病 40</span><span>修罗 52</span><span>反修 48</span><span>Dom 45</span><span>恋物 59</span></div>
       <div class="foot"><b>PRICE</b> · ONE BAR AN HOUR</div>
       <div class="corner" data-next="1">›</div>
     </section>
@@ -375,19 +400,25 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
       </div>
       <div class="stat rv d1">
         <div class="n">06</div>
-        <div class="lab">NOTES · BEFORE WE START</div>
+        <div class="lab">NOTES · 单前后注意事项</div>
         <div class="lab2">SIX LITTLE RULES</div>
       </div>
       <div class="flow rv d2">
         <div class="ev">
-          <div class="date">BEFORE <b>单前</b></div>
-          <h4>01 — 03</h4>
-          <p>1. 先看价格表，确认风格再拍。2. 时间以约定为准，迟到不补。3. 尊重是双向的，请自带边界感。</p>
+          <div class="date">BEFORE <b>单前 · 单间</b></div>
+          <ul class="cks">
+            <li><i></i><span>单前<em>整理好自己的情绪</em>，把我代入任何人看出来<b>请加钱</b>。</span></li>
+            <li><i></i><span>单间<em>提及他人</em>，自动视为<b>转普</b>。</span></li>
+            <li><i></i><span>如果你寻求你来我往的对峙恋感，默认<b>高开低走</b>。</span></li>
+          </ul>
         </div>
         <div class="ev">
-          <div class="date">AFTER <b>单后</b></div>
-          <h4>04 — 06</h4>
-          <p>4. 结束即止，不加戏不追问。5. 好评自愿，别拿评价绑架。6. 再来提前预约，档期以回复为准。</p>
+          <div class="date">AFTER <b>底线 · 结束后</b></div>
+          <ul class="cks">
+            <li><i></i><span>非指定下位<em>恶意压我</em>，有权<b>直退</b>。</span></li>
+            <li><i></i><span>同行请<em>互相尊重</em>。</span></li>
+            <li><i></i><span>结束后欢迎和我交流，<em>你也可以是我的老师</em>。</span></li>
+          </ul>
         </div>
       </div>
       <div class="tags rv d3"><span>Read first</span><span>No re-do</span><span>Be kind</span></div>
@@ -403,7 +434,7 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
       </div>
       <div class="stat rv d1">
         <div class="n">115<small>★</small></div>
-        <div class="lab">REGARDS · KEPT WORDS</div>
+        <div class="lab">REGARDS · 观我久往（评价）</div>
         <div class="lab2">FORMERLY KNOWN AS CAMUS</div>
       </div>
       <div class="flow rv d2">
@@ -417,6 +448,9 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
           <div class="date">ARCHIVE <b>02</b></div>
           <h4>曾用名 加缪</h4>
           <p>旧名字沉在星空下面，话还亮着。</p>
+          <div class="links" style="justify-content:flex-start; margin-top:12px">
+            <a href="https://www.kdocs.cn/l/ccGE8EDFn23r" target="_blank" rel="noopener"><span class="ic">↗</span><span class="t">板评</span><small>REVIEW</small></a>
+          </div>
         </div>
       </div>
       <div class="tags rv d3"><span>115 ★</span><span>Camus</span><span>Kept</span></div>
@@ -432,27 +466,27 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
       </div>
       <div class="stat rv d1">
         <div class="n">0:09</div>
-        <div class="lab">RIPPLES · ROLLED UP</div>
-        <div class="lab2">THE LAKE WAS ALWAYS THERE — YOU GAVE IT SHAPE</div>
+        <div class="lab">RIPPLES · 话术堆砌</div>
+        <div class="lab2">放的是近期 · 点击字体查看</div>
       </div>
       <div class="flow rv d2" style="align-items:center">
-        <div class="tape" id="tape">
+        <a class="tape" id="tape" href="https://www.kdocs.cn/l/cgcpEDreeALF" target="_blank" rel="noopener">
           <div class="shell">
             <div class="lab">
               <span class="a">A</span>
               <div class="t">Sunsets</div>
-              <div class="s">CIGARETTES AFTER SEX · SIDE A · 0:09 LOOP</div>
+              <div class="s">CIGARETTES AFTER SEX · SIDE A · 点击查看近期话术 ↗</div>
             </div>
             <div class="win"><span class="reel"></span><span class="reel"></span></div>
             <div class="holes"><i></i><i></i></div>
           </div>
-        </div>
+        </a>
         <div class="tape-meta" id="tapeMeta">
-          <span id="tapeState"><span class="eq"><i></i><i></i><i></i></span>STOPPED</span>
-          <span id="tapeTime">0:00 / 0:09</span>
+          <span id="tapeState"><span class="eq"><i></i><i></i><i></i></span>话术 · SCRIPT</span>
+          <span id="tapeTime">放的是近期 ↗</span>
         </div>
       </div>
-      <div class="tags rv d3"><span>Side A</span><span>Side B</span><span>Loop</span></div>
+      <div class="tags rv d3"><span>Side A</span><span>Side B</span><span>点击查看</span></div>
       <div class="foot"><b>CASSETTE</b> · SIDE A STORIES · SIDE B DAY</div>
       <div class="corner" data-next="restart">↺</div>
     </section>
@@ -600,24 +634,7 @@ themeBtn.onclick = ()=>{
   themeBtn.textContent = b.dataset.theme==='light' ? '☾' : '☀';
   window.__rebuildNoise();
 };
-/* cassette */
-(function(){
-  const tape = document.getElementById('tape');
-  const meta = document.getElementById('tapeMeta');
-  const st = document.getElementById('tapeState');
-  const tm = document.getElementById('tapeTime');
-  let playing = false, t = 0, timer = null;
-  tape.onclick = ()=>{
-    playing = !playing;
-    tape.classList.toggle('playing', playing);
-    meta.classList.toggle('playing', playing);
-    st.innerHTML = '<span class="eq"><i></i><i></i><i></i></span>' + (playing?'PLAYING':'STOPPED');
-    clearInterval(timer);
-    if(playing){
-      timer = setInterval(()=>{ t=(t+0.1)%9.3; tm.textContent='0:0'+Math.floor(t)+' / 0:09'; },100);
-    } else tm.textContent = '0:00 / 0:09';
-  };
-})();
+/* cassette is now an external script link — reels spin on hover */
 go(0, true);
 </script>
 </body>
