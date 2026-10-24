@@ -98,7 +98,7 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 .flow::-webkit-scrollbar{display:none}
 /* --- about-me (verbatim copy) --- */
 .about-me{align-items:center; justify-content:center}
-.am{width:100%; padding:0 6px; text-align:left}
+.am{width:100%; padding:0 6px 0 22px; text-align:left; border-left:2px solid var(--accent); margin-left:2px}
 .am-1{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:30px; font-weight:700;
   letter-spacing:.06em; line-height:1.5; color:var(--ink)}
 .am-2{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:18px; font-weight:600;
@@ -113,15 +113,16 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 .flow::before,.flow::after{content:""; flex:1 0 0}
 .ev{position:relative; padding-left:36px; margin-bottom:22px}
 .ev::before{content:""; position:absolute; left:6px; top:4px; width:12px; height:12px;
-  border-radius:50%; border:1.4px dashed var(--soft); background:var(--paper)}
+  border-radius:50%; border:1.5px solid var(--accent); background:var(--paper)}
 .ev::after{content:""; position:absolute; left:12px; top:22px; bottom:-26px;
   border-left:1px dashed var(--faint)}
 .ev:last-child::after{display:none}
 .ev .date{display:flex; justify-content:space-between; align-items:baseline;
   font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.24em;
-  color:var(--soft); text-transform:uppercase}
+  color:var(--soft); text-transform:uppercase;
+  border-bottom:1px solid var(--line); padding-bottom:7px; margin-bottom:3px}
 .ev .date b{font-weight:400; font-size:9px; color:var(--ink)}
-.ev h4{font-size:15.5px; font-weight:700; margin:5px 0 4px; letter-spacing:.01em}
+.ev h4{font-size:16px; font-weight:700; margin:6px 0 5px; letter-spacing:.02em; line-height:1.45}
 .ev h4 em{font-weight:400}
 .ev p{font-size:11px; line-height:1.85; color:var(--soft)}
 .ev p b{color:var(--accent); font-weight:400}
@@ -333,40 +334,6 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--card);
   color:var(--ink); font-size:13px; cursor:pointer; box-shadow:0 4px 14px var(--shadow)}
 
-/* --- water quotes page (paginated) --- */
-#wtrCv{position:absolute; inset:0; width:100%; height:100%}
-.w-top{position:absolute; z-index:20; top:calc(106px + env(safe-area-inset-top,0px)); left:24px; right:18px;
-  display:flex; justify-content:space-between; align-items:flex-start}
-.w-num{font-family:Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif; font-weight:700; font-size:64px;
-  line-height:.95; color:var(--ink); letter-spacing:-.03em}
-@media (min-height:700px){ .w-num{font-size:76px} }
-.w-num .w-tot{font-size:9px; font-weight:400; color:var(--soft); margin-left:10px;
-  font-family:ui-monospace,monospace; letter-spacing:.16em; vertical-align:middle}
-.w-tag{position:absolute; z-index:10; top:calc(16px + env(safe-area-inset-top,0px)); left:24px;
-  font-size:8px; letter-spacing:.28em; color:var(--soft); font-weight:400}
-.w-pages{position:absolute; inset:0; z-index:8}
-.w-page{position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
-  opacity:0; transition:opacity .55s ease; pointer-events:none}
-.w-page.on{opacity:1; pointer-events:auto}
-.w-page .qbig{font-size:21px; letter-spacing:.1em; color:#41608f; text-align:center; line-height:1.95;
-  padding:0 28px; opacity:0; transform:translateY(10px)}
-body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
-.w-page.on .qbig{animation:qpop .95s ease .08s both}
-@keyframes qpop{to{opacity:1; transform:none}}
-.w-page.end .qbig.end-t{font-size:32px; font-weight:700; color:var(--ink);
-  font-family:Georgia,"Songti SC","Noto Serif SC",serif; letter-spacing:.24em}
-.w-page.end .qbig.end-s{font-size:11px; color:var(--soft); letter-spacing:.3em; margin-top:16px;
-  font-family:ui-monospace,monospace}
-.w-nav{position:absolute; z-index:20; left:0; right:0; bottom:calc(52px + env(safe-area-inset-bottom,0px));
-  display:flex; align-items:center; justify-content:center; gap:24px}
-.w-nav button{width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
-  background:var(--card); color:var(--ink); font-size:15px; cursor:pointer; box-shadow:0 4px 12px var(--shadow);
-  transition:opacity .3s}
-.w-nav button[disabled]{opacity:.25; cursor:default}
-.w-foot{position:absolute; z-index:10; left:0; right:0;
-  bottom:calc(18px + env(safe-area-inset-bottom,0px)); text-align:center;
-  font-size:8px; letter-spacing:.3em; color:var(--soft); line-height:2.2; text-transform:uppercase}
-.w-foot span{opacity:.65}
 
 /* --- letters page --- */
 .lwrap{position:absolute; inset:0}
@@ -688,9 +655,6 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
           <span id="tapeState"><span class="eq"><i></i><i></i><i></i></span>话术 · SCRIPT</span>
           <span id="tapeTime">放的是近期 ↗</span>
         </div>
-        <div class="links" style="margin-top:18px">
-          <a href="#" id="openWtr"><span class="ic">≈</span><span class="t">水波语录</span><small>DETAIL</small></a>
-        </div>
       </div>
       <div class="tags rv d3"><span>Side A</span><span>Side B</span><span>点击查看</span></div>
       <div class="foot"><b>CASSETTE</b> · SIDE A STORIES · SIDE B DAY</div>
@@ -740,32 +704,6 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
   </div>
 </div>
 
-<!-- ===== detail: water ripple quotes (paginated) ===== -->
-<div class="ov" id="wtr">
-  <canvas id="wtrCv"></canvas>
-  <div class="w-top">
-    <div class="w-num"><span id="wNum">01</span><span class="w-tot" id="wTot">/ 06</span></div>
-  </div>
-  <button class="ov-x" id="wtrClose">✕</button>
-  <div class="w-tag">// RIPPLE ARCHIVE · PRIVATE · 水波语录</div>
-  <div class="w-pages" id="wPages">
-    <div class="w-page on"><div class="qbig">即使你觉得也没事，<br>我会告诉你的</div></div>
-    <div class="w-page"><div class="qbig">我有这————么多<br>爱你</div></div>
-    <div class="w-page"><div class="qbig">想要就是想要，<br>不需要理由</div></div>
-    <div class="w-page"><div class="qbig">慢一点，<br>别赶路</div></div>
-    <div class="w-page"><div class="qbig">说过的都<br>收在星空里</div></div>
-    <div class="w-page end">
-      <div class="qbig end-t">别皱眉</div>
-      <div class="qbig end-s">水波语录 · 单方 · 终</div>
-    </div>
-  </div>
-  <div class="w-nav">
-    <button id="wPrev">‹</button>
-    <div class="dots" id="wDots"></div>
-    <button id="wNext">›</button>
-  </div>
-  <div class="w-foot">STORY PATH / SELECT A CURRENT<br><span>X 047 · Y 061 — SECRET WATER MEMORY</span></div>
-</div>
 
 <!-- ===== detail: letters ===== -->
 <div class="ov ltr state-cover" id="ltr">
@@ -1082,99 +1020,6 @@ let introUp = true;
   }
   setTimeout(end, 10600);
   el.addEventListener('click', end);
-})();
-
-/* ===== detail: water ripple quotes ===== */
-(function(){
-  const ov=document.getElementById('wtr'), cv=document.getElementById('wtrCv'), x=cv.getContext('2d');
-  let W=0,H=0, raf=null, lotus=null, ripples=[], rain=[], last=0;
-  function lotusSprite(s){
-    const c=document.createElement('canvas'); c.width=c.height=s*2.6;
-    const g=c.getContext('2d'), cx=c.width/2, cy=c.height/2;
-    function petal(ang,len,wid,dens){
-      for(let t=0;t<=1;t+=.012){
-        const w=Math.sin(Math.PI*t)*wid;
-        for(let e=-1;e<=1;e+=2){
-          const px=cx+Math.cos(ang)*len*t - Math.sin(ang)*w*e;
-          const py=cy+Math.sin(ang)*len*t*.62 + Math.cos(ang)*w*e;
-          if(Math.random()<Math.min(1,dens*1.3)*(1-t*.4)){
-            g.fillStyle=`rgba(63,94,151,${.4+Math.random()*.5})`;
-            g.fillRect(px+(Math.random()-.5)*2.5, py+(Math.random()-.5)*2.5, 1.6,1.6);
-          }
-        }
-      }
-    }
-    for(let i=0;i<11;i++) petal(-Math.PI/2 + (i-5)*.30, s, s*.30, .9);
-    for(let i=0;i<6;i++)  petal(-Math.PI/2 + (i-2.5)*.42, s*.62, s*.22, 1);
-    for(let i=0;i<130;i++){
-      const a=Math.random()*7, r=Math.random()*s*.12;
-      g.fillStyle=`rgba(40,62,105,${.5+Math.random()*.4})`;
-      g.fillRect(cx+Math.cos(a)*r, cy+Math.sin(a)*r, 1.6,1.6);
-    }
-    return c;
-  }
-  function rs(){
-    const DPR=Math.min(devicePixelRatio||1,2);
-    W=cv.width=innerWidth*DPR; H=cv.height=innerHeight*DPR;
-    lotus=lotusSprite(86*DPR);
-    rain=[];
-    for(let i=0;i<34;i++) rain.push({x:Math.random()*W,y:Math.random()*H,l:(8+Math.random()*14)*DPR,v:(1.2+Math.random()*1.6)*DPR,a:.05+Math.random()*.1});
-  }
-  function frame(ts){
-    if(!ov.classList.contains('open')){ raf=null; return; }
-    x.clearRect(0,0,W,H);
-    for(const d of rain){
-      d.y+=d.v; if(d.y>H){d.y=-d.l; d.x=Math.random()*W;}
-      x.strokeStyle=`rgba(90,110,150,${d.a})`; x.lineWidth=1;
-      x.beginPath(); x.moveTo(d.x,d.y); x.lineTo(d.x-d.l*.18,d.y+d.l); x.stroke();
-    }
-    x.drawImage(lotus, W/2-lotus.width/2, H*.46-lotus.height/2);
-    if(ts-last>620){ last=ts;
-      ripples.push({x:W*(.3+Math.random()*.4), y:H*(.4+Math.random()*.35), r:6, m:(60+Math.random()*70), a:.55});
-      if(Math.random()<.3) ripples.push({x:W*.16,y:H*.8,r:4,m:44,a:.45});
-    }
-    ripples=ripples.filter(rp=>rp.a>.02);
-    for(const rp of ripples){
-      rp.r+=1.1; rp.a*=.972;
-      x.strokeStyle=`rgba(70,96,151,${rp.a})`; x.lineWidth=1.2;
-      x.beginPath(); x.ellipse(rp.x,rp.y,rp.r,rp.r*.36,0,0,7); x.stroke();
-      if(rp.r>rp.m*.5){ x.beginPath(); x.ellipse(rp.x,rp.y,rp.r*.55,rp.r*.2,0,0,7); x.stroke(); }
-    }
-    raf=requestAnimationFrame(frame);
-  }
-  addEventListener('resize', ()=>{ if(ov.classList.contains('open')) rs(); });
-  function openWater(){ rs(); ovOpen('wtr'); if(!raf) raf=requestAnimationFrame(frame); }
-  window.openWater = openWater;
-  document.getElementById('wtrClose').onclick=()=>ovClose('wtr');
-})();
-
-/* ===== water quotes pagination ===== */
-(function(){
-  const ov=document.getElementById('wtr');
-  const pages=[...document.querySelectorAll('#wPages .w-page')];
-  const num=document.getElementById('wNum'), tot=document.getElementById('wTot');
-  const dots=document.getElementById('wDots'), prev=document.getElementById('wPrev'), next=document.getElementById('wNext');
-  let idx=0;
-  tot.textContent='/ '+String(pages.length).padStart(2,'0');
-  pages.forEach((_,i)=>{const d=document.createElement('i'); if(i===0)d.className='on'; dots.appendChild(d);});
-  function show(i){
-    idx=(i+pages.length)%pages.length;
-    pages.forEach((p,k)=>p.classList.toggle('on',k===idx));
-    num.textContent=String(idx+1).padStart(2,'0');
-    [...dots.children].forEach((d,k)=>d.classList.toggle('on',k===idx));
-    prev.disabled=idx===0; next.disabled=idx===pages.length-1;
-  }
-  prev.onclick=()=>show(idx-1);
-  next.onclick=()=>show(idx+1);
-  ov.addEventListener('click', e=>{
-    if(e.target.closest('.w-nav')||e.target.closest('.ov-x')||e.target.closest('.w-top')) return;
-    const r=ov.getBoundingClientRect();
-    if(e.clientX < r.left + r.width*0.4) show(idx-1);
-    else if(e.clientX > r.right - r.width*0.4) show(idx+1);
-  });
-  /* 最初版交互：从里页按钮触发，手动翻页，✕ 关闭回到里页（无自动播放/自动进里页） */
-  const wtrBtn=document.getElementById('openWtr');
-  if(wtrBtn) wtrBtn.onclick=e=>{ e.preventDefault(); if(!ov.classList.contains('open')) window.openWater(); show(0); };
 })();
 
 /* ===== detail: letters ===== */
