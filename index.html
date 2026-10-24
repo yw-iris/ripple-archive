@@ -109,6 +109,24 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
   font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.22em;
   padding:7px 14px; color:var(--soft); text-transform:uppercase}
 
+/* ===== jump links (external) ===== */
+.links{position:relative; z-index:5; display:flex; justify-content:center; gap:12px;
+  margin:6px 0 2px; flex-wrap:wrap}
+.links a{display:flex; align-items:center; gap:8px; text-decoration:none; cursor:pointer;
+  border:1px solid var(--line); border-radius:18px; background:var(--card);
+  padding:9px 16px; color:var(--ink); box-shadow:0 4px 14px var(--shadow); transition:.3s}
+.links a:hover{transform:translateY(-2px); border-color:var(--accent); color:var(--accent)}
+.links a .t{font-size:12.5px; font-weight:700; letter-spacing:.04em}
+.links a small{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.2em;
+  color:var(--soft); text-transform:uppercase}
+.links a .ic{font-size:10px; color:var(--accent)}
+.menu-ext{margin-top:26px; border-top:1px solid var(--line); padding-top:18px}
+.menu-ext .h{font-family:ui-monospace,monospace; font-size:9px; letter-spacing:.34em;
+  color:var(--soft); margin-bottom:14px; font-weight:400}
+.menu-ext a{display:flex; justify-content:space-between; align-items:baseline;
+  color:var(--ink); text-decoration:none; padding:10px 0; border-bottom:1px solid var(--line); font-size:16px}
+.menu-ext a small{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.26em; color:var(--soft)}
+
 /* ===== foot ===== */
 .foot{position:absolute; z-index:5; left:0; right:0; bottom:20px; text-align:center;
   font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.34em; color:var(--soft);
@@ -214,6 +232,10 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
         </div>
       </div>
       <div class="tags rv d3"><span>Milestone</span><span>Glass</span><span>Swiper</span></div>
+      <div class="links rv d4">
+        <a href="https://www.kdocs.cn/l/cgcpEDreeALF" target="_blank" rel="noopener"><span class="ic">↗</span><span class="t">话术</span><small>SCRIPT</small></a>
+        <a href="https://www.kdocs.cn/l/ccGE8EDFn23r" target="_blank" rel="noopener"><span class="ic">↗</span><span class="t">板评</span><small>REVIEW</small></a>
+      </div>
       <div class="foot"><b>MILESTONE</b> · SWIPE THE CONSTELLATION</div>
       <div class="corner" data-next="1">›</div>
     </section>
@@ -412,6 +434,11 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
       <a href="#" data-go="5">观我久往 <small>REGARDS</small></a>
       <a href="#" data-go="6">话术堆砌 <small>CASSETTE</small></a>
     </nav>
+    <div class="menu-ext">
+      <div class="h">EXTERNAL · 跳转链接</div>
+      <a href="https://www.kdocs.cn/l/cgcpEDreeALF" target="_blank" rel="noopener">话术 <small>SCRIPT ↗</small></a>
+      <a href="https://www.kdocs.cn/l/ccGE8EDFn23r" target="_blank" rel="noopener">板评 <small>REVIEW ↗</small></a>
+    </div>
   </div>
 </div>
 
