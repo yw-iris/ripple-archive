@@ -3,514 +3,379 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>别皱眉 · RIPPLE ARCHIVE</title>
+<title>别皱眉 · KEPT IN STARS</title>
 <style>
 :root{
-  --bg:#ebeae6; --paper:#f5f4f0; --ink:#2e3c63; --ink-soft:#66718f;
-  --line:rgba(46,60,99,.22); --accent:#b0463a; --card:#f1efe9;
-  --shadow:rgba(46,60,99,.14);
+  --paper:#f7f6f3; --ink:#16181d; --soft:#8a8d94; --line:rgba(22,24,29,.16);
+  --card:#ffffff; --accent:#a8433a; --planet:#b9b9b9;
+  --shadow:rgba(20,22,26,.10);
 }
 body[data-theme="dark"]{
-  --bg:#0b101c; --paper:#101726; --ink:#d9c69a; --ink-soft:#8b8fa4;
-  --line:rgba(217,198,154,.25); --accent:#c9705c; --card:#141c2e;
+  --paper:#0c0f16; --ink:#e9e7df; --soft:#7e8492; --line:rgba(233,231,223,.16);
+  --card:#131722; --accent:#c9705c; --planet:#8d8d8d;
   --shadow:rgba(0,0,0,.5);
 }
 *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
 html,body{height:100%}
 body{
-  background:#1c1d20; color:var(--ink);
-  font-family:"Songti SC","Noto Serif SC","Source Han Serif SC","STSong",serif;
+  background:#101014; color:var(--ink);
+  font-family:Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif;
   overflow:hidden;
 }
 .grain{
-  position:fixed; inset:0; z-index:60; pointer-events:none; opacity:.055; mix-blend-mode:overlay;
-  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+  position:fixed; inset:0; z-index:70; pointer-events:none; opacity:.5; mix-blend-mode:multiply;
+  background-repeat:repeat;
 }
-/* ===== phone frame ===== */
+body[data-theme="dark"] .grain{mix-blend-mode:screen; opacity:.16}
+/* stars canvas */
+#stars{position:fixed; inset:0; z-index:1; pointer-events:none}
+/* ===== frame ===== */
 .frame{
-  position:relative; width:100%; height:100vh; height:100dvh; margin:0 auto;
-  background:var(--bg); overflow:hidden;
-  display:flex; flex-direction:column;
+  position:relative; z-index:2; width:100%; height:100vh; height:100dvh; margin:0 auto;
+  background:var(--paper); overflow:hidden;
   transition:background .6s;
+  display:flex; flex-direction:column;
 }
 @media (min-width:700px){
-  .frame{width:430px; height:92vh; margin-top:4vh; border-radius:26px;
-    box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06)}
+  .frame{width:414px; height:92vh; margin-top:4vh; border-radius:28px;
+    box-shadow:0 30px 80px rgba(0,0,0,.6), 0 0 0 1px rgba(255,255,255,.05)}
 }
-/* ===== header ===== */
-header{
-  position:relative; z-index:30; padding:16px 18px 10px;
-  border-bottom:1px solid var(--line);
-  background:var(--bg); transition:background .6s;
+/* ===== fixed bars ===== */
+.topbar{
+  position:relative; z-index:40; display:flex; justify-content:space-between; align-items:center;
+  padding:14px 18px 10px;
 }
-.tagline{
-  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  font-size:9px; letter-spacing:.28em; color:var(--ink-soft); text-transform:uppercase;
+.topbar .brand{font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.34em; color:var(--soft); text-transform:uppercase}
+.topbar .tb-r{display:flex; align-items:center; gap:10px}
+.circlebtn{
+  width:34px; height:34px; border-radius:50%; border:1px solid var(--line);
+  background:var(--card); color:var(--ink); font-size:13px; cursor:pointer; transition:.3s;
+  box-shadow:0 4px 14px var(--shadow);
 }
-.hrow{display:flex; align-items:flex-end; justify-content:space-between; margin-top:4px}
-h1{font-size:30px; font-weight:600; letter-spacing:.34em; line-height:1}
-h1 small{display:block; margin-top:7px; font-size:9px; letter-spacing:.3em; color:var(--ink-soft); font-weight:400}
-.ctrl{display:flex; gap:8px}
-.ctrl button{
-  font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:.18em;
-  color:var(--ink); background:transparent; border:1px solid var(--line);
-  border-radius:50%; width:34px; height:34px; cursor:pointer; transition:.3s;
+.pillbtn{
+  font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.26em;
+  border:1px solid var(--line); background:transparent; color:var(--ink);
+  border-radius:20px; padding:9px 14px; cursor:pointer; transition:.3s;
 }
-.ctrl button#menuBtn{border-radius:8px; width:auto; padding:0 12px}
-.ctrl button:hover{background:var(--ink); color:var(--bg)}
-/* pager */
+.pillbtn:hover,.circlebtn:hover{transform:translateY(-1px)}
+.botbar{
+  position:relative; z-index:40; display:flex; justify-content:space-between; align-items:center;
+  padding:10px 18px calc(10px + env(safe-area-inset-bottom));
+  border-top:1px solid var(--line);
+  font-family:ui-monospace,Menlo,monospace; font-size:8.5px; letter-spacing:.28em; color:var(--soft);
+}
+/* pager sits under topbar */
 .pager{
-  position:absolute; top:70px; right:16px; z-index:30; text-align:right;
-  font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:.22em; color:var(--ink-soft);
-  pointer-events:none;
+  position:absolute; top:64px; right:18px; z-index:40; text-align:right; pointer-events:none;
+  font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.3em; color:var(--soft);
 }
-.pager b{color:var(--ink); font-weight:600; font-size:13px}
-.pager em{display:block; font-style:normal; margin-top:4px; font-size:8px; letter-spacing:.3em}
+.pager b{color:var(--ink); font-size:12px; font-weight:600}
 /* ===== scroller ===== */
-main{flex:1; position:relative; overflow-y:scroll; scroll-snap-type:y mandatory; scrollbar-width:none}
+main{flex:1; position:relative; z-index:5; overflow-y:scroll; scroll-snap-type:y mandatory; scrollbar-width:none}
 main::-webkit-scrollbar{display:none}
 section{
   height:100%; scroll-snap-align:start; scroll-snap-stop:always;
   position:relative; overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
-  padding:26px 26px 40px;
+  padding:34px 26px 46px;
 }
 section::-webkit-scrollbar{display:none}
-/* vertical edge text + ornaments */
-.edge{
-  position:absolute; left:6px; top:50%; transform:translateY(-50%) rotate(180deg);
-  writing-mode:vertical-rl; font-family:ui-monospace,Menlo,monospace;
-  font-size:8px; letter-spacing:.5em; color:var(--ink-soft); opacity:.55; pointer-events:none;
-  white-space:nowrap;
-}
-.flower{
-  position:absolute; left:10px; top:16%; height:190px; width:34px;
-  color:var(--ink-soft); opacity:.45; pointer-events:none;
-}
-.swallow{
-  position:absolute; right:0; top:30px; width:44px;
-  color:var(--ink-soft); opacity:.75; pointer-events:none;
-  animation:soar 7s ease-in-out infinite;
-}
-@keyframes soar{
-  0%,100%{transform:translate(0,0) rotate(0deg)}
-  30%{transform:translate(-26px,10px) rotate(-6deg)}
-  65%{transform:translate(10px,-6px) rotate(4deg)}
-}
 /* reveal */
-.rv{opacity:0; transform:translateY(16px); transition:opacity .9s ease, transform .9s ease}
+.rv{opacity:0; transform:translateY(14px); transition:opacity .9s ease, transform .9s ease}
 .in .rv{opacity:1; transform:none}
-.in .rv.d1{transition-delay:.12s}.in .rv.d2{transition-delay:.24s}
-.in .rv.d3{transition-delay:.36s}.in .rv.d4{transition-delay:.48s}
-/* ===== cover ===== */
-.cover{display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; padding-top:9%}
-#lotus{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
-.cover .inner{position:relative; z-index:5; pointer-events:none}
-.cover .badge{
-  display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.34em;
-  border:1px solid var(--line); padding:5px 10px; color:var(--ink-soft); margin-bottom:22px;
+.in .rv.d1{transition-delay:.1s}.in .rv.d2{transition-delay:.2s}
+.in .rv.d3{transition-delay:.32s}.in .rv.d4{transition-delay:.44s}
+/* ===== planets (pure CSS) ===== */
+.moon{
+  position:absolute; z-index:0; border-radius:50%; pointer-events:none;
+  background:
+    radial-gradient(circle at 63% 34%, rgba(0,0,0,.16) 0 7%, transparent 8.5%),
+    radial-gradient(circle at 42% 58%, rgba(0,0,0,.13) 0 5%, transparent 6.5%),
+    radial-gradient(circle at 72% 62%, rgba(0,0,0,.11) 0 9%, transparent 10.5%),
+    radial-gradient(circle at 30% 32%, rgba(0,0,0,.09) 0 4.5%, transparent 6%),
+    radial-gradient(circle at 55% 78%, rgba(0,0,0,.08) 0 6%, transparent 7.5%),
+    radial-gradient(circle at 36% 34%, #f4f4f4, #cbcbcb 52%, #8f8f8f 100%);
+  box-shadow:inset -16px -12px 34px rgba(0,0,0,.22);
+  filter:grayscale(1);
 }
-.cover h2{font-size:44px; letter-spacing:.3em; text-indent:.3em; font-weight:600}
-.cover .en{
-  margin-top:12px; font-family:"Snell Roundhand","Segoe Script","Brush Script MT",Georgia,cursive;
-  font-style:italic; font-size:20px; color:var(--ink-soft);
+.saturn{
+  position:absolute; z-index:0; border-radius:50%; pointer-events:none;
+  background:radial-gradient(circle at 38% 36%, #f1f1f1, #c2c2c2 55%, #858585 100%);
+  box-shadow:inset -10px -8px 22px rgba(0,0,0,.18);
+  filter:grayscale(1);
 }
-/* floating quotes (video-style) */
-.fq{
-  position:absolute; z-index:6; pointer-events:none; opacity:0;
-  transition:opacity 1.5s ease; color:var(--ink);
-  font-size:14.5px; letter-spacing:.2em; white-space:nowrap;
+.saturn::after{
+  content:""; position:absolute; left:-30%; top:42%; width:160%; height:42%;
+  border:1.5px solid rgba(90,90,90,.55); border-radius:50%;
+  transform:rotate(-16deg);
 }
-.fq.on{opacity:.95}
-.fq svg{
-  position:absolute; color:var(--ink-soft); opacity:.5; pointer-events:none;
+body[data-theme="dark"] .saturn::after{border-color:rgba(220,215,200,.4)}
+.earth{
+  position:absolute; z-index:0; border-radius:50%; pointer-events:none; overflow:hidden;
+  background:radial-gradient(circle at 36% 32%, #fafafa, #cfcfcf 48%, #7e7e7e 100%);
+  box-shadow:inset -14px -10px 30px rgba(0,0,0,.25);
+  filter:grayscale(1);
 }
-.fq1{top:26%; left:10%}
-.fq1 svg{width:130%; height:220%; left:-15%; top:-60%; transform:rotate(-4deg)}
-.fq2{top:47%; left:5%}
-.fq2 svg{width:120%; height:260%; left:-12%; top:-80%; transform:rotate(3deg)}
-.fq3{top:72%; right:7%}
-.fq3 svg{width:125%; height:240%; right:-14%; top:-70%; transform:rotate(-3deg)}
-.fq4{top:31%; right:6%; font-size:12.5px}
-.fq4 svg{width:130%; height:240%; right:-16%; top:-70%; transform:rotate(5deg)}
-/* ===== envelope page (TO OPEN) ===== */
-.envpage{display:flex; padding:0; overflow:hidden}
-.env-left{
-  flex:0 0 42%; position:relative; background:var(--paper); overflow:hidden;
-  transition:background .6s;
+.earth::before{
+  content:""; position:absolute; inset:0; border-radius:50%;
+  background:
+    radial-gradient(ellipse 34% 22% at 30% 42%, rgba(255,255,255,.5), transparent 70%),
+    radial-gradient(ellipse 40% 26% at 62% 62%, rgba(0,0,0,.18), transparent 70%),
+    radial-gradient(ellipse 26% 18% at 48% 24%, rgba(0,0,0,.12), transparent 70%);
 }
-.env-left svg{position:absolute; color:var(--ink); opacity:.8}
-.env-lily{left:8%; top:22%; width:56%; height:58%; opacity:.85}
-.env-sw1{left:12%; top:9%; width:52%; animation:soar 6s ease-in-out infinite}
-.env-sw2{left:18%; bottom:7%; width:46%; animation:soar 8s ease-in-out infinite reverse}
-.env-right{
-  flex:1; position:relative; overflow:hidden; color:#f2f0ea;
-  background:linear-gradient(160deg,#46578a 0%,#3c4d7c 55%,#33426c 100%);
-  clip-path:polygon(4% 0, 100% 0, 100% 100%, 1% 100%, 2.6% 94%, .6% 88%, 3.4% 81%, 1.2% 74%, 3.8% 67%, .8% 60%, 3.2% 53%, .6% 46%, 3.6% 39%, 1% 32%, 3.2% 25%, .8% 18%, 3.4% 11%, 1.4% 5%);
-  display:flex; flex-direction:column; justify-content:center; align-items:center; text-align:center;
-  padding:0 12% 0 16%;
-  transition:filter .6s;
+.plusmark{position:absolute; z-index:0; color:var(--soft); opacity:.55; font-size:15px; font-weight:300; pointer-events:none}
+/* ===== page head (poster type) ===== */
+.eyebrow{
+  display:flex; justify-content:space-between; align-items:baseline;
+  font-family:ui-monospace,Menlo,monospace; font-size:8.5px; letter-spacing:.4em;
+  color:var(--soft); text-transform:uppercase; margin-bottom:22px;
 }
-body[data-theme="dark"] .env-right{background:linear-gradient(160deg,#26314f 0%,#1e2740 55%,#182036 100%)}
-.env-right .speck{position:absolute; border-radius:50%; background:#fff; pointer-events:none}
-.e-tag{
-  font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.5em; opacity:.65;
-  margin-bottom:18px;
+.big{
+  font-size:40px; line-height:1.04; letter-spacing:.01em; font-weight:700; color:var(--ink);
 }
-.e-script{
-  font-family:"Snell Roundhand","Segoe Script","Brush Script MT",Georgia,cursive;
-  font-style:italic; font-size:44px; line-height:1; opacity:.96;
+.big em{
+  display:block; font-style:italic; font-weight:400; color:var(--ink); opacity:.92; letter-spacing:.01em;
 }
-.e-sub{
-  margin-top:16px; font-style:italic; font-size:15px; letter-spacing:.08em; line-height:1.8; opacity:.85;
-  font-family:Georgia,"Songti SC",serif;
+.sub{
+  margin-top:14px; font-style:italic; font-size:14.5px; color:var(--soft); letter-spacing:.02em; line-height:1.7;
 }
-.e-open{
-  margin-top:30px; background:transparent; color:#f2f0ea; cursor:pointer;
-  font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:.5em; text-indent:.5em;
-  border:1px solid rgba(242,240,234,.55); padding:10px 22px; border-radius:2px;
-  transition:.35s; animation:pulse-open 2.6s ease-in-out infinite;
+.foot-tag{
+  position:absolute; left:0; right:0; bottom:16px; text-align:center;
+  font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.44em; color:var(--soft);
+  text-transform:uppercase; pointer-events:none;
 }
-.e-open:hover{background:#f2f0ea; color:#3c4d7c; animation:none}
-@keyframes pulse-open{0%,100%{box-shadow:0 0 0 0 rgba(242,240,234,.0)}50%{box-shadow:0 0 0 5px rgba(242,240,234,.14)}}
-.e-note{
-  position:absolute; bottom:16px; left:0; right:0; text-align:center;
-  font-family:ui-monospace,Menlo,monospace; font-size:7.5px; letter-spacing:.4em; opacity:.5;
+/* ===== phone mockups (CSS only) ===== */
+.phones{position:relative; margin-top:30px; height:400px}
+.phone{
+  position:absolute; border:2px solid #191b1f; border-radius:24px;
+  background:var(--card); overflow:hidden;
+  box-shadow:0 22px 44px var(--shadow);
+  transition:transform .8s ease, box-shadow .8s ease;
 }
-/* cover swallow over the water */
-.cover-swallow{
-  position:absolute; z-index:5; width:120px; left:16%; top:58%;
-  color:var(--ink); opacity:.85; pointer-events:none;
-  animation:flyacross 11s ease-in-out infinite;
+.phone .notch{
+  position:absolute; top:7px; left:50%; transform:translateX(-50%);
+  width:34%; height:9px; border-radius:8px; background:#191b1f; z-index:3;
 }
-@keyframes flyacross{
-  0%{transform:translate(0,0) rotate(-8deg) scale(.9)}
-  28%{transform:translate(30px,-26px) rotate(4deg) scale(1)}
-  55%{transform:translate(110px,6px) rotate(-5deg) scale(.95)}
-  80%{transform:translate(150px,-14px) rotate(3deg) scale(1.02)}
-  100%{transform:translate(0,0) rotate(-8deg) scale(.9)}
-}
-/* ticker */
-.ticker{
-  position:absolute; bottom:14px; left:0; right:0; z-index:7; overflow:hidden;
-  border-top:1px solid var(--line); padding-top:7px;
-}
-.ticker .tk{
-  display:inline-block; white-space:nowrap; animation:mar 22s linear infinite;
-  font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.3em; color:var(--ink-soft);
-}
-@keyframes mar{from{transform:translateX(100vw)}to{transform:translateX(-100%)}}
-.scrollhint{
-  position:absolute; bottom:44px; left:0; right:0; z-index:6; text-align:center;
-  font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.4em; color:var(--ink-soft);
-  animation:bob 2.4s ease-in-out infinite;
-}
-@keyframes bob{0%,100%{transform:translateY(0); opacity:.5}50%{transform:translateY(6px); opacity:1}}
-/* ===== letters ===== */
-.letter .head{margin-bottom:20px; position:relative}
-.letter .idx{
-  font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.4em; color:var(--ink-soft);
-}
-.letter .cn-title{font-size:24px; letter-spacing:.22em; margin-top:8px}
-.letter .cn-title .red{color:var(--accent)}
-.letter .en-title{
-  font-family:"Snell Roundhand","Segoe Script","Brush Script MT",Georgia,cursive;
-  font-style:italic; font-size:30px; line-height:1.15; color:var(--ink-soft);
-  text-align:right; margin-top:-4px; opacity:.9;
-}
-.date{font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.3em; color:var(--ink-soft);
-  text-align:right; margin-top:10px; display:flex; align-items:center; gap:10px; justify-content:flex-end}
-.date::before{content:""; flex:1; height:1px; background:var(--line)}
-.body{font-size:14.5px; line-height:2.05; letter-spacing:.06em; color:var(--ink)}
-.body p{margin-bottom:12px}
-.body .k{font-weight:700; letter-spacing:.14em}
-.body .red{color:var(--accent); font-weight:700}
-.body .dim{color:var(--ink-soft)}
-.hr{height:1px; background:var(--line); margin:18px 0}
-.photo{margin:18px 0; position:relative}
-.photo img{width:100%; display:block; filter:grayscale(1) contrast(.96); opacity:.92; transition:filter .8s}
-.photo figcaption{
-  position:absolute; right:8px; bottom:8px; font-family:ui-monospace,Menlo,monospace;
-  font-size:8px; letter-spacing:.26em; color:#fff; opacity:.75;
-}
-.photo.bordered{border:1px solid var(--line); padding:8px; background:var(--card)}
-.dots{display:flex; gap:7px; justify-content:flex-end; margin-top:22px}
-.dots i{width:5px; height:5px; border-radius:50%; background:var(--line)}
-.dots i.on{background:var(--ink)}
-/* about chips */
-.chips{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0}
+.phone .scr{height:100%; overflow:hidden; padding:24px 12px 10px; display:flex; flex-direction:column}
+.scr .s-top{display:flex; justify-content:space-between; font-family:ui-monospace,Menlo,monospace; font-size:5.5px; letter-spacing:.2em; color:var(--soft)}
+.scr .s-num{font-size:30px; font-weight:700; letter-spacing:.02em; margin-top:8px; line-height:1}
+.scr .s-cap{font-family:ui-monospace,Menlo,monospace; font-size:5px; letter-spacing:.24em; color:var(--soft); margin-top:3px}
+.scr .s-item{border-top:1px solid var(--line); padding:7px 0 2px; margin-top:8px}
+.scr .s-item b{display:block; font-size:8.5px; letter-spacing:.14em; font-weight:600}
+.scr .s-item span{display:block; font-size:6.5px; color:var(--soft); line-height:1.7; margin-top:2px}
+.scr .s-sign{text-align:center; font-family:ui-monospace,Menlo,monospace; font-size:5px; letter-spacing:.3em; color:var(--soft); margin-top:auto; padding:6px 0 4px}
+.ph-a{width:44%; left:0; top:56px; height:62%}
+.ph-b{width:56%; left:24%; top:0; height:88%; z-index:2; animation:floaty 7s ease-in-out infinite}
+.ph-c{width:42%; right:0; top:74px; height:58%}
+@keyframes floaty{0%,100%{transform:translateY(0)}50%{transform:translateY(-7px)}}
+/* ===== content blocks ===== */
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin:18px 0 0}
 .chips span{
-  border:1px solid var(--line); padding:6px 12px; font-size:12px; letter-spacing:.18em;
-  background:var(--card); border-radius:2px;
+  border:1px solid var(--line); background:var(--card); padding:7px 13px;
+  font-size:12px; letter-spacing:.16em; border-radius:2px;
 }
-/* price rows */
-.price{border:1px solid var(--line); background:var(--card); padding:4px 16px; margin-bottom:14px}
-.price .p-name{display:flex; justify-content:space-between; align-items:baseline; padding:12px 0 4px}
-.price .p-name b{font-size:16px; letter-spacing:.2em}
-.price .p-name s{ text-decoration:none; font-family:ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:.1em; color:var(--ink-soft)}
-.price .p-sub{font-size:11.5px; color:var(--ink-soft); letter-spacing:.12em; line-height:1.8; padding-bottom:12px}
-.price .plus{color:var(--accent); font-weight:700}
-.p-note{font-size:11px; color:var(--ink-soft); letter-spacing:.14em; line-height:2; margin-top:4px}
-.p-note b{color:var(--accent)}
-/* checklist */
-.check{list-style:none}
+.kv{margin-top:22px}
+.kv .row{
+  display:flex; justify-content:space-between; align-items:baseline; gap:14px;
+  padding:13px 2px; border-bottom:1px solid var(--line);
+}
+.kv .row b{font-size:14.5px; letter-spacing:.18em; font-weight:600; white-space:nowrap}
+.kv .row s{text-decoration:none; font-family:ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:.12em; color:var(--soft); white-space:nowrap}
+.kv .row .desc{font-size:11px; color:var(--soft); letter-spacing:.1em; line-height:1.8; flex:1; text-align:right}
+.note{font-size:11px; color:var(--soft); letter-spacing:.14em; line-height:2; margin-top:14px}
+.note b{color:var(--accent)}
+.bodytext{margin-top:22px; font-size:14px; line-height:2.05; letter-spacing:.06em}
+.bodytext p{margin-bottom:12px}
+.bodytext .k{font-weight:700; letter-spacing:.14em}
+.bodytext .red{color:var(--accent); font-weight:700}
+.bodytext .dim{color:var(--soft)}
+.check{list-style:none; margin-top:20px}
 .check li{
   display:flex; gap:12px; align-items:flex-start; padding:13px 2px;
   border-bottom:1px dashed var(--line); font-size:13.5px; line-height:1.9; letter-spacing:.08em;
 }
-.check li::before{
-  content:""; flex:0 0 13px; height:13px; margin-top:6px; border:1px solid var(--ink-soft); border-radius:2px;
+.check li::before{content:"+"; flex:0 0 14px; font-family:ui-monospace,Menlo,monospace; color:var(--soft); font-size:13px; margin-top:2px}
+.photo{margin:22px 0 0; position:relative; border:1px solid var(--line); background:var(--card); padding:8px}
+.photo img{width:100%; display:block; filter:grayscale(1) contrast(.96); opacity:.94}
+.photo figcaption{
+  display:flex; justify-content:space-between; padding-top:7px;
+  font-family:ui-monospace,Menlo,monospace; font-size:7.5px; letter-spacing:.3em; color:var(--soft);
+  text-transform:uppercase;
 }
-.check li:hover::before{background:var(--ink)}
 /* music card */
 .music{
-  margin-top:8px; background:#10131c; color:#e8e4da; border-radius:10px; padding:18px 18px 16px;
-  box-shadow:0 14px 34px var(--shadow); position:relative; overflow:hidden; cursor:pointer;
+  margin-top:24px; border:1px solid var(--line); background:var(--card);
+  padding:18px 18px 15px; cursor:pointer; box-shadow:0 14px 30px var(--shadow);
 }
-.music .m-eyebrow{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.34em; opacity:.55}
-.music h3{font-size:19px; margin:8px 0 4px; letter-spacing:.04em; font-weight:600}
-.music .m-artist{font-size:11.5px; opacity:.6; letter-spacing:.12em}
-.music .m-row{display:flex; align-items:center; justify-content:space-between; margin-top:16px}
-.eq{display:flex; align-items:flex-end; gap:3px; height:18px}
-.eq i{width:3px; background:#e8e4da; height:4px; opacity:.85}
+.music .m-eyebrow{font-family:ui-monospace,Menlo,monospace; font-size:7.5px; letter-spacing:.4em; color:var(--soft)}
+.music h3{font-size:17.5px; margin:9px 0 4px; letter-spacing:.02em; font-weight:600; font-style:italic}
+.music .m-artist{font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.2em; color:var(--soft)}
+.music .m-row{display:flex; align-items:center; justify-content:space-between; margin-top:15px}
+.eq{display:flex; align-items:flex-end; gap:3px; height:16px}
+.eq i{width:3px; background:var(--ink); height:4px; opacity:.75}
 .playing .eq i{animation:eq 1s ease-in-out infinite}
 .eq i:nth-child(2){animation-delay:.15s}.eq i:nth-child(3){animation-delay:.3s}
 .eq i:nth-child(4){animation-delay:.45s}.eq i:nth-child(5){animation-delay:.6s}
-@keyframes eq{0%,100%{height:4px}50%{height:18px}}
-.m-play{
-  width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.35);
-  display:grid; place-items:center; font-size:13px; transition:.3s;
-}
-.music:hover .m-play{background:#e8e4da; color:#10131c}
-.m-prog{height:2px; background:rgba(255,255,255,.16); margin-top:16px; border-radius:2px; overflow:hidden}
-.m-prog i{display:block; height:100%; width:0%; background:#e8e4da; transition:width .3s linear}
-.m-time{display:flex; justify-content:space-between; font-family:ui-monospace,Menlo,monospace; font-size:8.5px; opacity:.5; margin-top:6px; letter-spacing:.14em}
-/* menu overlay */
+@keyframes eq{0%,100%{height:4px}50%{height:16px}}
+.m-play{width:36px; height:36px; border-radius:50%; border:1px solid var(--line); display:grid; place-items:center; font-size:11px; font-family:ui-monospace,Menlo,monospace}
+.music:hover .m-play{background:var(--ink); color:var(--paper)}
+.m-prog{height:2px; background:var(--line); margin-top:15px; overflow:hidden}
+.m-prog i{display:block; height:100%; width:0%; background:var(--ink); transition:width .3s linear}
+.m-time{display:flex; justify-content:space-between; font-family:ui-monospace,Menlo,monospace; font-size:8px; color:var(--soft); margin-top:6px; letter-spacing:.18em}
+/* dots */
+.dots{display:flex; gap:7px; margin-top:26px}
+.dots i{width:4.5px; height:4.5px; border-radius:50%; background:var(--line)}
+.dots i.on{background:var(--ink)}
+/* menu */
 .menu{
-  position:absolute; inset:0; z-index:50; background:var(--bg);
+  position:absolute; inset:0; z-index:60; background:var(--paper);
   display:flex; flex-direction:column; justify-content:center; padding:0 44px;
   opacity:0; visibility:hidden; transition:opacity .45s, visibility .45s;
 }
 .menu.open{opacity:1; visibility:visible}
-.menu .m-tag{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.4em; color:var(--ink-soft); margin-bottom:22px}
+.menu .m-tag{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.4em; color:var(--soft); margin-bottom:22px}
 .menu nav a{
   display:flex; justify-content:space-between; align-items:baseline; text-decoration:none; color:var(--ink);
-  padding:13px 0; border-bottom:1px solid var(--line); font-size:17px; letter-spacing:.26em;
+  padding:13px 0; border-bottom:1px solid var(--line); font-size:16px; letter-spacing:.22em;
 }
-.menu nav a small{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.3em; color:var(--ink-soft)}
+.menu nav a small{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.28em; color:var(--soft)}
 .menu nav a:hover{color:var(--accent)}
-.menu .m-close{position:absolute; top:20px; right:20px}
-/* footer */
-footer{
-  position:relative; z-index:30; display:flex; justify-content:space-between; align-items:center;
-  padding:10px 18px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid var(--line);
-  font-family:ui-monospace,Menlo,monospace; font-size:8.5px; letter-spacing:.3em; color:var(--ink-soft);
-  background:var(--bg); transition:background .6s;
-}
-/* burst overlay (dissolve-to-ripples page transition) */
-#burst{position:absolute; inset:0; z-index:20; pointer-events:none}
+.menu .m-close{position:absolute; top:16px; right:18px}
 </style>
 </head>
 <body data-theme="light">
-<div class="grain"></div>
-<div class="frame">
-  <header>
-    <div class="tagline">// RIPPLE ARCHIVE · PRIVATE</div>
-    <div class="hrow">
-      <h1>别皱眉<small>FROWN LESS · 水波语录 VOL.</small></h1>
-      <div class="ctrl">
-        <button id="themeBtn" title="切换明暗">☾</button>
-        <button id="menuBtn">MENU</button>
-      </div>
-    </div>
-  </header>
-  <div class="pager"><b id="pgNow">01</b> / <span id="pgAll">07</span><em id="pgLabel">COVER</em></div>
+<div class="grain" id="grain"></div>
+<canvas id="stars"></canvas>
 
-  <canvas id="burst"></canvas>
+<div class="frame">
+  <div class="topbar">
+    <span class="brand">别皱眉 Archive · Glass</span>
+    <div class="tb-r">
+      <button class="pillbtn" id="menuBtn">MENU</button>
+      <button class="circlebtn" id="themeBtn" title="明暗">☾</button>
+    </div>
+  </div>
+  <div class="pager"><b id="pgNow">01</b> / <span id="pgAll">07</span></div>
 
   <main id="scroller">
     <!-- 0 COVER -->
-    <section class="page cover" data-label="COVER">
-      <canvas id="lotus"></canvas>
-      <div class="fq fq1"><svg viewBox="0 0 200 80" preserveAspectRatio="none"><ellipse cx="100" cy="40" rx="96" ry="30" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 6"/></svg><span>即使你说错也没事，我会告诉你！</span></div>
-      <div class="fq fq2"><svg viewBox="0 0 200 80" preserveAspectRatio="none"><ellipse cx="100" cy="40" rx="96" ry="28" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="5 7"/></svg><span>我有这——————么多爱你</span></div>
-      <div class="fq fq3"><svg viewBox="0 0 200 80" preserveAspectRatio="none"><ellipse cx="100" cy="40" rx="94" ry="30" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="3 6"/></svg><span>想要就是想要，不需要理由</span></div>
-      <div class="fq fq4"><svg viewBox="0 0 200 80" preserveAspectRatio="none"><ellipse cx="100" cy="40" rx="96" ry="30" fill="none" stroke="currentColor" stroke-width="1" stroke-dasharray="4 5"/></svg><span>慢一点，别赶路</span></div>
-      <div class="inner">
-        <span class="badge rv">EST. 2026 · WATER MEMORY</span>
-        <div class="en rv d2">Frown less, love louder.</div>
-        <div class="rv d3" style="margin-top:14px;font-size:10px;letter-spacing:.4em;color:var(--ink-soft);font-family:ui-monospace,Menlo,monospace">조회한 시선은 오직 너에게</div>
-      </div>
-      <svg class="cover-swallow" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.4">
-        <path d="M60 40 C52 22 30 10 8 12 C24 20 36 30 44 40 C36 44 20 48 10 58 C26 56 40 54 50 52 C44 62 38 70 30 76 C46 70 56 62 60 52 C66 48 74 44 82 42 C90 40 98 40 104 42 L112 44 L104 46 C96 48 86 48 78 46 C72 50 66 52 60 40 Z" fill="currentColor" fill-opacity=".12"/>
-        <path d="M44 40 C50 38 56 38 62 40" stroke-dasharray="2 3"/>
-      </svg>
-      <div class="scrollhint">SWIPE ▾ &nbsp;SELECT A CURRENT</div>
-      <div class="ticker"><span class="tk">想说什么，有什么感觉，没什么好说的！依旧会把心事讲给你听 —— RIPPLE ARCHIVE · PRIVATE · 水波语录 · 别皱眉&nbsp;&nbsp;&nbsp;&nbsp;想说什么，有什么感觉，没什么好说的！依旧会把心事讲给你听 —— RIPPLE ARCHIVE · PRIVATE · 水波语录 · 别皱眉&nbsp;&nbsp;&nbsp;&nbsp;</span></div>
-    </section>
-
-    <!-- 1 ENVELOPE · TO OPEN -->
-    <section class="page envpage" data-label="ENVELOPE · TO OPEN">
-      <div class="env-left">
-        <svg class="env-sw1" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.4">
-          <path d="M60 40 C52 22 30 10 8 12 C24 20 36 30 44 40 C36 44 20 48 10 58 C26 56 40 54 50 52 C44 62 38 70 30 76 C46 70 56 62 60 52 C66 48 74 44 82 42 C90 40 98 40 104 42 L112 44 L104 46 C96 48 86 48 78 46 C72 50 66 52 60 40 Z" fill="currentColor" fill-opacity=".12"/>
-          <path d="M44 40 C50 38 56 38 62 40" stroke-dasharray="2 3"/>
-        </svg>
-        <svg class="env-lily" viewBox="0 0 100 160" fill="none" stroke="currentColor" stroke-width="1">
-          <path d="M50 155 C46 120 56 96 50 70 C46 48 52 26 48 8"/>
-          <path d="M50 70 C36 66 24 54 22 38 C34 44 44 56 50 70 Z"/>
-          <path d="M50 70 C64 64 74 52 76 36 C64 42 55 55 50 70 Z"/>
-          <path d="M50 70 C42 84 30 90 16 90 C28 96 42 90 50 78"/>
-          <path d="M50 74 C60 88 72 94 86 92 C74 100 58 94 50 80"/>
-          <circle cx="50" cy="70" r="3"/>
-          <path d="M48 8 C44 16 40 20 34 24" stroke-dasharray="2 3"/>
-          <ellipse cx="62" cy="18" rx="6" ry="2.5" transform="rotate(24 62 18)"/>
-          <ellipse cx="34" cy="44" rx="6" ry="2.5" transform="rotate(-28 34 44)"/>
-        </svg>
-        <svg class="env-sw2" viewBox="0 0 120 80" fill="none" stroke="currentColor" stroke-width="1.4">
-          <path d="M60 40 C52 22 30 10 8 12 C24 20 36 30 44 40 C36 44 20 48 10 58 C26 56 40 54 50 52 C44 62 38 70 30 76 C46 70 56 62 60 52 C66 48 74 44 82 42 C90 40 98 40 104 42 L112 44 L104 46 C96 48 86 48 78 46 C72 50 66 52 60 40 Z" fill="currentColor" fill-opacity=".12"/>
-          <path d="M44 40 C50 38 56 38 62 40" stroke-dasharray="2 3"/>
-        </svg>
-      </div>
-      <div class="env-right">
-        <div class="e-tag">— UERS&nbsp;&nbsp;LETTERS</div>
-        <div class="e-script">水心</div>
-        <div class="e-sub">salt, and all<br>the rain after.</div>
-        <button class="e-open" id="openBtn">TO OPEN</button>
-        <div class="e-note">FROWN LESS · 别皱眉 · 水波语录</div>
-      </div>
-    </section>
-
-    <!-- 2 关于我 -->
-    <section class="page letter" data-label="LETTER 01 · 关于我">
-      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
-      <svg class="flower" viewBox="0 0 40 220" fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M22 5 C14 40 26 70 18 105 C12 140 24 175 16 215"/>
-        <ellipse cx="10" cy="42" rx="7" ry="3" transform="rotate(-30 10 42)"/>
-        <ellipse cx="28" cy="76" rx="7" ry="3" transform="rotate(25 28 76)"/>
-        <ellipse cx="9" cy="128" rx="7" ry="3" transform="rotate(-25 9 128)"/>
-        <ellipse cx="27" cy="168" rx="7" ry="3" transform="rotate(28 27 168)"/>
-        <circle cx="18" cy="105" r="2.4"/>
-        <circle cx="16" cy="215" r="2.4"/>
-      </svg>
-      <div class="head">
-        <svg class="swallow" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.3">
-          <path d="M3 27 C15 18 25 16 33 18 C30 9 37 3 46 4 C41 11 45 16 54 14 C48 23 39 29 28 31 C19 33 10 31 3 27 Z"/>
-          <path d="M33 18 C36 22 41 24 47 24" stroke-dasharray="2 3"/>
-        </svg>
-        <div class="idx rv">LETTER 01 &nbsp;·&nbsp; ◽ 关于我</div>
-        <div class="en-title rv d1">About<br>the Water</div>
-        <div class="date rv d2">2026 10 20</div>
-      </div>
-      <div class="body">
-        <p class="rv d2"><span class="k">水心</span>&nbsp;&nbsp;<span class="dim">21t&nbsp;&nbsp;INTJ</span></p>
-        <div class="chips rv d3">
-          <span>土象处女</span><span>上升天秤</span><span>常驻建模</span><span>1号耳坠</span><span>高马尾</span><span>虚荣</span>
+    <section data-label="COVER · SWIPE THE CONSTELLATION">
+      <div class="moon" style="width:210px;height:210px;top:-84px;right:-76px"></div>
+      <div class="saturn" style="width:96px;height:96px;left:-40px;top:37%"></div>
+      <span class="plusmark" style="top:26%;right:12%">+</span>
+      <span class="plusmark" style="top:64%;left:9%">+</span>
+      <span class="plusmark" style="top:16%;left:16%;font-size:11px">+</span>
+      <div class="eyebrow rv"><span>01 — 别皱眉 · Glass</span><span>Vol.01</span></div>
+      <h2 class="big rv d1">Every night,<em>kept in stars</em></h2>
+      <p class="sub rv d2">Whatever happens, I'll remember for both of us.</p>
+      <div class="phones rv d3">
+        <div class="phone ph-a">
+          <div class="notch"></div>
+          <div class="scr">
+            <div class="s-top"><span>9:41</span><span>水波语录</span></div>
+            <div class="s-num">40<small style="font-size:10px">/h</small></div>
+            <div class="s-cap">普病 · HALF 21</div>
+            <div class="s-item"><b>修罗 52/h</b><span>反修 48/h · Dom 45/h</span></div>
+            <div class="s-item"><b>恋物价 59/h</b><span>半单口 +5 · 全单 +10</span></div>
+            <div class="s-sign">FROWN LESS · VOL.01</div>
+          </div>
+        </div>
+        <div class="phone ph-b">
+          <div class="notch"></div>
+          <div class="scr">
+            <div class="s-top"><span>9:41</span><span>Milestone</span></div>
+            <div class="s-num" style="font-size:34px">水心</div>
+            <div class="s-cap">21t · INTJ · 土象处女 · 上升天秤</div>
+            <div class="s-item"><b>常驻建模 · 1号耳坠</b><span>高马尾 · 虚荣 · 见人说人话，见鬼说鬼话。</span></div>
+            <div class="s-item"><b>风 格 特 点</b><span>中恋剖析 / dom / 低无逻辑 / 高恋引导 · 副调 温病 · 白骑士 · 病虐</span></div>
+            <div class="s-item"><b>互 相 尊 重 为 基 本</b><span>你呈现的样子决定我们的过程。</span></div>
+            <div class="s-sign">别皱眉 · SWIPE THE CONSTELLATION</div>
+          </div>
+        </div>
+        <div class="phone ph-c">
+          <div class="notch"></div>
+          <div class="scr">
+            <div class="s-top"><span>9:41</span><span>话术堆砌</span></div>
+            <div class="s-num" style="font-size:22px">0:09</div>
+            <div class="s-cap">SUNSETS ON REPEAT</div>
+            <div class="s-item"><b>单前后 · 六条</b><span>单前整理好情绪 · 结束后欢迎交流</span></div>
+            <div class="s-item"><b>观我久往</b><span>曾用名 加缪</span></div>
+            <div class="s-sign">KEPT IN STARS · 2026</div>
+          </div>
         </div>
       </div>
-      <figure class="photo bordered rv d3">
+      <div class="foot-tag">别皱眉 · Swipe the Constellation</div>
+    </section>
+
+    <!-- 1 关于我 -->
+    <section data-label="ABOUT · SALT, AND ALL THE RAIN AFTER">
+      <div class="earth" style="width:150px;height:150px;top:-64px;right:-58px"></div>
+      <span class="plusmark" style="top:38%;right:10%">+</span>
+      <div class="eyebrow rv"><span>02 — 关于我 · About</span><span>◽ 关于我</span></div>
+      <h2 class="big rv d1">From where<em>the water begins</em></h2>
+      <p class="sub rv d2">别皱眉的人，先把星星数完。</p>
+      <div class="bodytext rv d2">
+        <p><span class="k">水心</span>&nbsp;&nbsp;<span class="dim">21t&nbsp;&nbsp;INTJ</span></p>
+      </div>
+      <div class="chips rv d3">
+        <span>土象处女</span><span>上升天秤</span><span>常驻建模</span><span>1号耳坠</span><span>高马尾</span><span>虚荣</span>
+      </div>
+      <figure class="photo rv d3">
         <img src="assets/flowers-soft.jpg" alt="灰调花影">
-        <figcaption>FIG.01 — 模糊花影</figcaption>
+        <figcaption><span>FIG.01 — 模糊花影</span><span>GLASS</span></figcaption>
       </figure>
       <div class="dots rv d4"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+      <div class="foot-tag">About · Salt, and all the rain after</div>
     </section>
 
     <!-- 2 风格特点 -->
-    <section class="page letter" data-label="LETTER 02 · 风格特点">
-      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
-      <svg class="flower" viewBox="0 0 40 220" fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M20 5 C28 40 14 70 24 105 C30 140 16 175 24 215"/>
-        <ellipse cx="30" cy="46" rx="7" ry="3" transform="rotate(28 30 46)"/>
-        <ellipse cx="11" cy="82" rx="7" ry="3" transform="rotate(-24 11 82)"/>
-        <ellipse cx="30" cy="132" rx="7" ry="3" transform="rotate(26 30 132)"/>
-        <ellipse cx="10" cy="176" rx="7" ry="3" transform="rotate(-28 10 176)"/>
-        <circle cx="24" cy="105" r="2.4"/>
-        <circle cx="24" cy="215" r="2.4"/>
-      </svg>
-      <div class="head">
-        <svg class="swallow" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.3">
-          <path d="M3 27 C15 18 25 16 33 18 C30 9 37 3 46 4 C41 11 45 16 54 14 C48 23 39 29 28 31 C19 33 10 31 3 27 Z"/>
-          <path d="M33 18 C36 22 41 24 47 24" stroke-dasharray="2 3"/>
-        </svg>
-        <div class="idx rv">LETTER 02 &nbsp;·&nbsp; ◽ 风格特点</div>
-        <div class="en-title rv d1">Style<br>&amp; Tone</div>
-        <div class="date rv d2">2026 10 20</div>
+    <section data-label="STYLE · A GLASS TIDE, TURNED BY HAND">
+      <div class="moon" style="width:120px;height:120px;top:-30px;left:-34px"></div>
+      <span class="plusmark" style="top:30%;right:12%">+</span>
+      <div class="eyebrow rv"><span>03 — 风格特点 · Style</span><span>◽ 风格特点</span></div>
+      <h2 class="big rv d1">Tone &amp; tide,<em>softly spoken</em></h2>
+      <p class="sub rv d2">见人说人话，见鬼说鬼话。</p>
+      <div class="kv rv d2">
+        <div class="row"><b>主调</b><span class="desc">中恋剖析 / dom / 低无逻辑 / 高恋引导</span></div>
+        <div class="row"><b>副调</b><span class="desc">温病 · 白骑士 · 病虐</span></div>
+        <div class="row"><b>包含风格</b><span class="desc">反差 · 低转高 · 引导</span></div>
+        <div class="row"><b>备注</b><span class="desc">全风格都有体现</span></div>
       </div>
-      <div class="body">
-        <p class="rv d2"><span class="k">主调</span> ： 中恋剖析 / dom / 低无逻辑 / 高恋引导</p>
-        <p class="rv d2"><span class="k">副调</span> ： 温病 · 白骑士 · 病虐</p>
-        <p class="rv d3"><span class="k">包含风格</span> ： 反差 · 低转高 · 引导</p>
-        <div class="hr rv d3"></div>
-        <p class="rv d3"><span class="k">备注</span> ： 全风格都有体现，见人说人话见鬼说鬼话。</p>
-        <p class="rv d4">表达形式多以平铺直叙或隐晦转折为基调，追求话语的完整性和观赏度。</p>
-        <p class="rv d4">非常规型病恋，可以以爱为基调，也可以以你的特别为主体。你呈现的样子决定我们的过程，没有迁就你的习惯，但也可以因你的态度折腰，<span class="red">互相尊重为基本</span>。</p>
-        <p class="rv d4 dim">非指定风格加价，不接下位。</p>
+      <div class="bodytext rv d3">
+        <p>表达形式多以平铺直叙或隐晦转折为基调，追求话语的完整性和观赏度。</p>
+        <p>非常规型病恋，可以以爱为基调，也可以以你的特别为主体。你呈现的样子决定我们的过程，没有迁就你的习惯，但也可以因你的态度折腰，<span class="red">互相尊重为基本</span>。</p>
+        <p class="dim">非指定风格加价，不接下位。</p>
       </div>
       <div class="dots rv d4"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+      <div class="foot-tag">Style · A glass tide, turned by hand</div>
     </section>
 
     <!-- 3 价格表 -->
-    <section class="page letter" data-label="LETTER 03 · 价格表">
-      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
-      <svg class="flower" viewBox="0 0 40 220" fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M22 5 C14 40 26 70 18 105 C12 140 24 175 16 215"/>
-        <ellipse cx="10" cy="42" rx="7" ry="3" transform="rotate(-30 10 42)"/>
-        <ellipse cx="28" cy="76" rx="7" ry="3" transform="rotate(25 28 76)"/>
-        <ellipse cx="9" cy="128" rx="7" ry="3" transform="rotate(-25 9 128)"/>
-        <ellipse cx="27" cy="168" rx="7" ry="3" transform="rotate(28 27 168)"/>
-        <circle cx="18" cy="105" r="2.4"/>
-        <circle cx="16" cy="215" r="2.4"/>
-      </svg>
-      <div class="head">
-        <svg class="swallow" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.3">
-          <path d="M3 27 C15 18 25 16 33 18 C30 9 37 3 46 4 C41 11 45 16 54 14 C48 23 39 29 28 31 C19 33 10 31 3 27 Z"/>
-          <path d="M33 18 C36 22 41 24 47 24" stroke-dasharray="2 3"/>
-        </svg>
-        <div class="idx rv">LETTER 03 &nbsp;·&nbsp; ◽ 须知价格表</div>
-        <div class="en-title rv d1">The Price<br>of a Meeting</div>
-        <div class="date rv d2">2026 10 20</div>
+    <section data-label="PRICE · COUNTED IN QUIET HOURS">
+      <div class="saturn" style="width:84px;height:84px;right:-30px;top:12%"></div>
+      <span class="plusmark" style="top:44%;left:8%">+</span>
+      <div class="eyebrow rv"><span>04 — 须知价格表 · Price</span><span>◽ 价格表</span></div>
+      <h2 class="big rv d1">Count the<em>hours, not stars</em></h2>
+      <p class="sub rv d2">低于这个价格自带 —— 星光也要按小时计。</p>
+      <div class="kv rv d2">
+        <div class="row"><b>普病</b><s>40/h · 半 21</s></div>
+        <div class="row"><b>修罗 / 反修</b><s>52/h · 半 27 ｜ 48/h · 半 25</s></div>
+        <div class="row"><b>Dom</b><s>45/h · 半 24</s></div>
+        <div class="row"><b>恋物价</b><s>59/h · 半 31</s></div>
       </div>
-      <div class="body">
-        <div class="price rv d2">
-          <div class="p-name"><b>普病</b><s>40/h · 半 21</s></div>
-          <div class="p-sub">有团走团，低于这个价格自带（旁观位 <span class="plus">＋8</span>）</div>
-        </div>
-        <div class="price rv d2">
-          <div class="p-name"><b>修罗 / 反修</b><s>52/h · 半 27 &nbsp;|&nbsp; 48/h · 半 25</s></div>
-          <div class="p-sub">旁观位 <span class="plus">＋10</span></div>
-        </div>
-        <div class="price rv d3">
-          <div class="p-name"><b>Dom</b><s>45/h · 半 24</s></div>
-          <div class="p-sub">高擦 · 纯调 · 纯风格自带</div>
-        </div>
-        <div class="price rv d3">
-          <div class="p-name"><b>恋物价</b><s>59/h · 半 31</s></div>
-        </div>
-        <p class="p-note rv d4">注＊ 半单口 <b>＋5</b>&nbsp;&nbsp;全单 <b>＋10</b><br>旁观位多一人，按旁观价格二分之一依次<b>＋</b></p>
+      <div class="note rv d3">
+        注＊ 普病有团走团，旁观位 <b>＋8</b>；修罗 / 反修 旁观位 <b>＋10</b>；Dom 高擦 · 纯调 · 纯风格自带。<br>
+        半单口 <b>＋5</b>&nbsp;&nbsp;全单 <b>＋10</b>；旁观位多一人，按旁观价格二分之一依次<b>＋</b>
       </div>
       <div class="dots rv d4"><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div>
+      <div class="foot-tag">Price · Counted in quiet hours</div>
     </section>
 
     <!-- 4 注意事项 -->
-    <section class="page letter" data-label="LETTER 04 · 注意事项">
-      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
-      <svg class="flower" viewBox="0 0 40 220" fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M20 5 C28 40 14 70 24 105 C30 140 16 175 24 215"/>
-        <ellipse cx="30" cy="46" rx="7" ry="3" transform="rotate(28 30 46)"/>
-        <ellipse cx="11" cy="82" rx="7" ry="3" transform="rotate(-24 11 82)"/>
-        <ellipse cx="30" cy="132" rx="7" ry="3" transform="rotate(26 30 132)"/>
-        <ellipse cx="10" cy="176" rx="7" ry="3" transform="rotate(-28 10 176)"/>
-        <circle cx="24" cy="105" r="2.4"/>
-        <circle cx="24" cy="215" r="2.4"/>
-      </svg>
-      <div class="head">
-        <svg class="swallow" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.3">
-          <path d="M3 27 C15 18 25 16 33 18 C30 9 37 3 46 4 C41 11 45 16 54 14 C48 23 39 29 28 31 C19 33 10 31 3 27 Z"/>
-          <path d="M33 18 C36 22 41 24 47 24" stroke-dasharray="2 3"/>
-        </svg>
-        <div class="idx rv">LETTER 04 &nbsp;·&nbsp; ◽ 单前后<span class="red" style="color:var(--accent)">注意事项</span></div>
-        <div class="en-title rv d1">Before<br>&amp; After</div>
-        <div class="date rv d2">2026 10 20</div>
-      </div>
+    <section data-label="NOTES · KNOCK SOFTLY, ENTER SLOWLY">
+      <div class="moon" style="width:110px;height:110px;bottom:8%;right:-30px"></div>
+      <div class="eyebrow rv"><span>05 — 单前后 · Notes</span><span>◽ 注意事项</span></div>
+      <h2 class="big rv d1">Read before<em>you knock</em></h2>
+      <p class="sub rv d2">敲门轻一点，进门慢一点。</p>
       <ul class="check">
         <li class="rv d2">单前整理好自己的情绪，把我代入任何人，看出来请加钱</li>
         <li class="rv d2">单间提及他人，自动视为转普</li>
@@ -519,65 +384,39 @@ footer{
         <li class="rv d4">同行请互相尊重</li>
         <li class="rv d4">结束后欢迎和我交流，你也可以是我的老师</li>
       </ul>
-      <div class="dots rv d4" style="margin-top:26px"><i></i><i></i><i></i><i class="on"></i><i></i><i></i></div>
+      <div class="dots rv d4"><i></i><i></i><i></i><i class="on"></i><i></i><i></i></div>
+      <div class="foot-tag">Notes · Knock softly, enter slowly</div>
     </section>
 
-    <!-- 5 评价 -->
-    <section class="page letter" data-label="LETTER 05 · 评价">
-      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
-      <svg class="flower" viewBox="0 0 40 220" fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M22 5 C14 40 26 70 18 105 C12 140 24 175 16 215"/>
-        <ellipse cx="10" cy="42" rx="7" ry="3" transform="rotate(-30 10 42)"/>
-        <ellipse cx="28" cy="76" rx="7" ry="3" transform="rotate(25 28 76)"/>
-        <ellipse cx="9" cy="128" rx="7" ry="3" transform="rotate(-25 9 128)"/>
-        <ellipse cx="27" cy="168" rx="7" ry="3" transform="rotate(28 27 168)"/>
-        <circle cx="18" cy="105" r="2.4"/>
-        <circle cx="16" cy="215" r="2.4"/>
-      </svg>
-      <div class="head">
-        <svg class="swallow" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.3">
-          <path d="M3 27 C15 18 25 16 33 18 C30 9 37 3 46 4 C41 11 45 16 54 14 C48 23 39 29 28 31 C19 33 10 31 3 27 Z"/>
-          <path d="M33 18 C36 22 41 24 47 24" stroke-dasharray="2 3"/>
-        </svg>
-        <div class="idx rv">LETTER 05 &nbsp;·&nbsp; ◽ 观我久往<span style="color:var(--ink-soft)">（评价）</span></div>
-        <div class="en-title rv d1">Long<br>Regards</div>
-        <div class="date rv d2">2026 10 20</div>
-      </div>
-      <div class="body">
-        <p class="rv d2">曾用名&nbsp;&nbsp;<span class="k">加缪</span></p>
+    <!-- 5 观我久往 -->
+    <section data-label="REGARDS · THREAD AROUND A SMALL HEART">
+      <div class="earth" style="width:130px;height:130px;top:-34px;left:-30px"></div>
+      <span class="plusmark" style="top:34%;right:10%">+</span>
+      <div class="eyebrow rv"><span>06 — 观我久往 · Regards</span><span>◽ 评价</span></div>
+      <h2 class="big rv d1">Long regards,<em>tied in thread</em></h2>
+      <p class="sub rv d2">来过的人都留了一根线，缠成一颗心。</p>
+      <div class="bodytext rv d2">
+        <p>曾用名&nbsp;&nbsp;<span class="k">加缪</span></p>
       </div>
       <figure class="photo rv d3">
         <img src="assets/thread-heart.jpg" alt="线缠成的心">
-        <figcaption>FIG.02 — 线与心</figcaption>
+        <figcaption><span>FIG.02 — 线与心</span><span>KEPT</span></figcaption>
       </figure>
       <div class="dots rv d4"><i></i><i></i><i></i><i></i><i class="on"></i><i></i></div>
+      <div class="foot-tag">Regards · Thread around a small heart</div>
     </section>
 
     <!-- 6 话术堆砌 -->
-    <section class="page letter" data-label="LETTER 06 · 话术堆砌">
-      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
-      <svg class="flower" viewBox="0 0 40 220" fill="none" stroke="currentColor" stroke-width="1">
-        <path d="M20 5 C28 40 14 70 24 105 C30 140 16 175 24 215"/>
-        <ellipse cx="30" cy="46" rx="7" ry="3" transform="rotate(28 30 46)"/>
-        <ellipse cx="11" cy="82" rx="7" ry="3" transform="rotate(-24 11 82)"/>
-        <ellipse cx="30" cy="132" rx="7" ry="3" transform="rotate(26 30 132)"/>
-        <ellipse cx="10" cy="176" rx="7" ry="3" transform="rotate(-28 10 176)"/>
-        <circle cx="24" cy="105" r="2.4"/>
-        <circle cx="24" cy="215" r="2.4"/>
-      </svg>
-      <div class="head">
-        <svg class="swallow" viewBox="0 0 64 40" fill="none" stroke="currentColor" stroke-width="1.3">
-          <path d="M3 27 C15 18 25 16 33 18 C30 9 37 3 46 4 C41 11 45 16 54 14 C48 23 39 29 28 31 C19 33 10 31 3 27 Z"/>
-          <path d="M33 18 C36 22 41 24 47 24" stroke-dasharray="2 3"/>
-        </svg>
-        <div class="idx rv">LETTER 06 &nbsp;·&nbsp; ◽ 话术堆砌 <span style="color:var(--ink-soft)">点击字体查看 · 放的是近期</span></div>
-        <div class="en-title rv d1">Words<br>Kept</div>
-        <div class="date rv d2">2026 10 20</div>
-      </div>
+    <section data-label="WORDS · SUNSETS ON REPEAT">
+      <div class="moon" style="width:140px;height:140px;top:-62px;right:-60px"></div>
+      <span class="plusmark" style="top:52%;left:9%">+</span>
+      <div class="eyebrow rv"><span>07 — 话术堆砌 · Words</span><span>◽ 话术堆砌</span></div>
+      <h2 class="big rv d1">Words kept,<em>nine seconds long</em></h2>
+      <p class="sub rv d2">点击字体查看 · 放的是近期。</p>
       <div class="music rv d2" id="musicCard">
         <div class="m-eyebrow">NOW ON REPEAT</div>
-        <h3>Book covers that we both adored</h3>
-        <div class="m-artist">Sunsets — Cigarettes After Sex</div>
+        <h3>Sunsets</h3>
+        <div class="m-artist">CIGARETTES AFTER SEX · 0:09 LOOP</div>
         <div class="m-row">
           <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
           <div class="m-play" id="playIcon">▶</div>
@@ -585,44 +424,85 @@ footer{
         <div class="m-prog"><i id="progBar"></i></div>
         <div class="m-time"><span id="tCur">0:00</span><span>0:09</span></div>
       </div>
-      <p class="p-note rv d3" style="margin-top:16px">点击卡片播放 / 暂停 —— 近期循环的一句话，藏在九秒的歌里。</p>
-      <figure class="photo bordered rv d3" style="margin-top:14px">
+      <figure class="photo rv d3" style="margin-top:16px">
         <img src="assets/flowers-strip.jpg" alt="近期话术">
-        <figcaption>FIG.03 — 近期话术</figcaption>
+        <figcaption><span>FIG.03 — 近期话术</span><span>RECENT</span></figcaption>
       </figure>
       <div class="dots rv d4"><i></i><i></i><i></i><i></i><i></i><i class="on"></i></div>
+      <div class="foot-tag">Words · Sunsets on repeat</div>
     </section>
   </main>
 
-  <footer>
+  <div class="botbar">
     <span id="coords">X 000 · Y 000</span>
-    <span>STORY PATH / SELECT A CURRENT</span>
-  </footer>
+    <span id="footLabel">COVER · SWIPE THE CONSTELLATION</span>
+  </div>
 
   <div class="menu" id="menu">
-    <button class="ctrl-btn m-close" id="menuClose" style="border:1px solid var(--line);background:transparent;color:var(--ink);width:34px;height:34px;border-radius:50%;cursor:pointer">✕</button>
-    <div class="m-tag">// FROWN LESS ARCHIVE · INDEX</div>
+    <button class="circlebtn m-close" id="menuClose">✕</button>
+    <div class="m-tag">// 别皱眉 ARCHIVE · INDEX</div>
     <nav>
       <a href="#" data-go="0">封面 <small>COVER</small></a>
-      <a href="#" data-go="1">信封 <small>TO OPEN</small></a>
-      <a href="#" data-go="2">关于我 <small>ABOUT</small></a>
-      <a href="#" data-go="3">风格特点 <small>STYLE</small></a>
-      <a href="#" data-go="4">须知价格表 <small>PRICE</small></a>
-      <a href="#" data-go="5">单前后注意事项 <small>NOTES</small></a>
-      <a href="#" data-go="6">观我久往 <small>REGARDS</small></a>
-      <a href="#" data-go="7">话术堆砌 <small>WORDS</small></a>
+      <a href="#" data-go="1">关于我 <small>ABOUT</small></a>
+      <a href="#" data-go="2">风格特点 <small>STYLE</small></a>
+      <a href="#" data-go="3">须知价格表 <small>PRICE</small></a>
+      <a href="#" data-go="4">单前后注意事项 <small>NOTES</small></a>
+      <a href="#" data-go="5">观我久往 <small>REGARDS</small></a>
+      <a href="#" data-go="6">话术堆砌 <small>WORDS</small></a>
     </nav>
   </div>
 </div>
 
 <script>
+/* ========= grain texture — generated on canvas, no SVG ========= */
+(function(){
+  const g = document.createElement('canvas'); g.width = g.height = 120;
+  const c = g.getContext('2d');
+  const img = c.createImageData(120, 120);
+  for (let i = 0; i < img.data.length; i += 4) {
+    const v = 118 + Math.random() * 70;
+    img.data[i] = img.data[i+1] = img.data[i+2] = v;
+    img.data[i+3] = 26 + Math.random() * 26;
+  }
+  c.putImageData(img, 0, 0);
+  document.getElementById('grain').style.backgroundImage = 'url(' + g.toDataURL() + ')';
+})();
+
+/* ========= stars canvas — dots + plus marks ========= */
+const scv = document.getElementById('stars');
+const sctx = scv.getContext('2d');
+function drawStars(){
+  scv.width = innerWidth; scv.height = innerHeight;
+  const dark = document.body.dataset.theme === 'dark';
+  sctx.clearRect(0, 0, scv.width, scv.height);
+  const n = Math.floor(scv.width * scv.height / 9000);
+  for (let i = 0; i < n; i++) {
+    const x = Math.random() * scv.width, y = Math.random() * scv.height;
+    const r = Math.random() * 1.1 + .2;
+    sctx.fillStyle = dark ? 'rgba(233,231,223,' + (.18 + Math.random() * .5) + ')'
+                          : 'rgba(30,32,40,' + (.10 + Math.random() * .30) + ')';
+    sctx.beginPath(); sctx.arc(x, y, r, 0, 7); sctx.fill();
+  }
+  sctx.strokeStyle = dark ? 'rgba(233,231,223,.4)' : 'rgba(30,32,40,.3)';
+  sctx.lineWidth = 1;
+  for (let i = 0; i < 6; i++) {
+    const x = Math.random() * scv.width, y = Math.random() * scv.height, s = 3 + Math.random() * 3;
+    sctx.beginPath();
+    sctx.moveTo(x - s, y); sctx.lineTo(x + s, y);
+    sctx.moveTo(x, y - s); sctx.lineTo(x, y + s);
+    sctx.stroke();
+  }
+}
+drawStars();
+window.addEventListener('resize', drawStars);
+
 /* ========= theme ========= */
 const themeBtn = document.getElementById('themeBtn');
 themeBtn.addEventListener('click', () => {
   const b = document.body;
   b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
   themeBtn.textContent = b.dataset.theme === 'dark' ? '☀' : '☾';
-  renderLotus();
+  drawStars();
 });
 
 /* ========= menu ========= */
@@ -632,289 +512,31 @@ document.getElementById('menuClose').addEventListener('click', () => menu.classL
 const scroller = document.getElementById('scroller');
 menu.querySelectorAll('a[data-go]').forEach(a => a.addEventListener('click', e => {
   e.preventDefault();
-  const i = +a.dataset.go;
-  scroller.scrollTo({ top: i * scroller.clientHeight, behavior: 'smooth' });
+  scroller.scrollTo({ top: +a.dataset.go * scroller.clientHeight, behavior: 'smooth' });
   menu.classList.remove('open');
 }));
 
-/* ========= pager + reveal + burst ========= */
+/* ========= pager + reveal ========= */
 const sections = [...scroller.querySelectorAll('section')];
 document.getElementById('pgAll').textContent = String(sections.length).padStart(2, '0');
-let curPage = 0;
 const io = new IntersectionObserver(es => es.forEach(en => {
   const i = sections.indexOf(en.target);
   if (en.isIntersecting && en.intersectionRatio > .55) {
     en.target.classList.add('in');
     document.getElementById('pgNow').textContent = String(i + 1).padStart(2, '0');
-    document.getElementById('pgLabel').textContent = en.target.dataset.label;
-    if (i !== curPage) { burst(); curPage = i; }
+    document.getElementById('footLabel').textContent = en.target.dataset.label;
   }
 }), { root: scroller, threshold: [.55] });
 sections.forEach(s => io.observe(s));
 
-/* ========= envelope speckles (white dust on indigo, like the reference) ========= */
-const envRight = document.querySelector('.env-right');
-for (let i = 0; i < 46; i++) {
-  const s = document.createElement('i');
-  s.className = 'speck';
-  const sz = .6 + Math.random() * 1.8;
-  s.style.cssText = `width:${sz}px;height:${sz}px;left:${Math.random() * 100}%;top:${Math.random() * 100}%;opacity:${.12 + Math.random() * .5}`;
-  envRight.appendChild(s);
-}
-
-/* ========= envelope TO OPEN ========= */
-document.getElementById('openBtn').addEventListener('click', () => {
-  burst();
-  scroller.scrollTo({ top: 2 * scroller.clientHeight, behavior: 'smooth' });
-});
-
 /* ========= coords ========= */
 const coords = document.getElementById('coords');
-function setXY(x, y) {
-  coords.textContent = `X ${String(Math.round(x)).padStart(3, '0')} · Y ${String(Math.round(y)).padStart(3, '0')}`;
-}
 const frame = document.querySelector('.frame');
 frame.addEventListener('pointermove', e => {
   const r = frame.getBoundingClientRect();
-  setXY(e.clientX - r.left, e.clientY - r.top);
+  coords.textContent = 'X ' + String(Math.round(e.clientX - r.left)).padStart(3, '0') +
+                     ' · Y ' + String(Math.round(e.clientY - r.top)).padStart(3, '0');
 });
-
-/* ========= floating quotes cycle (video-style) ========= */
-const fqs = [...document.querySelectorAll('.fq')];
-let fqIdx = 0;
-function cycleFq() {
-  fqs.forEach(f => f.classList.remove('on'));
-  fqs[fqIdx % fqs.length].classList.add('on');
-  fqIdx++;
-}
-cycleFq();
-setInterval(cycleFq, 4200);
-
-/* ========= lotus canvas ========= */
-const cv = document.getElementById('lotus');
-const cx2 = cv.getContext('2d');
-let W, H, dpr, lotusLayer;
-function pal() {
-  return document.body.dataset.theme === 'dark'
-    ? { ink: '#d8b56a', ink2: '#a8894e', deep: '#f0d9a8', rain: 'rgba(216,181,106,.5)', ripple: 'rgba(216,181,106,.55)', mist: '216,181,106' }
-    : { ink: '#33456e', ink2: '#5b6d99', deep: '#1d2a4a', rain: 'rgba(51,69,110,.45)', ripple: 'rgba(51,69,110,.5)', mist: '51,69,110' };
-}
-function resize() {
-  const r = cv.getBoundingClientRect();
-  dpr = Math.min(window.devicePixelRatio || 1, 2);
-  W = r.width; H = r.height;
-  cv.width = W * dpr; cv.height = H * dpr;
-  renderLotus();
-}
-/* petal with droop — outer petals bend outward/down like the reference lily */
-function petalPath(ctx, x0, y0, angle, len, wid, droop) {
-  const txx = x0 + Math.sin(angle) * len;
-  const tyy = y0 - Math.cos(angle) * len * .92 + Math.abs(Math.sin(angle)) * len * droop;
-  ctx.beginPath();
-  ctx.moveTo(x0, y0);
-  ctx.bezierCurveTo(x0 - wid, y0 - len * .28, txx - wid * .75, tyy + len * .32, txx, tyy);
-  ctx.bezierCurveTo(txx + wid * .75, tyy + len * .32, x0 + wid, y0 - len * .28, x0, y0);
-  ctx.closePath();
-}
-function speckleFill(ctx, p, base, n, alpha) {
-  ctx.save();
-  ctx.clip();
-  ctx.fillStyle = base;
-  ctx.globalAlpha = .20;
-  ctx.fill();
-  for (let i = 0; i < n; i++) {
-    const x = p.minX + Math.random() * (p.maxX - p.minX);
-    const y = p.minY + Math.random() * (p.maxY - p.minY);
-    if (!ctx.isPointInPath(x, y)) continue;
-    ctx.globalAlpha = alpha * (.35 + Math.random() * .65);
-    ctx.beginPath();
-    ctx.arc(x, y, .4 + Math.random() * 1.2, 0, 7);
-    ctx.fill();
-  }
-  ctx.restore();
-  ctx.globalAlpha = 1;
-}
-function petalOutline(ctx, base, a) {
-  ctx.strokeStyle = base; ctx.globalAlpha = a; ctx.lineWidth = 1;
-  ctx.setLineDash([5, 3]);
-  ctx.stroke();
-  ctx.setLineDash([]);
-  ctx.globalAlpha = 1;
-}
-function tipAccent(ctx, x0, y0, angle, len, wid, droop, deep) {
-  const txx = x0 + Math.sin(angle) * len;
-  const tyy = y0 - Math.cos(angle) * len * .92 + Math.abs(Math.sin(angle)) * len * droop;
-  ctx.fillStyle = deep;
-  for (let i = 0; i < 130; i++) {
-    const a = Math.random() * Math.PI * 2, rr = Math.random() * wid * 1.15;
-    ctx.globalAlpha = Math.random() * .5;
-    ctx.beginPath();
-    ctx.arc(txx + Math.cos(a) * rr, tyy + Math.sin(a) * rr * .8, .5 + Math.random() * 1.1, 0, 7);
-    ctx.fill();
-  }
-  ctx.globalAlpha = 1;
-}
-function renderLotus() {
-  const P = pal();
-  lotusLayer = document.createElement('canvas');
-  lotusLayer.width = W * dpr; lotusLayer.height = H * dpr;
-  const c = lotusLayer.getContext('2d');
-  c.scale(dpr, dpr);
-  c.fillStyle = P.ink;
-  const bx = W * .5, by = H * .545;
-  const S = Math.min(W, H) / 500;
-  // outer ring — 9 long, slender, outward petals
-  for (let k = -4; k <= 4; k++) {
-    if (k === 0) continue;
-    const ang = k * .27;
-    const len = (H * .24 + Math.random() * H * .016) * S;
-    petalPath(c, bx, by, ang, len, (W * .042) * S, -.04);
-    petalOutline(c, P.ink2, .5);
-    speckleFill(c, { minX: bx - W * .16, maxX: bx + W * .16, minY: by - H * .3, maxY: by + H * .03 }, P.ink2, 1300, .75);
-    tipAccent(c, bx, by, ang, len, (W * .05) * S, -.04, P.ink2);
-  }
-  // mid ring — 6 petals
-  for (let k = -3; k <= 3; k++) {
-    if (k === 0) continue;
-    const ang = k * .24;
-    const len = (H * .205 + Math.random() * H * .012) * S;
-    petalPath(c, bx, by, ang, len, (W * .036) * S, -.03);
-    petalOutline(c, P.ink, .6);
-    speckleFill(c, { minX: bx - W * .12, maxX: bx + W * .12, minY: by - H * .24, maxY: by }, P.ink, 1000, .8);
-    tipAccent(c, bx, by, ang, len, (W * .042) * S, -.03, P.ink);
-  }
-  // inner ring — 3 upright petals
-  for (let k = -1; k <= 1; k++) {
-    const ang = k * .32;
-    const len = (H * .14) * S;
-    petalPath(c, bx, by, ang, len, (W * .03) * S, .05);
-    petalOutline(c, P.ink, .7);
-    speckleFill(c, { minX: bx - W * .08, maxX: bx + W * .08, minY: by - H * .18, maxY: by }, P.ink, 700, .85);
-    tipAccent(c, bx, by, ang, len, (W * .034) * S, .05, P.deep);
-  }
-  // center bud
-  c.fillStyle = P.deep;
-  c.globalAlpha = .9;
-  c.beginPath(); c.ellipse(bx, by - H * .012 * S, W * .02 * S, H * .024 * S, 0, 0, 7); c.fill();
-  c.globalAlpha = 1;
-  // base mist speckles
-  for (let i = 0; i < 1100; i++) {
-    const a = Math.random() * Math.PI * 2, rr = Math.random() * W * .36;
-    const x = bx + Math.cos(a) * rr, y = by + Math.sin(a) * rr * .3;
-    c.globalAlpha = Math.random() * .3;
-    c.fillStyle = P.mist;
-    c.beginPath(); c.arc(x, y, Math.random() * 1.7, 0, 7); c.fill();
-  }
-  c.globalAlpha = 1;
-}
-/* rain + wind gusts + dashed ripples */
-const rain = [], ripples = [], gust = [];
-let nextGust = 3000;
-const WATER = () => H * .60;
-function dashedEllipse(ctx, x, y, rx, ry, a) {
-  ctx.globalAlpha = a;
-  ctx.setLineDash([3, 5]);
-  ctx.beginPath(); ctx.ellipse(x, y, rx, ry, 0, 0, 7); ctx.stroke();
-  ctx.setLineDash([]);
-}
-function loop(t) {
-  const P = pal();
-  cx2.setTransform(dpr, 0, 0, dpr, 0, 0);
-  cx2.clearRect(0, 0, W, H);
-  cx2.strokeStyle = P.ripple; cx2.lineWidth = 1;
-  /* static dashed rings under lotus (reference-style) */
-  const bx = W * .5, by = H * .60;
-  for (let k = 1; k <= 3; k++) {
-    dashedEllipse(cx2, bx, by, W * .085 * k + Math.sin(t / 900 + k) * 2.5, W * .085 * k * .3, .4 - k * .09);
-  }
-  /* two small standalone rings on the water */
-  dashedEllipse(cx2, W * .18, H * .82, W * .05, W * .016, .3);
-  dashedEllipse(cx2, W * .82, H * .27, W * .045, W * .014, .22);
-  /* wind gusts — stippled dust sweeping across */
-  if (t > nextGust) {
-    for (let i = 0; i < 60; i++) {
-      gust.push({ x: -20 + Math.random() * 60, y: H * (.08 + Math.random() * .3), vx: 2.6 + Math.random() * 2.6, vy: .3 + Math.random() * .9, life: 1 });
-    }
-    nextGust = t + 6500 + Math.random() * 4000;
-  }
-  cx2.fillStyle = P.mist;
-  for (let i = gust.length - 1; i >= 0; i--) {
-    const g = gust[i];
-    g.x += g.vx; g.y += g.vy; g.life -= .006;
-    if (g.life <= 0 || g.x > W + 30) { gust.splice(i, 1); continue; }
-    cx2.globalAlpha = g.life * .55;
-    cx2.beginPath(); cx2.arc(g.x, g.y, .5 + Math.random() * 1.4, 0, 7); cx2.fill();
-  }
-  /* rain */
-  if (rain.length < 60 && Math.random() < .45) {
-    rain.push({ x: Math.random() * W, y: -10, v: 2.2 + Math.random() * 2.2, drift: (Math.random() - .5) * .5 });
-  }
-  cx2.strokeStyle = P.rain; cx2.lineWidth = .8;
-  for (let i = rain.length - 1; i >= 0; i--) {
-    const d = rain[i];
-    d.x += d.drift; d.y += d.v;
-    cx2.globalAlpha = .5;
-    cx2.beginPath(); cx2.moveTo(d.x, d.y - 7); cx2.lineTo(d.x, d.y); cx2.stroke();
-    if (d.y > WATER() + Math.random() * 60) {
-      ripples.push({ x: d.x, y: Math.max(d.y, WATER() + 10), r: 1, max: 16 + Math.random() * 26, a: .55 });
-      rain.splice(i, 1);
-    }
-  }
-  /* raindrop ripples — dashed */
-  for (let i = ripples.length - 1; i >= 0; i--) {
-    const r = ripples[i];
-    r.r += .45; r.a *= .975;
-    if (r.r > r.max || r.a < .02) { ripples.splice(i, 1); continue; }
-    dashedEllipse(cx2, r.x, r.y, r.r, r.r * .34, r.a);
-  }
-  /* lotus with gentle sway */
-  if (lotusLayer) {
-    cx2.globalAlpha = 1;
-    const sway = Math.sin(t / 2600) * .008;
-    cx2.save();
-    cx2.translate(W * .5, H * .545);
-    cx2.rotate(sway);
-    cx2.translate(-W * .5, -H * .545);
-    cx2.drawImage(lotusLayer, 0, 0, W, H);
-    cx2.restore();
-  }
-  cx2.globalAlpha = 1;
-  drawBurst(t);
-  requestAnimationFrame(loop);
-}
-window.addEventListener('resize', resize);
-
-/* ========= burst overlay — dissolve into ripples on page change ========= */
-const bcv = document.getElementById('burst');
-const bcx = bcv.getContext('2d');
-let bw, bh, burstT = -1;
-function resizeBurst() {
-  const r = frame.getBoundingClientRect();
-  bw = r.width; bh = r.height;
-  bcv.width = bw * dpr; bcv.height = bh * dpr;
-}
-function burst() { burstT = performance.now(); }
-function drawBurst(t) {
-  if (burstT < 0) return;
-  const el = t - burstT;
-  if (el > 1500) { burstT = -1; bcx.setTransform(1, 0, 0, 1, 0, 0); bcx.clearRect(0, 0, bcv.width, bcv.height); return; }
-  const P = pal();
-  bcx.setTransform(dpr, 0, 0, dpr, 0, 0);
-  bcx.clearRect(0, 0, bw, bh);
-  bcx.strokeStyle = P.ripple; bcx.lineWidth = 1.1;
-  const ox = bw * .5, oy = bh * .52;
-  for (let k = 0; k < 6; k++) {
-    const p = Math.min(Math.max((el - k * 130) / 1250, 0), 1);
-    if (p <= 0) continue;
-    const e = 1 - Math.pow(1 - p, 3);
-    const rr = bw * .12 + bw * .62 * e;
-    dashedEllipse(bcx, ox, oy, rr, rr * .42, (1 - p) * .6);
-  }
-}
-window.addEventListener('resize', () => { resize(); resizeBurst(); });
-resize(); resizeBurst();
-burst(); // intro burst
-requestAnimationFrame(loop);
 
 /* ========= music card ========= */
 const card = document.getElementById('musicCard');
@@ -923,9 +545,8 @@ const tCur = document.getElementById('tCur');
 const icon = document.getElementById('playIcon');
 let playing = false, pos = 0, timer = null;
 const DUR = 9;
-function tick() {
-  pos += .1;
-  if (pos >= DUR) pos = 0;
+function tick(){
+  pos += .1; if (pos >= DUR) pos = 0;
   bar.style.width = (pos / DUR * 100) + '%';
   tCur.textContent = '0:' + String(Math.floor(pos)).padStart(2, '0');
 }
