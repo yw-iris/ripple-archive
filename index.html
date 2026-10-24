@@ -50,7 +50,7 @@ body.dragging #track{cursor:grabbing}
   background:var(--card); color:var(--ink); font-size:13px; cursor:pointer;
   box-shadow:0 4px 14px var(--shadow); transition:.3s; font-family:ui-monospace,Menlo,monospace}
 .hud button:hover{transform:translateY(-1px)}
-.hud .count{font-family:ui-monospace,Menlo,monospace; font-size:9.5px; letter-spacing:.3em; color:var(--soft)}
+.hud .count{font-family:ui-monospace,Menlo,monospace; font-size:7.5px; font-weight:400; letter-spacing:.3em; color:var(--soft)}
 
 /* ===== app top bar (in-screen style) ===== */
 .appbar{display:flex; align-items:center; justify-content:space-between;
@@ -63,6 +63,13 @@ body.dragging #track{cursor:grabbing}
 .stat{position:relative; z-index:5; margin-top:18px}
 .stat .n{font-size:64px; font-weight:700; letter-spacing:-.03em; line-height:.95}
 .stat .n small{font-size:22px; font-weight:400; vertical-align:18px; margin-left:4px}
+/* 页码大字：与封面 21 同款字号/字体/位置 */
+.stat .pn{font-size:64px; font-weight:700; letter-spacing:-.03em; line-height:.95; color:var(--ink)}
+.stat .pn small{font-size:9px; font-weight:400; color:var(--soft); margin-left:10px;
+  font-family:ui-monospace,monospace; letter-spacing:.16em; vertical-align:middle}
+/* 原位置的内容数字：缩小且不加粗 */
+.stat .n-old{font-size:14px; font-weight:400; letter-spacing:.02em; line-height:1.4; margin-top:7px; color:var(--ink)}
+.stat .n-old small{font-size:10px; font-weight:400; vertical-align:baseline; margin-left:2px; color:var(--soft)}
 .stat .lab{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.3em;
   color:var(--soft); margin-top:8px; text-transform:uppercase}
 .stat .lab2{font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.22em;
@@ -230,6 +237,9 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   .stat{margin-top:26px}
   .stat .n{font-size:76px}
   .stat .n small{font-size:26px}
+  .stat .pn{font-size:76px}
+  .stat .n-old{font-size:14px}
+  .stat .n-old small{font-size:10px}
   .stat .lab{font-size:9px; margin-top:10px}
   .flow{margin-top:28px}
   .ev{margin-bottom:36px}
@@ -249,6 +259,9 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   .stat{margin-top:10px}
   .stat .n{font-size:50px}
   .stat .n small{font-size:18px}
+  .stat .pn{font-size:50px}
+  .stat .n-old{font-size:13px}
+  .stat .n-old small{font-size:9px}
   .flow{margin-top:14px}
   .ev{margin-bottom:14px}
   .panel{padding-top:48px; padding-bottom:52px}
@@ -488,6 +501,9 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
       <div class="appbar rv">
         <span class="back">‹</span><span class="app">关于我</span><span class="time">9:41</span>
       </div>
+      <div class="stat rv d1">
+        <div class="pn">02<small>/ 08</small></div>
+      </div>
       <div class="flow rv d2 about-me">
         <div class="am">
           <div class="am-1">水心&nbsp;&nbsp;21t&nbsp;&nbsp;INTJ</div>
@@ -507,7 +523,8 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
         <span class="back">‹</span><span class="app">风格特点</span><span class="time">9:41</span>
       </div>
       <div class="stat rv d1">
-        <div class="n">02</div>
+        <div class="pn">03<small>/ 08</small></div>
+        <div class="n n-old">02</div>
         <div class="lab">STYLE · 主调 × 副调</div>
         <div class="lab2">见人说人话 · 见鬼说鬼话</div>
       </div>
@@ -542,7 +559,8 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
         <span class="back">‹</span><span class="app">须知价格表</span><span class="time">9:41</span>
       </div>
       <div class="stat rv d1">
-        <div class="n">40<small>/h</small></div>
+        <div class="pn">04<small>/ 08</small></div>
+        <div class="n n-old">40<small>/h</small></div>
         <div class="lab">PRICE · 价格表</div>
         <div class="lab2">YOUR HOUR ON TOP · MINE BELOW</div>
       </div>
@@ -580,7 +598,8 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
         <span class="back">‹</span><span class="app">单前后注意事项</span><span class="time">9:41</span>
       </div>
       <div class="stat rv d1">
-        <div class="n">06</div>
+        <div class="pn">05<small>/ 08</small></div>
+        <div class="n n-old">06</div>
         <div class="lab">NOTES · 单前后注意事项</div>
         <div class="lab2">SIX LITTLE RULES</div>
       </div>
@@ -614,7 +633,8 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
         <span class="back">‹</span><span class="app">观我久往</span><span class="time">9:41</span>
       </div>
       <div class="stat rv d1">
-        <div class="n">115<small>★</small></div>
+        <div class="pn">06<small>/ 08</small></div>
+        <div class="n n-old">115<small>★</small></div>
         <div class="lab">REGARDS · 观我久往（评价）</div>
         <div class="lab2">FORMERLY KNOWN AS CAMUS</div>
       </div>
@@ -647,7 +667,8 @@ body[data-theme="dark"] .w-page .qbig{color:#9fb6dc}
         <span class="back">‹</span><span class="app">话术堆砌</span><span class="time">9:41</span>
       </div>
       <div class="stat rv d1">
-        <div class="n">0:09</div>
+        <div class="pn">07<small>/ 08</small></div>
+        <div class="n n-old">0:09</div>
         <div class="lab">RIPPLES · 话术堆砌</div>
         <div class="lab2">放的是近期 · 点击字体查看</div>
       </div>
