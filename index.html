@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>别皱眉 · RIPPLE ARCHIVE</title>
+<style>
+:root{
+  --bg:#ebeae6; --paper:#f5f4f0; --ink:#2e3c63; --ink-soft:#66718f;
+  --line:rgba(46,60,99,.22); --accent:#b0463a; --card:#f1efe9;
+  --shadow:rgba(46,60,99,.14);
+}
+body[data-theme="dark"]{
+  --bg:#0b101c; --paper:#101726; --ink:#d9c69a; --ink-soft:#8b8fa4;
+  --line:rgba(217,198,154,.25); --accent:#c9705c; --card:#141c2e;
+  --shadow:rgba(0,0,0,.5);
+}
+*{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
+html,body{height:100%}
+body{
+  background:#1c1d20; color:var(--ink);
+  font-family:"Songti SC","Noto Serif SC","Source Han Serif SC","STSong",serif;
+  overflow:hidden;
+}
+.grain{
+  position:fixed; inset:0; z-index:60; pointer-events:none; opacity:.055; mix-blend-mode:overlay;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='140' height='140' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+/* ===== phone frame ===== */
+.frame{
+  position:relative; width:100%; height:100vh; height:100dvh; margin:0 auto;
+  background:var(--bg); overflow:hidden;
+  display:flex; flex-direction:column;
+  transition:background .6s;
+}
+@media (min-width:700px){
+  .frame{width:430px; height:92vh; margin-top:4vh; border-radius:26px;
+    box-shadow:0 30px 80px rgba(0,0,0,.55), 0 0 0 1px rgba(255,255,255,.06)}
+}
+/* ===== header ===== */
+header{
+  position:relative; z-index:30; padding:16px 18px 10px;
+  border-bottom:1px solid var(--line);
+  background:var(--bg); transition:background .6s;
+}
+.tagline{
+  font-family:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  font-size:9px; letter-spacing:.28em; color:var(--ink-soft); text-transform:uppercase;
+}
+.hrow{display:flex; align-items:flex-end; justify-content:space-between; margin-top:4px}
+h1{font-size:30px; font-weight:600; letter-spacing:.34em; line-height:1}
+h1 small{display:block; margin-top:7px; font-size:9px; letter-spacing:.3em; color:var(--ink-soft); font-weight:400}
+.ctrl{display:flex; gap:8px}
+.ctrl button{
+  font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:.18em;
+  color:var(--ink); background:transparent; border:1px solid var(--line);
+  border-radius:50%; width:34px; height:34px; cursor:pointer; transition:.3s;
+}
+.ctrl button#menuBtn{border-radius:8px; width:auto; padding:0 12px}
+.ctrl button:hover{background:var(--ink); color:var(--bg)}
+/* pager */
+.pager{
+  position:absolute; top:70px; right:16px; z-index:30; text-align:right;
+  font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:.22em; color:var(--ink-soft);
+  pointer-events:none;
+}
+.pager b{color:var(--ink); font-weight:600; font-size:13px}
+.pager em{display:block; font-style:normal; margin-top:4px; font-size:8px; letter-spacing:.3em}
+/* ===== scroller ===== */
+main{flex:1; position:relative; overflow-y:scroll; scroll-snap-type:y mandatory; scrollbar-width:none}
+main::-webkit-scrollbar{display:none}
+section{
+  height:100%; scroll-snap-align:start; scroll-snap-stop:always;
+  position:relative; overflow-y:auto; overflow-x:hidden; scrollbar-width:none;
+  padding:26px 26px 40px;
+}
+section::-webkit-scrollbar{display:none}
+/* vertical edge text */
+.edge{
+  position:absolute; left:6px; top:50%; transform:translateY(-50%) rotate(180deg);
+  writing-mode:vertical-rl; font-family:ui-monospace,Menlo,monospace;
+  font-size:8px; letter-spacing:.5em; color:var(--ink-soft); opacity:.55; pointer-events:none;
+  white-space:nowrap;
+}
+/* reveal */
+.rv{opacity:0; transform:translateY(16px); transition:opacity .9s ease, transform .9s ease}
+.in .rv{opacity:1; transform:none}
+.in .rv.d1{transition-delay:.12s}.in .rv.d2{transition-delay:.24s}
+.in .rv.d3{transition-delay:.36s}.in .rv.d4{transition-delay:.48s}
+/* ===== cover ===== */
+.cover{display:flex; flex-direction:column; align-items:center; justify-content:flex-start; text-align:center; padding-top:9%}
+#lotus{position:absolute; inset:0; width:100%; height:100%; pointer-events:none}
+.cover .inner{position:relative; z-index:5; pointer-events:none}
+.cover .badge{
+  display:inline-block; font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.34em;
+  border:1px solid var(--line); padding:5px 10px; color:var(--ink-soft); margin-bottom:22px;
+}
+.cover h2{font-size:44px; letter-spacing:.3em; text-indent:.3em; font-weight:600}
+.cover .en{
+  margin-top:12px; font-family:"Snell Roundhand","Segoe Script","Brush Script MT",Georgia,cursive;
+  font-style:italic; font-size:20px; color:var(--ink-soft);
+}
+.quote{
+  position:absolute; z-index:6; left:0; right:0; text-align:center; pointer-events:none;
+  font-size:15px; letter-spacing:.32em; color:var(--ink); opacity:0; transition:opacity 1.6s;
+}
+.quote.on{opacity:.92}
+.q1{top:36%}.q2{top:43%; font-size:11px; letter-spacing:.18em; color:var(--ink-soft)}
+.scrollhint{
+  position:absolute; bottom:18px; left:0; right:0; z-index:6; text-align:center;
+  font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.4em; color:var(--ink-soft);
+  animation:bob 2.4s ease-in-out infinite;
+}
+@keyframes bob{0%,100%{transform:translateY(0); opacity:.5}50%{transform:translateY(6px); opacity:1}}
+/* ===== letters ===== */
+.letter .head{margin-bottom:20px; position:relative}
+.letter .idx{
+  font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.4em; color:var(--ink-soft);
+}
+.letter .cn-title{font-size:24px; letter-spacing:.22em; margin-top:8px}
+.letter .cn-title .red{color:var(--accent)}
+.letter .en-title{
+  font-family:"Snell Roundhand","Segoe Script","Brush Script MT",Georgia,cursive;
+  font-style:italic; font-size:30px; line-height:1.15; color:var(--ink-soft);
+  text-align:right; margin-top:-4px; opacity:.9;
+}
+.date{font-family:ui-monospace,Menlo,monospace; font-size:9px; letter-spacing:.3em; color:var(--ink-soft);
+  text-align:right; margin-top:10px; display:flex; align-items:center; gap:10px; justify-content:flex-end}
+.date::before{content:""; flex:1; height:1px; background:var(--line)}
+.body{font-size:14.5px; line-height:2.05; letter-spacing:.06em; color:var(--ink)}
+.body p{margin-bottom:12px}
+.body .k{font-weight:700; letter-spacing:.14em}
+.body .red{color:var(--accent); font-weight:700}
+.body .dim{color:var(--ink-soft)}
+.hr{height:1px; background:var(--line); margin:18px 0}
+.photo{margin:18px 0; position:relative}
+.photo img{width:100%; display:block; filter:grayscale(1) contrast(.96); opacity:.92; transition:filter .8s}
+.photo figcaption{
+  position:absolute; right:8px; bottom:8px; font-family:ui-monospace,Menlo,monospace;
+  font-size:8px; letter-spacing:.26em; color:#fff; opacity:.75;
+}
+.photo.bordered{border:1px solid var(--line); padding:8px; background:var(--card)}
+.dots{display:flex; gap:7px; justify-content:flex-end; margin-top:22px}
+.dots i{width:5px; height:5px; border-radius:50%; background:var(--line)}
+.dots i.on{background:var(--ink)}
+/* about chips */
+.chips{display:flex; flex-wrap:wrap; gap:8px; margin:14px 0}
+.chips span{
+  border:1px solid var(--line); padding:6px 12px; font-size:12px; letter-spacing:.18em;
+  background:var(--card); border-radius:2px;
+}
+/* price rows */
+.price{border:1px solid var(--line); background:var(--card); padding:4px 16px; margin-bottom:14px}
+.price .p-name{display:flex; justify-content:space-between; align-items:baseline; padding:12px 0 4px}
+.price .p-name b{font-size:16px; letter-spacing:.2em}
+.price .p-name s{ text-decoration:none; font-family:ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:.1em; color:var(--ink-soft)}
+.price .p-sub{font-size:11.5px; color:var(--ink-soft); letter-spacing:.12em; line-height:1.8; padding-bottom:12px}
+.price .plus{color:var(--accent); font-weight:700}
+.p-note{font-size:11px; color:var(--ink-soft); letter-spacing:.14em; line-height:2; margin-top:4px}
+.p-note b{color:var(--accent)}
+/* checklist */
+.check{list-style:none}
+.check li{
+  display:flex; gap:12px; align-items:flex-start; padding:13px 2px;
+  border-bottom:1px dashed var(--line); font-size:13.5px; line-height:1.9; letter-spacing:.08em;
+}
+.check li::before{
+  content:""; flex:0 0 13px; height:13px; margin-top:6px; border:1px solid var(--ink-soft); border-radius:2px;
+}
+.check li:hover::before{background:var(--ink)}
+/* music card */
+.music{
+  margin-top:8px; background:#10131c; color:#e8e4da; border-radius:10px; padding:18px 18px 16px;
+  box-shadow:0 14px 34px var(--shadow); position:relative; overflow:hidden; cursor:pointer;
+}
+.music .m-eyebrow{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.34em; opacity:.55}
+.music h3{font-size:19px; margin:8px 0 4px; letter-spacing:.04em; font-weight:600}
+.music .m-artist{font-size:11.5px; opacity:.6; letter-spacing:.12em}
+.music .m-row{display:flex; align-items:center; justify-content:space-between; margin-top:16px}
+.eq{display:flex; align-items:flex-end; gap:3px; height:18px}
+.eq i{width:3px; background:#e8e4da; height:4px; opacity:.85}
+.playing .eq i{animation:eq 1s ease-in-out infinite}
+.eq i:nth-child(2){animation-delay:.15s}.eq i:nth-child(3){animation-delay:.3s}
+.eq i:nth-child(4){animation-delay:.45s}.eq i:nth-child(5){animation-delay:.6s}
+@keyframes eq{0%,100%{height:4px}50%{height:18px}}
+.m-play{
+  width:40px; height:40px; border-radius:50%; border:1px solid rgba(255,255,255,.35);
+  display:grid; place-items:center; font-size:13px; transition:.3s;
+}
+.music:hover .m-play{background:#e8e4da; color:#10131c}
+.m-prog{height:2px; background:rgba(255,255,255,.16); margin-top:16px; border-radius:2px; overflow:hidden}
+.m-prog i{display:block; height:100%; width:0%; background:#e8e4da; transition:width .3s linear}
+.m-time{display:flex; justify-content:space-between; font-family:ui-monospace,Menlo,monospace; font-size:8.5px; opacity:.5; margin-top:6px; letter-spacing:.14em}
+/* menu overlay */
+.menu{
+  position:absolute; inset:0; z-index:50; background:var(--bg);
+  display:flex; flex-direction:column; justify-content:center; padding:0 44px;
+  opacity:0; visibility:hidden; transition:opacity .45s, visibility .45s;
+}
+.menu.open{opacity:1; visibility:visible}
+.menu .m-tag{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.4em; color:var(--ink-soft); margin-bottom:22px}
+.menu nav a{
+  display:flex; justify-content:space-between; align-items:baseline; text-decoration:none; color:var(--ink);
+  padding:13px 0; border-bottom:1px solid var(--line); font-size:17px; letter-spacing:.26em;
+}
+.menu nav a small{font-family:ui-monospace,Menlo,monospace; font-size:8px; letter-spacing:.3em; color:var(--ink-soft)}
+.menu nav a:hover{color:var(--accent)}
+.menu .m-close{position:absolute; top:20px; right:20px}
+/* footer */
+footer{
+  position:relative; z-index:30; display:flex; justify-content:space-between; align-items:center;
+  padding:10px 18px calc(10px + env(safe-area-inset-bottom)); border-top:1px solid var(--line);
+  font-family:ui-monospace,Menlo,monospace; font-size:8.5px; letter-spacing:.3em; color:var(--ink-soft);
+  background:var(--bg); transition:background .6s;
+}
+</style>
+</head>
+<body data-theme="light">
+<div class="grain"></div>
+<div class="frame">
+  <header>
+    <div class="tagline">// RIPPLE ARCHIVE · PRIVATE</div>
+    <div class="hrow">
+      <h1>别皱眉<small>FROWN LESS · 水波语录 VOL.</small></h1>
+      <div class="ctrl">
+        <button id="themeBtn" title="切换明暗">☾</button>
+        <button id="menuBtn">MENU</button>
+      </div>
+    </div>
+  </header>
+  <div class="pager"><b id="pgNow">01</b> / <span id="pgAll">07</span><em id="pgLabel">COVER</em></div>
+
+  <main id="scroller">
+    <!-- 0 COVER -->
+    <section class="page cover" data-label="COVER">
+      <canvas id="lotus"></canvas>
+      <div class="quote q1" id="q1">模糊的明绿只为聚焦集</div>
+      <div class="quote q2" id="q2">The blurred gaze is only focused on you</div>
+      <div class="inner">
+        <span class="badge rv">EST. 2026 · WATER MEMORY</span>
+        <h2 class="rv d1">别皱眉</h2>
+        <div class="en rv d2">Frown less, love louder.</div>
+        <div class="rv d3" style="margin-top:18px;font-size:10px;letter-spacing:.4em;color:var(--ink-soft);font-family:ui-monospace,Menlo,monospace">조회한 시선은 오직 너에게</div>
+      </div>
+      <div class="scrollhint">SWIPE ▾ &nbsp;SELECT A CURRENT</div>
+    </section>
+
+    <!-- 1 关于我 -->
+    <section class="page letter" data-label="LETTER 01 · 关于我">
+      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
+      <div class="head">
+        <div class="idx rv">LETTER 01 &nbsp;·&nbsp; ◽ 关于我</div>
+        <div class="en-title rv d1">About<br>the Water</div>
+        <div class="date rv d2">2026 10 20</div>
+      </div>
+      <div class="body">
+        <p class="rv d2"><span class="k">水心</span>&nbsp;&nbsp;<span class="dim">21t&nbsp;&nbsp;INTJ</span></p>
+        <div class="chips rv d3">
+          <span>土象处女</span><span>上升天秤</span><span>常驻建模</span><span>1号耳坠</span><span>高马尾</span><span>虚荣</span>
+        </div>
+      </div>
+      <figure class="photo bordered rv d3">
+        <img src="assets/flowers-soft.jpg" alt="灰调花影">
+        <figcaption>FIG.01 — 模糊花影</figcaption>
+      </figure>
+      <div class="dots rv d4"><i class="on"></i><i></i><i></i><i></i><i></i><i></i></div>
+    </section>
+
+    <!-- 2 风格特点 -->
+    <section class="page letter" data-label="LETTER 02 · 风格特点">
+      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
+      <div class="head">
+        <div class="idx rv">LETTER 02 &nbsp;·&nbsp; ◽ 风格特点</div>
+        <div class="en-title rv d1">Style<br>&amp; Tone</div>
+        <div class="date rv d2">2026 10 20</div>
+      </div>
+      <div class="body">
+        <p class="rv d2"><span class="k">主调</span> ： 中恋剖析 / dom / 低无逻辑 / 高恋引导</p>
+        <p class="rv d2"><span class="k">副调</span> ： 温病 · 白骑士 · 病虐</p>
+        <p class="rv d3"><span class="k">包含风格</span> ： 反差 · 低转高 · 引导</p>
+        <div class="hr rv d3"></div>
+        <p class="rv d3"><span class="k">备注</span> ： 全风格都有体现，见人说人话见鬼说鬼话。</p>
+        <p class="rv d4">表达形式多以平铺直叙或隐晦转折为基调，追求话语的完整性和观赏度。</p>
+        <p class="rv d4">非常规型病恋，可以以爱为基调，也可以以你的特别为主体。你呈现的样子决定我们的过程，没有迁就你的习惯，但也可以因你的态度折腰，<span class="red">互相尊重为基本</span>。</p>
+        <p class="rv d4 dim">非指定风格加价，不接下位。</p>
+      </div>
+      <div class="dots rv d4"><i></i><i class="on"></i><i></i><i></i><i></i><i></i></div>
+    </section>
+
+    <!-- 3 价格表 -->
+    <section class="page letter" data-label="LETTER 03 · 价格表">
+      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
+      <div class="head">
+        <div class="idx rv">LETTER 03 &nbsp;·&nbsp; ◽ 须知价格表</div>
+        <div class="en-title rv d1">The Price<br>of a Meeting</div>
+        <div class="date rv d2">2026 10 20</div>
+      </div>
+      <div class="body">
+        <div class="price rv d2">
+          <div class="p-name"><b>普病</b><s>40/h · 半 21</s></div>
+          <div class="p-sub">有团走团，低于这个价格自带（旁观位 <span class="plus">＋8</span>）</div>
+        </div>
+        <div class="price rv d2">
+          <div class="p-name"><b>修罗 / 反修</b><s>52/h · 半 27 &nbsp;|&nbsp; 48/h · 半 25</s></div>
+          <div class="p-sub">旁观位 <span class="plus">＋10</span></div>
+        </div>
+        <div class="price rv d3">
+          <div class="p-name"><b>Dom</b><s>45/h · 半 24</s></div>
+          <div class="p-sub">高擦 · 纯调 · 纯风格自带</div>
+        </div>
+        <div class="price rv d3">
+          <div class="p-name"><b>恋物价</b><s>59/h · 半 31</s></div>
+        </div>
+        <p class="p-note rv d4">注＊ 半单口 <b>＋5</b>&nbsp;&nbsp;全单 <b>＋10</b><br>旁观位多一人，按旁观价格二分之一依次<b>＋</b></p>
+      </div>
+      <div class="dots rv d4"><i></i><i></i><i class="on"></i><i></i><i></i><i></i></div>
+    </section>
+
+    <!-- 4 注意事项 -->
+    <section class="page letter" data-label="LETTER 04 · 注意事项">
+      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
+      <div class="head">
+        <div class="idx rv">LETTER 04 &nbsp;·&nbsp; ◽ 单前后<span class="red" style="color:var(--accent)">注意事项</span></div>
+        <div class="en-title rv d1">Before<br>&amp; After</div>
+        <div class="date rv d2">2026 10 20</div>
+      </div>
+      <ul class="check">
+        <li class="rv d2">单前整理好自己的情绪，把我代入任何人，看出来请加钱</li>
+        <li class="rv d2">单间提及他人，自动视为转普</li>
+        <li class="rv d3">如果你寻求你来我往的对峙恋感，默认高开低走</li>
+        <li class="rv d3">非指定下位恶意压我，有权直退</li>
+        <li class="rv d4">同行请互相尊重</li>
+        <li class="rv d4">结束后欢迎和我交流，你也可以是我的老师</li>
+      </ul>
+      <div class="dots rv d4" style="margin-top:26px"><i></i><i></i><i></i><i class="on"></i><i></i><i></i></div>
+    </section>
+
+    <!-- 5 评价 -->
+    <section class="page letter" data-label="LETTER 05 · 评价">
+      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
+      <div class="head">
+        <div class="idx rv">LETTER 05 &nbsp;·&nbsp; ◽ 观我久往<span style="color:var(--ink-soft)">（评价）</span></div>
+        <div class="en-title rv d1">Long<br>Regards</div>
+        <div class="date rv d2">2026 10 20</div>
+      </div>
+      <div class="body">
+        <p class="rv d2">曾用名&nbsp;&nbsp;<span class="k">加缪</span></p>
+      </div>
+      <figure class="photo rv d3">
+        <img src="assets/thread-heart.jpg" alt="线缠成的心">
+        <figcaption>FIG.02 — 线与心</figcaption>
+      </figure>
+      <div class="dots rv d4"><i></i><i></i><i></i><i></i><i class="on"></i><i></i></div>
+    </section>
+
+    <!-- 6 话术堆砌 -->
+    <section class="page letter" data-label="LETTER 06 · 话术堆砌">
+      <span class="edge">LETTERS WRITTEN IN WATER · 水波语录</span>
+      <div class="head">
+        <div class="idx rv">LETTER 06 &nbsp;·&nbsp; ◽ 话术堆砌 <span style="color:var(--ink-soft)">点击字体查看 · 放的是近期</span></div>
+        <div class="en-title rv d1">Words<br>Kept</div>
+        <div class="date rv d2">2026 10 20</div>
+      </div>
+      <div class="music rv d2" id="musicCard">
+        <div class="m-eyebrow">NOW ON REPEAT</div>
+        <h3>Book covers that we both adored</h3>
+        <div class="m-artist">Sunsets — Cigarettes After Sex</div>
+        <div class="m-row">
+          <div class="eq"><i></i><i></i><i></i><i></i><i></i></div>
+          <div class="m-play" id="playIcon">▶</div>
+        </div>
+        <div class="m-prog"><i id="progBar"></i></div>
+        <div class="m-time"><span id="tCur">0:00</span><span>0:09</span></div>
+      </div>
+      <p class="p-note rv d3" style="margin-top:16px">点击卡片播放 / 暂停 —— 近期循环的一句话，藏在九秒的歌里。</p>
+      <figure class="photo bordered rv d3" style="margin-top:14px">
+        <img src="assets/flowers-strip.jpg" alt="近期话术">
+        <figcaption>FIG.03 — 近期话术</figcaption>
+      </figure>
+      <div class="dots rv d4"><i></i><i></i><i></i><i></i><i></i><i class="on"></i></div>
+    </section>
+  </main>
+
+  <footer>
+    <span id="coords">X 000 · Y 000</span>
+    <span>STORY PATH / SELECT A CURRENT</span>
+  </footer>
+
+  <div class="menu" id="menu">
+    <button class="ctrl-btn m-close" id="menuClose" style="border:1px solid var(--line);background:transparent;color:var(--ink);width:34px;height:34px;border-radius:50%;cursor:pointer">✕</button>
+    <div class="m-tag">// FROWN LESS ARCHIVE · INDEX</div>
+    <nav>
+      <a href="#" data-go="0">封面 <small>COVER</small></a>
+      <a href="#" data-go="1">关于我 <small>ABOUT</small></a>
+      <a href="#" data-go="2">风格特点 <small>STYLE</small></a>
+      <a href="#" data-go="3">须知价格表 <small>PRICE</small></a>
+      <a href="#" data-go="4">单前后注意事项 <small>NOTES</small></a>
+      <a href="#" data-go="5">观我久往 <small>REGARDS</small></a>
+      <a href="#" data-go="6">话术堆砌 <small>WORDS</small></a>
+    </nav>
+  </div>
+</div>
+
+<script>
+/* ========= theme ========= */
+const themeBtn = document.getElementById('themeBtn');
+themeBtn.addEventListener('click', () => {
+  const b = document.body;
+  b.dataset.theme = b.dataset.theme === 'dark' ? 'light' : 'dark';
+  themeBtn.textContent = b.dataset.theme === 'dark' ? '☀' : '☾';
+  renderLotus();
+});
+
+/* ========= menu ========= */
+const menu = document.getElementById('menu');
+document.getElementById('menuBtn').addEventListener('click', () => menu.classList.add('open'));
+document.getElementById('menuClose').addEventListener('click', () => menu.classList.remove('open'));
+menu.querySelectorAll('a[data-go]').forEach(a => a.addEventListener('click', e => {
+  e.preventDefault();
+  const i = +a.dataset.go;
+  scroller.scrollTo({ top: i * scroller.clientHeight, behavior: 'smooth' });
+  menu.classList.remove('open');
+}));
+
+/* ========= pager + reveal ========= */
+const scroller = document.getElementById('scroller');
+const sections = [...scroller.querySelectorAll('section')];
+document.getElementById('pgAll').textContent = String(sections.length).padStart(2, '0');
+const io = new IntersectionObserver(es => es.forEach(en => {
+  const i = sections.indexOf(en.target);
+  if (en.isIntersecting && en.intersectionRatio > .55) {
+    en.target.classList.add('in');
+    document.getElementById('pgNow').textContent = String(i + 1).padStart(2, '0');
+    document.getElementById('pgLabel').textContent = en.target.dataset.label;
+  }
+}), { root: scroller, threshold: [.55] });
+sections.forEach(s => io.observe(s));
+
+/* ========= coords ========= */
+const coords = document.getElementById('coords');
+function setXY(x, y) {
+  coords.textContent = `X ${String(Math.round(x)).padStart(3, '0')} · Y ${String(Math.round(y)).padStart(3, '0')}`;
+}
+const frame = document.querySelector('.frame');
+frame.addEventListener('pointermove', e => {
+  const r = frame.getBoundingClientRect();
+  setXY(e.clientX - r.left, e.clientY - r.top);
+});
+
+/* ========= cover quotes rotate ========= */
+const slogans = ['模糊的明绿只为聚焦集', '조회한 시선은 오직 너에게 집중한다', 'The blurred gaze is only focused on you'];
+const subs =    ['The blurred gaze is only focused on you', '模糊的明绿只为聚焦集', '조회한 시선은 오직 너에게'];
+const q1 = document.getElementById('q1'), q2 = document.getElementById('q2');
+let qi = 0;
+function rotateQuote() {
+  q1.classList.remove('on'); q2.classList.remove('on');
+  setTimeout(() => {
+    q1.textContent = slogans[qi % 3];
+    q2.textContent = subs[qi % 3];
+    q1.classList.add('on'); q2.classList.add('on');
+    qi++;
+  }, 1600);
+}
+rotateQuote(); setInterval(rotateQuote, 5200);
+
+/* ========= lotus canvas ========= */
+const cv = document.getElementById('lotus');
+const cx2 = cv.getContext('2d');
+let W, H, dpr, lotusLayer;
+function pal() {
+  return document.body.dataset.theme === 'dark'
+    ? { ink: '#d8b56a', ink2: '#a8894e', rain: 'rgba(216,181,106,.5)', ripple: 'rgba(216,181,106,.55)', mist: '216,181,106' }
+    : { ink: '#33456e', ink2: '#5b6d99', rain: 'rgba(51,69,110,.45)', ripple: 'rgba(51,69,110,.5)', mist: '51,69,110' };
+}
+function resize() {
+  const r = cv.getBoundingClientRect();
+  dpr = Math.min(window.devicePixelRatio || 1, 2);
+  W = r.width; H = r.height;
+  cv.width = W * dpr; cv.height = H * dpr;
+  renderLotus();
+}
+function petalPath(ctx, x0, y0, angle, len, wid) {
+  const tx = x0 + Math.sin(angle) * len, ty = y0 - Math.cos(angle) * len * .92;
+  ctx.beginPath();
+  ctx.moveTo(x0, y0);
+  ctx.bezierCurveTo(x0 - wid, y0 - len * .35, tx - wid * .55, ty + len * .28, tx, ty);
+  ctx.bezierCurveTo(tx + wid * .55, ty + len * .28, x0 + wid, y0 - len * .35, x0, y0);
+  ctx.closePath();
+}
+function speckleFill(ctx, p, base, n, alpha) {
+  ctx.save();
+  ctx.clip();
+  ctx.fillStyle = base;
+  ctx.globalAlpha = .22;
+  ctx.fill();
+  for (let i = 0; i < n; i++) {
+    const x = p.minX + Math.random() * (p.maxX - p.minX);
+    const y = p.minY + Math.random() * (p.maxY - p.minY);
+    if (!ctx.isPointInPath(x, y)) continue;
+    ctx.globalAlpha = alpha * (.35 + Math.random() * .65);
+    ctx.beginPath();
+    ctx.arc(x, y, .5 + Math.random() * 1.5, 0, 7);
+    ctx.fill();
+  }
+  ctx.restore();
+  ctx.globalAlpha = 1;
+}
+function petalOutline(ctx, base, a) {
+  ctx.strokeStyle = base;
+  ctx.globalAlpha = a;
+  ctx.lineWidth = 1.1;
+  ctx.stroke();
+  ctx.globalAlpha = 1;
+}
+function renderLotus() {
+  const P = pal();
+  lotusLayer = document.createElement('canvas');
+  lotusLayer.width = W * dpr; lotusLayer.height = H * dpr;
+  const c = lotusLayer.getContext('2d');
+  c.scale(dpr, dpr);
+  c.fillStyle = P.ink;
+  const bx = W * .5, by = H * .565;
+  const S = Math.min(W, H) / 500; // scale factor
+  // back petals
+  c.fillStyle = P.ink2;
+  for (let k = -3; k <= 3; k++) {
+    if (k === 0) continue;
+    const ang = k * .34;
+    petalPath(c, bx, by, ang, (H * .255 + Math.random() * H * .015) * S, (W * .062) * S);
+    petalOutline(c, P.ink2, .55);
+    speckleFill(c, { minX: bx - W * .14, maxX: bx + W * .14, minY: by - H * .32, maxY: by }, P.ink2, 900, .75);
+  }
+  // front petals
+  c.fillStyle = P.ink;
+  for (let k = -2; k <= 2; k++) {
+    const ang = k * .46;
+    petalPath(c, bx, by, ang, (H * .20 + Math.random() * H * .012) * S, (W * .058) * S);
+    petalOutline(c, P.ink, .75);
+    speckleFill(c, { minX: bx - W * .13, maxX: bx + W * .13, minY: by - H * .26, maxY: by }, P.ink, 1100, .8);
+  }
+  // center bud
+  c.fillStyle = P.ink;
+  c.globalAlpha = .92;
+  c.beginPath(); c.ellipse(bx, by - H * .014 * S, W * .022 * S, H * .026 * S, 0, 0, 7); c.fill();
+  c.globalAlpha = 1;
+  // base mist speckles
+  for (let i = 0; i < 1100; i++) {
+    const a = Math.random() * Math.PI * 2, rr = Math.random() * W * .34;
+    const x = bx + Math.cos(a) * rr, y = by + Math.sin(a) * rr * .28;
+    c.globalAlpha = Math.random() * .3;
+    c.fillStyle = P.mist;
+    c.beginPath(); c.arc(x, y, Math.random() * 1.7, 0, 7); c.fill();
+  }
+  c.globalAlpha = 1;
+}
+/* rain + ripples + loop */
+const rain = [], ripples = [];
+const WATER = () => H * .62;
+function loop(t) {
+  const P = pal();
+  cx2.setTransform(dpr, 0, 0, dpr, 0, 0);
+  cx2.clearRect(0, 0, W, H);
+  // rain
+  if (rain.length < 70 && Math.random() < .5) {
+    rain.push({ x: Math.random() * W, y: -10, v: 2.2 + Math.random() * 2.4, drift: (Math.random() - .5) * .5 });
+  }
+  cx2.strokeStyle = P.rain; cx2.lineWidth = .8;
+  for (let i = rain.length - 1; i >= 0; i--) {
+    const d = rain[i];
+    d.x += d.drift; d.y += d.v;
+    cx2.globalAlpha = .5;
+    cx2.beginPath(); cx2.moveTo(d.x, d.y - 7); cx2.lineTo(d.x, d.y); cx2.stroke();
+    if (d.y > WATER() + Math.random() * 60) {
+      ripples.push({ x: d.x, y: Math.max(d.y, WATER() + 10), r: 1, max: 16 + Math.random() * 26, a: .55 });
+      rain.splice(i, 1);
+    }
+  }
+  cx2.globalAlpha = 1;
+  // ripples
+  for (let i = ripples.length - 1; i >= 0; i--) {
+    const r = ripples[i];
+    r.r += .45; r.a *= .975;
+    if (r.r > r.max || r.a < .02) { ripples.splice(i, 1); continue; }
+    cx2.strokeStyle = P.ripple; cx2.globalAlpha = r.a; cx2.lineWidth = .9;
+    cx2.beginPath(); cx2.ellipse(r.x, r.y, r.r, r.r * .34, 0, 0, 7); cx2.stroke();
+  }
+  // static concentric rings under lotus
+  cx2.globalAlpha = .5; cx2.strokeStyle = P.ripple; cx2.lineWidth = 1;
+  const bx = W * .5, by = H * .615;
+  for (let k = 1; k <= 3; k++) {
+    const rr = (W * .09) * k + Math.sin(t / 900 + k) * 2.5;
+    cx2.globalAlpha = .34 - k * .08;
+    cx2.beginPath(); cx2.ellipse(bx, by, rr, rr * .32, 0, 0, 7); cx2.stroke();
+  }
+  // lotus with gentle sway
+  if (lotusLayer) {
+    cx2.globalAlpha = 1;
+    const sway = Math.sin(t / 2600) * .008;
+    cx2.save();
+    cx2.translate(W * .5, H * .565);
+    cx2.rotate(sway);
+    cx2.translate(-W * .5, -H * .565);
+    cx2.drawImage(lotusLayer, 0, 0, W, H);
+    cx2.restore();
+  }
+  cx2.globalAlpha = 1;
+  requestAnimationFrame(loop);
+}
+window.addEventListener('resize', resize);
+resize();
+requestAnimationFrame(loop);
+
+/* ========= music card ========= */
+const card = document.getElementById('musicCard');
+const bar = document.getElementById('progBar');
+const tCur = document.getElementById('tCur');
+const icon = document.getElementById('playIcon');
+let playing = false, pos = 0, timer = null;
+const DUR = 9;
+function tick() {
+  pos += .1;
+  if (pos >= DUR) pos = 0;
+  bar.style.width = (pos / DUR * 100) + '%';
+  tCur.textContent = '0:' + String(Math.floor(pos)).padStart(2, '0');
+}
+card.addEventListener('click', () => {
+  playing = !playing;
+  card.classList.toggle('playing', playing);
+  icon.textContent = playing ? '❚❚' : '▶';
+  clearInterval(timer);
+  if (playing) timer = setInterval(tick, 100);
+});
+</script>
+</body>
+</html>
