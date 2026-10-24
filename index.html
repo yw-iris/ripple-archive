@@ -6,12 +6,12 @@
 <title>别皱眉 · Milestone</title>
 <style>
 :root{
-  --paper:#f6f5f2; --ink:#191b20; --soft:#90929a; --faint:rgba(25,27,32,.12);
+  --paper:#f6f5f2; --ink:#191b20; --soft:#8a8c93; --body:#33353b; --faint:rgba(25,27,32,.12);
   --line:rgba(25,27,32,.16); --card:#fffefb; --accent:#a8433a;
   --shadow:rgba(20,22,26,.10);
 }
 body[data-theme="dark"]{
-  --paper:#0b0e15; --ink:#eae8e0; --soft:#7c8190; --faint:rgba(234,232,224,.12);
+  --paper:#0b0e15; --ink:#eae8e0; --soft:#7c8190; --body:#cdd0d8; --faint:rgba(234,232,224,.12);
   --line:rgba(234,232,224,.18); --card:#121621; --accent:#c9705c;
   --shadow:rgba(0,0,0,.5);
 }
@@ -24,7 +24,7 @@ body{background:#101014; color:var(--ink);
 body[data-theme="dark"] #noise{mix-blend-mode:screen; opacity:.13}
 
 .stage{position:relative; z-index:2; width:100%; height:100vh; height:100dvh; margin:0 auto;
-  background:#0c0f16; overflow:hidden; transition:background .5s}
+  background:#e6e4df; overflow:hidden; transition:background .5s}
 #bgCv{position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none;
   transition:opacity .8s ease}
 /* 里页背景：与开场同款黑白移动光晕朦胧（画布渲染，无 SVG） */
@@ -74,10 +74,10 @@ body.dragging #track{cursor:grabbing}
 /* 原位置的内容数字：缩小且不加粗 */
 .stat .n-old{font-size:14px; font-weight:400; letter-spacing:.02em; line-height:1.4; margin-top:7px; color:var(--ink)}
 .stat .n-old small{font-size:10px; font-weight:400; vertical-align:baseline; margin-left:2px; color:var(--soft)}
-.stat .lab{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.3em;
-  color:var(--soft); margin-top:8px; text-transform:uppercase}
-.stat .lab2{font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.22em;
-  color:var(--soft); opacity:.7; margin-top:3px}
+.stat .lab{font-family:ui-monospace,monospace; font-size:9px; letter-spacing:.28em;
+  color:var(--body); margin-top:8px; text-transform:uppercase}
+.stat .lab2{font-family:ui-monospace,monospace; font-size:8.5px; letter-spacing:.2em;
+  color:var(--body); opacity:.85; margin-top:4px}
 
 /* ===== astro dashed circles (no SVG) ===== */
 .astro{position:absolute; border-radius:50%; pointer-events:none; z-index:1;
@@ -107,7 +107,7 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
   letter-spacing:.06em; line-height:1.5; color:var(--ink)}
 .am-2{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:18px; font-weight:600;
   letter-spacing:.05em; line-height:2; color:var(--ink); margin-top:14px}
-.am-3{font-size:16px; font-weight:600; letter-spacing:.04em; line-height:2; color:var(--soft); margin-top:6px}
+.am-3{font-size:16px; font-weight:600; letter-spacing:.04em; line-height:2; color:var(--body); margin-top:6px}
 @media (min-height:700px){
   .am-1{font-size:34px}
   .am-2{font-size:20px}
@@ -126,10 +126,10 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
   color:var(--soft); text-transform:uppercase;
   border-bottom:1px solid var(--line); padding-bottom:7px; margin-bottom:3px}
 .ev .date b{font-weight:400; font-size:9px; color:var(--ink)}
-.ev h4{font-size:16px; font-weight:700; margin:6px 0 5px; letter-spacing:.02em; line-height:1.45}
+.ev h4{font-size:17px; font-weight:700; margin:6px 0 5px; letter-spacing:.02em; line-height:1.45; color:var(--ink)}
 .ev h4 em{font-weight:400}
-.ev p{font-size:11px; line-height:1.85; color:var(--soft)}
-.ev p b{color:var(--accent); font-weight:400}
+.ev p{font-size:13px; line-height:1.9; color:var(--body)}
+.ev p b{color:var(--accent); font-weight:600}
 .ev .pic{width:104px; border-radius:6px; filter:grayscale(1); display:block; margin:8px 0 2px}
 
 /* ===== checkbox list ===== */
@@ -174,17 +174,21 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
   text-transform:uppercase}
 .foot b{color:var(--ink); font-weight:400}
 .corner{position:absolute; z-index:5; right:18px; bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  width:30px; height:30px;
-  border-radius:50%; border:1px solid var(--line); background:var(--card);
-  display:flex; align-items:center; justify-content:center; font-size:11px; color:var(--soft);
-  box-shadow:0 4px 12px var(--shadow); cursor:pointer; font-family:ui-monospace,monospace}
+  width:38px; height:38px;
+  border-radius:50%; border:1.5px solid var(--accent); background:var(--card);
+  display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--accent);
+  box-shadow:0 4px 12px var(--shadow); cursor:pointer; font-family:ui-monospace,monospace;
+  font-weight:700}
 
-/* ===== edges ===== */
-.edge{position:absolute; z-index:55; top:50%; width:36px; height:64px; margin-top:-32px;
+/* ===== edges（翻页键，明显化） ===== */
+.edge{position:absolute; z-index:55; top:50%; width:46px; height:78px; margin-top:-39px;
   display:flex; align-items:center; justify-content:center; cursor:pointer;
-  color:var(--soft); font-size:20px; opacity:.7; transition:.3s; user-select:none}
-.edge:hover{opacity:1}
-.edge.l{left:5px}.edge.r{right:5px}
+  color:var(--ink); font-size:30px; font-weight:700; line-height:1;
+  background:rgba(255,255,255,.82); border:1.5px solid var(--line); border-radius:24px;
+  box-shadow:0 6px 18px var(--shadow); opacity:.95; transition:.25s; user-select:none}
+.edge:hover{opacity:1; transform:scale(1.06)}
+.edge.l{left:8px}.edge.r{right:8px}
+body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
 
 /* ===== reveal ===== */
 .panel .rv{opacity:0; transform:translateY(16px); transition:opacity .7s, transform .7s}
@@ -381,7 +385,7 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
 .lr-body::-webkit-scrollbar{display:none}
 .lr-body h3{font-style:italic; font-weight:400; font-size:30px; line-height:1.35; color:var(--ink); letter-spacing:.01em}
 .lr-date{text-align:right; font-size:8px; letter-spacing:.3em; color:var(--soft); margin:14px 0 26px}
-.pa{font-size:14px; line-height:2.15; color:var(--ink); margin-bottom:18px; opacity:0;
+.pa{font-size:15px; line-height:2.15; color:var(--body); margin-bottom:18px; opacity:0;
   transform:translateY(10px)}
 .pa em{font-style:italic; color:var(--soft)}
 .ltr-read.anim .pa{animation:paraIn .9s ease both}
@@ -396,7 +400,7 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
 .dots i.on{background:var(--accent)}
 </style>
 </head>
-<body data-theme="dark">
+<body data-theme="light">
 
 <!-- ===== opening poster（严格复刻参考视频） ===== -->
 <div id="intro">
@@ -1048,8 +1052,8 @@ let introUp = true;
 
   function frame(){
     const dark = document.body.dataset.theme === 'dark';
-    // 基础底色：深色=近黑微蓝；浅色=中灰
-    const base = dark ? [12,15,22] : [206,203,197];
+    // 基础底色：深色=近黑微蓝；浅色=灰白
+    const base = dark ? [12,15,22] : [216,214,209];
     x.fillStyle=`rgb(${base[0]},${base[1]},${base[2]})`;
     x.fillRect(0,0,W,H);
 
@@ -1074,8 +1078,8 @@ let introUp = true;
 
     // 暗角，保持文字区可读
     const vg=x.createRadialGradient(W/2,H/2,Math.min(W,H)*.30,W/2,H/2,Math.max(W,H)*.72);
-    vg.addColorStop(0, dark?'rgba(6,8,14,.18)':'rgba(120,120,120,.12)');
-    vg.addColorStop(1, dark?'rgba(6,8,14,.42)':'rgba(90,90,90,.24)');
+    vg.addColorStop(0, dark?'rgba(6,8,14,.18)':'rgba(150,148,143,.05)');
+    vg.addColorStop(1, dark?'rgba(6,8,14,.42)':'rgba(138,136,130,.22)');
     x.fillStyle=vg; x.fillRect(0,0,W,H);
 
     x.save();
