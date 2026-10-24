@@ -16,7 +16,7 @@ body[data-theme="dark"]{
   --shadow:rgba(0,0,0,.5);
 }
 *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
-html,body{height:100%; overflow:hidden}
+html,body{height:100%; overflow:hidden; overscroll-behavior:none}
 body{background:#101014; color:var(--ink);
   font-family:Georgia,"Times New Roman","Songti SC","Noto Serif SC",serif}
 .mono{font-family:ui-monospace,Menlo,Consolas,monospace}
@@ -29,9 +29,17 @@ body[data-theme="dark"] #noise{mix-blend-mode:screen; opacity:.13}
   .stage{width:414px; height:92vh; margin-top:4vh; border-radius:30px;
     box-shadow:0 34px 90px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.06)}
 }
-#track{display:flex; height:100%; will-change:transform}
+#track{display:flex; height:100%; will-change:transform; touch-action:pan-y; cursor:grab}
+body.dragging #track{cursor:grabbing}
 .panel{position:relative; flex:0 0 100%; height:100%; overflow:hidden;
-  padding:16px 24px 58px; display:flex; flex-direction:column}
+  padding:52px 24px 60px; display:flex; flex-direction:column}
+
+/* ===== top progress ===== */
+.progress{position:absolute; top:0; left:0; right:0; height:2px; z-index:61;
+  background:var(--faint)}
+.progress i{display:block; height:100%; width:14%;
+  background:linear-gradient(90deg,var(--accent),rgba(168,67,58,.2));
+  transition:width .55s cubic-bezier(.22,.61,.36,1)}
 
 /* ===== HUD ===== */
 .hud{position:absolute; z-index:60; top:0; left:0; right:0;
@@ -75,7 +83,9 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 @keyframes spin{to{transform:rotate(360deg)}}
 
 /* ===== timeline event cards ===== */
-.flow{position:relative; z-index:5; flex:1; margin-top:20px; overflow:hidden}
+.flow{position:relative; z-index:5; flex:1; margin-top:20px; overflow-x:hidden; overflow-y:auto;
+  -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none}
+.flow::-webkit-scrollbar{display:none}
 .ev{position:relative; padding-left:36px; margin-bottom:22px}
 .ev::before{content:""; position:absolute; left:6px; top:4px; width:12px; height:12px;
   border-radius:50%; border:1.4px dashed var(--soft); background:var(--paper)}
@@ -168,6 +178,7 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
 <canvas id="noise"></canvas>
 
 <div class="stage">
+  <div class="progress"><i id="prog"></i></div>
   <div class="hud">
     <button id="menuBtn">✕</button>
     <div class="count" id="count">01 / 07</div>
@@ -384,7 +395,7 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
       </div>
       <div class="tags rv d3"><span>Side A</span><span>Side B</span><span>Loop</span></div>
       <div class="foot"><b>CASSETTE</b> · SIDE A STORIES · SIDE B DAY</div>
-      <div class="corner" data-next="0">↺</div>
+      <div class="corner" data-next="restart">↺</div>
     </section>
 
   </div>
@@ -425,40 +436,89 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   build();
 })();
 
-/* ===== horizontal swipe ===== */
+/* ===== horizontal drag / swipe ===== */
 const track = document.getElementById('track');
 const panels = [...document.querySelectorAll('.panel')];
 const count = document.getElementById('count');
+const prog = document.getElementById('prog');
+const N = panels.length;
 let idx = 0, lock = false;
 const pad = n => n<10 ? '0'+n : ''+n;
 function go(i, instant){
-  i = Math.max(0, Math.min(panels.length-1, i));
+  i = Math.max(0, Math.min(N-1, i));
   idx = i;
-  track.style.transition = instant ? 'none' : 'transform .65s cubic-bezier(.7,0,.2,1)';
+  track.style.transition = instant ? 'none' : 'transform .58s cubic-bezier(.22,.61,.36,1)';
   track.style.transform = 'translateX(' + (-i*100) + '%)';
   panels.forEach((p,k)=>p.classList.toggle('active', k===i));
-  count.textContent = pad(i+1) + ' / ' + pad(panels.length);
-  lock = true; setTimeout(()=>lock=false, 700);
+  count.textContent = pad(i+1) + ' / ' + pad(N);
+  prog.style.width = ((i+1)/N*100) + '%';
+  lock = true; setTimeout(()=>lock=false, 620);
 }
 document.getElementById('nextBtn').onclick = ()=>go(idx+1);
 document.getElementById('prevBtn').onclick = ()=>go(idx-1);
 document.querySelectorAll('.corner').forEach(b=>{
-  b.onclick = ()=>go((idx + (+b.dataset.next)) % panels.length);
+  b.onclick = ()=>{
+    const v = b.dataset.next;
+    if(v === 'restart'){ go(0); return; }
+    let t = idx + (+v); if(t >= N) t = 0; if(t < 0) t = N-1; go(t);
+  };
 });
-let tx=0, ty=0, tt=0;
-addEventListener('touchstart', e=>{ tx=e.touches[0].clientX; ty=e.touches[0].clientY; tt=Date.now(); }, {passive:true});
-addEventListener('touchend', e=>{
-  const dx = e.changedTouches[0].clientX - tx;
-  const dy = e.changedTouches[0].clientY - ty;
-  if(Math.abs(dx) > 52 && Math.abs(dx) > Math.abs(dy)*1.4 && Date.now()-tt < 800) go(idx + (dx<0?1:-1));
-}, {passive:true});
+
+/* pointer drag — finger / mouse follows, snap on release */
+const stageW = () => track.clientWidth;
+let down=false, sx=0, base=0, moved=0, lastX=0, lastT=0, vx=0, dragT=0;
+function onDown(e){
+  if(lock) return;
+  down=true; moved=0; sx=e.clientX; base=-idx*100; lastX=e.clientX; lastT=Date.now();
+  vx=0; dragT=lastT;
+  track.style.transition='none';
+  document.body.classList.add('dragging');
+}
+function onMove(e){
+  if(!down) return;
+  const x=e.clientX;
+  let delta=(x-sx)/stageW()*100;
+  if((idx===0 && delta>0) || (idx===N-1 && delta<0)) delta*=0.32; // rubber band
+  let p=Math.max(-(N-1)*100, Math.min(0, base+delta));
+  track.style.transform='translateX('+p+'%)';
+  moved=Math.max(moved, Math.abs(x-sx));
+  const now=Date.now(), dt=now-lastT;
+  if(dt>0) vx=(x-lastX)/dt;
+  lastX=x; lastT=now; dragT=now;
+}
+function onUp(e){
+  if(!down) return; down=false;
+  document.body.classList.remove('dragging');
+  const x = (e.clientX!==undefined) ? e.clientX : lastX;
+  const dx = x - sx;
+  const dur = Date.now() - dragT;
+  const thr = stageW()*0.16;
+  let target = idx;
+  if(dx < -thr || (dur<260 && dx<-26 && vx<-0.35)) target = idx+1;
+  else if(dx > thr || (dur<260 && dx>26 && vx>0.35)) target = idx-1;
+  go(target);
+}
+track.addEventListener('pointerdown', onDown);
+window.addEventListener('pointermove', onMove);
+window.addEventListener('pointerup', onUp);
+window.addEventListener('pointercancel', onUp);
+
 let wl = 0;
 addEventListener('wheel', e=>{
-  const now = Date.now(); if(now - wl < 650 || lock) return; wl = now;
-  if(Math.abs(e.deltaY) > 24 || Math.abs(e.deltaX) > 24) go(idx + (e.deltaY>0 || e.deltaX>0 ? 1 : -1));
+  const now = Date.now(); if(now - wl < 620 || lock) return;
+  /* inner scrollable card flow consumes vertical wheel first */
+  const f = e.target.closest ? e.target.closest('.flow') : null;
+  if(f && f.scrollHeight > f.clientHeight + 2){
+    const atTop = f.scrollTop <= 1;
+    const atBottom = f.scrollTop + f.clientHeight >= f.scrollHeight - 1;
+    if(e.deltaY < 0 && !atTop) return;
+    if(e.deltaY > 0 && !atBottom) return;
+  }
+  wl = now;
+  if(Math.abs(e.deltaY) > 18 || Math.abs(e.deltaX) > 18) go(idx + (e.deltaY>0 || e.deltaX>0 ? 1 : -1));
 }, {passive:true});
 addEventListener('keydown', e=>{
-  if(e.key==='ArrowRight'||e.key==='ArrowDown') go(idx+1);
+  if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(idx+1);
   if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(idx-1);
 });
 /* menu */
