@@ -513,14 +513,10 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
 .env.open .env-letter{transform:translateZ(10px) translateY(0) scale(1); opacity:1; filter:blur(0)}
 .env.out{opacity:0; transition:opacity .9s ease}
 .env.out .env-wrap{transform:scale(.97) translateY(-2%)}
-/* ===== 信封里可抽出的代表卡 ===== */
-.env-pick{position:absolute; left:50%; top:70%; width:min(58vw,248px); z-index:6;
-  transform:translate(-50%,-50%) scale(.8); opacity:0; pointer-events:none;
-  filter:blur(6px); transition:transform 1s cubic-bezier(.2,.7,.25,1), top 1s cubic-bezier(.2,.7,.25,1), opacity .7s ease, filter 1s}
-.env.open .env-pick.has-card{opacity:1; pointer-events:auto; filter:blur(0)}
-.env-pick.pulled{top:46%; transform:translate(-50%,-50%) scale(1.08);
-  box-shadow:0 40px 80px rgba(10,12,18,.55); z-index:12}
-.env-pick .card{width:100%; margin:0; transform:none !important; cursor:pointer}
+/* 信封里的信纸即「现有的卡」：第一次点抽出，再点进入该页 */
+.env.open .env-letter{cursor:pointer}
+.env-letter.pulled{transform:translateZ(70px) translateY(-6%) scale(1.14);
+  box-shadow:0 40px 90px rgba(10,12,18,.55); z-index:20}
 @media (max-width:560px){
   .env-ltitle{font-size:24px}
 }
@@ -885,7 +881,7 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
     <div class="env-scene">
       <div class="env-wrap">
         <div class="env-back"></div>
-        <div class="env-letter">
+        <div class="env-letter" id="envLetter">
           <div class="env-lno" id="envNo"></div>
           <div class="env-ltitle" id="envTitle"></div>
           <div class="env-len" id="envEn"></div>
@@ -896,7 +892,6 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
         <div class="env-flap env-flap-r"></div>
         <div class="env-flap env-flap-t"></div>
       </div>
-      <div class="env-pick" id="envPick"></div>
     </div>
   </div>
 
@@ -986,8 +981,8 @@ function go(i, instant){
   if(instant || reduceMotion){ applyGo(i, true); return; }
   playEnv(i);
 }
-const envPick = document.getElementById('envPick');
-let envPickSource = null, envPulled = false, envAutoTimer = null;
+const envLetter = document.getElementById('envLetter');
+let envPulled = false, envAutoTimer = null;
 function playEnv(target){
   if(envBusy) return;
   envBusy = true; lock = true;
@@ -998,64 +993,43 @@ function playEnv(target){
   /* 信封盖合上 + 信纸藏好，立即把底层轨道切到目标页（被信封盖住，看不见滑动） */
   envEl.classList.add('show');
   envEl.classList.remove('open','out');
+  envLetter.classList.remove('pulled');
+  envPulled = false;
   void envEl.offsetWidth;
   applyGo(target, true);
   /* 下一帧：封盖立体翻开 + 信纸升起 */
   requestAnimationFrame(()=>requestAnimationFrame(()=>{ envEl.classList.add('open'); }));
-  /* 信封里放一张目标页代表卡，支持「点卡抽出 → 再点跳详情」 */
-  envFill(target);
-}
-/* 取目标页第一张 .card 作信封里的代表卡；无卡页（整块封面/关于我）保持纯文字信纸 */
-function envFill(target){
+  /* 信纸即信封里的「现有卡」；默认停留给用户抽卡机会，超时自动进入该页 */
   clearTimeout(envAutoTimer);
-  const tp = panels[target];
-  const rep = tp.querySelector('.card');
-  if(rep){
-    envPickSource = rep;
-    envPulled = false;
-    const clone = rep.cloneNode(true);
-    clone.removeAttribute('style');
-    envPick.replaceChildren(clone);
-    envPick.classList.add('has-card');
-    envPick.classList.remove('pulled');
-    /* 有卡：信封停留给用户抽卡的机会；8s 无操作兜底退出 */
-    envAutoTimer = setTimeout(envOut, 8000);
-  } else {
-    envPick.classList.remove('has-card','pulled');
-    envPickSource = null;
-    /* 无卡：维持原翻页过渡节奏，自动淡出露新页 */
-    envAutoTimer = setTimeout(envOut, 2080);
-  }
+  envAutoTimer = setTimeout(envOut, 2600);
 }
-/* 信封整体淡出，露出已就位的新页，并复位抽卡状态 */
+/* 信封整体淡出，露出已就位的新页（即该卡的「对应详情页」），并复位抽卡状态 */
 function envOut(){
   if(!envEl.classList.contains('show')) return;
   clearTimeout(envAutoTimer);
   envEl.classList.add('out');
   setTimeout(()=>{
     envEl.classList.remove('show','out','open');
-    envPick.classList.remove('has-card','pulled');
-    envPickSource = null; envPulled = false;
+    envLetter.classList.remove('pulled');
+    envPulled = false;
     envBusy = false; lock = false;
   }, 900);
 }
-/* 信封里的卡：第一次点「抽出」，再点「跳对应详情页」 */
-envPick.addEventListener('click', e=>{
+/* 信封里的信纸（现有卡）：第一次点「抽出」，再点「进入对应详情页（该目标页）」 */
+envLetter.addEventListener('click', e=>{
   e.stopPropagation();
-  if(!envPick.classList.contains('has-card') || !envPickSource) return;
+  if(!envEl.classList.contains('show')) return;
   if(!envPulled){
     envPulled = true;
     clearTimeout(envAutoTimer);
-    envPick.classList.add('pulled');
+    envLetter.classList.add('pulled');
   } else {
-    openDetail(envPickSource);
     envOut();
   }
 });
-/* 点信封空白处（未抽卡时）：直接退出露新页 */
+/* 点信封空白处：直接退出露新页 */
 envEl.addEventListener('click', e=>{
-  if(e.target.closest('.env-pick')) return;
-  if(envPick.classList.contains('has-card') && envPulled) return;
+  if(e.target.closest('.env-letter')) return;
   envOut();
 });
 document.getElementById('nextBtn').onclick = ()=>go(idx+1);
