@@ -58,13 +58,23 @@ body.dragging #track{cursor:grabbing}
 
 /* ===== app top bar (in-screen style) ===== */
 .appbar{display:flex; align-items:center; justify-content:space-between;
-  padding:6px 2px 12px; border-bottom:1px solid var(--faint); position:relative; z-index:5}
+  padding:9px 14px 11px; border-radius:16px; position:relative; z-index:5; margin-bottom:6px;
+  background:rgba(255,255,255,.6); -webkit-backdrop-filter:blur(10px) saturate(1.1);
+  backdrop-filter:blur(10px) saturate(1.1);
+  border:1px solid rgba(255,255,255,.65); box-shadow:0 8px 26px rgba(30,32,38,.10)}
+body[data-theme="dark"] .appbar{background:rgba(20,25,36,.48); border-color:rgba(255,255,255,.16)}
 .appbar .back{font-size:15px; color:var(--soft); width:26px}
 .appbar .app{font-size:14px; font-weight:700; letter-spacing:.04em}
 .appbar .time{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.18em; color:var(--soft)}
 
 /* ===== stat block ===== */
-.stat{position:relative; z-index:5; margin-top:18px}
+.stat{position:relative; z-index:5; margin-top:18px;
+  background:rgba(255,255,255,.72); -webkit-backdrop-filter:blur(14px) saturate(1.1);
+  backdrop-filter:blur(14px) saturate(1.1);
+  border:1px solid rgba(255,255,255,.72); border-radius:20px;
+  box-shadow:0 14px 44px rgba(30,32,38,.13); padding:18px 20px 20px}
+body[data-theme="dark"] .stat{background:rgba(20,25,36,.52); border-color:rgba(255,255,255,.16);
+  box-shadow:0 14px 44px rgba(0,0,0,.38)}
 .stat .n{font-size:64px; font-weight:700; letter-spacing:-.03em; line-height:.95}
 .stat .n small{font-size:22px; font-weight:400; vertical-align:18px; margin-left:4px}
 /* 页码大字：与封面 21 同款字号/字体/位置 */
@@ -99,14 +109,14 @@ body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
 .flow{position:relative; z-index:5; flex:1; margin-top:18px; overflow-x:hidden; overflow-y:auto;
   -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none;
   display:flex; flex-direction:column;
-  background:rgba(255,255,255,.42);
-  -webkit-backdrop-filter:blur(16px) saturate(1.05);
-  backdrop-filter:blur(16px) saturate(1.05);
-  border:1px solid rgba(255,255,255,.6); border-radius:20px;
-  box-shadow:0 12px 40px rgba(30,32,38,.10); padding:20px 18px}
+  background:rgba(255,255,255,.82);
+  -webkit-backdrop-filter:blur(18px) saturate(1.1);
+  backdrop-filter:blur(18px) saturate(1.1);
+  border:1px solid rgba(255,255,255,.75); border-radius:22px;
+  box-shadow:0 16px 48px rgba(30,32,38,.16); padding:22px 20px}
 .flow::-webkit-scrollbar{display:none}
-body[data-theme="dark"] .flow{background:rgba(18,22,32,.42); border-color:rgba(255,255,255,.12);
-  box-shadow:0 12px 40px rgba(0,0,0,.35)}
+body[data-theme="dark"] .flow{background:rgba(20,25,36,.6); border-color:rgba(255,255,255,.16);
+  box-shadow:0 16px 48px rgba(0,0,0,.4)}
 /* --- about-me (verbatim copy) --- */
 .about-me{align-items:center; justify-content:center}
 .am{width:100%; padding:0 6px 0 22px; text-align:left; border-left:2px solid var(--accent); margin-left:2px}
@@ -155,11 +165,11 @@ body[data-theme="dark"] .ev::after{border-left-color:rgba(234,232,224,.16)}
 /* ===== tags ===== */
 .tags{position:relative; z-index:5; display:flex; justify-content:center; gap:9px;
   margin:10px 0 14px; flex-wrap:wrap}
-.tags span{border:1px solid var(--line); border-radius:18px; background:rgba(255,255,255,.5);
-  -webkit-backdrop-filter:blur(4px); backdrop-filter:blur(4px);
+.tags span{border:1px solid rgba(255,255,255,.72); border-radius:18px; background:rgba(255,255,255,.72);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
   font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.26em;
-  padding:6px 13px; color:var(--body); text-transform:uppercase}
-body[data-theme="dark"] .tags span{background:rgba(255,255,255,.07)}
+  padding:7px 13px; color:var(--ink); text-transform:uppercase; box-shadow:0 6px 18px rgba(30,32,38,.10)}
+body[data-theme="dark"] .tags span{background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.2); color:var(--ink)}
 
 /* ===== jump links (external) ===== */
 .links{position:relative; z-index:5; display:flex; justify-content:center; gap:12px;
@@ -180,11 +190,15 @@ body[data-theme="dark"] .tags span{background:rgba(255,255,255,.07)}
 .menu-ext a small{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.26em; color:var(--soft)}
 
 /* ===== foot ===== */
-.foot{position:absolute; z-index:5; left:0; right:0; bottom:calc(20px + env(safe-area-inset-bottom,0px));
-  text-align:center;
-  font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.34em; color:var(--soft);
-  text-transform:uppercase}
-.foot b{color:var(--ink); font-weight:400}
+.foot{position:absolute; z-index:5; left:50%; transform:translateX(-50%); bottom:calc(16px + env(safe-area-inset-bottom,0px));
+  width:max-content; max-width:calc(100% - 36px); text-align:center;
+  font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.3em; color:var(--ink);
+  text-transform:uppercase; padding:7px 16px; border-radius:16px;
+  background:rgba(255,255,255,.7); -webkit-backdrop-filter:blur(10px) saturate(1.1);
+  backdrop-filter:blur(10px) saturate(1.1); border:1px solid rgba(255,255,255,.7);
+  box-shadow:0 8px 24px rgba(30,32,38,.12)}
+body[data-theme="dark"] .foot{background:rgba(20,25,36,.55); border-color:rgba(255,255,255,.18); color:var(--ink)}
+.foot b{color:var(--accent); font-weight:400}
 .corner{position:absolute; z-index:5; right:18px; bottom:calc(16px + env(safe-area-inset-bottom,0px));
   width:38px; height:38px;
   border-radius:50%; border:1.5px solid var(--accent); background:var(--card);
