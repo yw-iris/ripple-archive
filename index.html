@@ -338,14 +338,14 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
 .dt-foot button:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-2px)}
 .dt-foot button.acc{border-color:var(--accent); color:var(--accent); font-weight:700}
 /* 详情页背景：复用开场「WATER HEART」英文字母水印（淡墨，贴合纸感） */
-.ov-wm{position:absolute; right:1%; top:50%; transform:translateY(-50%) rotate(-90deg); transform-origin:center;
+.ov-wm{position:absolute; right:2%; top:50%; transform:translateY(-50%) rotate(-90deg); transform-origin:center;
   font-family:Georgia,"Times New Roman",serif; font-weight:400;
-  font-size:min(24vw,182px); line-height:.9; letter-spacing:0; white-space:nowrap;
-  color:rgba(60,66,82,.06); text-shadow:0 0 18px rgba(130,150,180,.05);
+  font-size:min(26vw,200px); line-height:.9; letter-spacing:0; white-space:nowrap;
+  color:rgba(60,66,82,.15); text-shadow:0 0 20px rgba(130,150,180,.06);
   pointer-events:none; z-index:0; user-select:none}
 .ov-wm span{display:block}
 @media (prefers-color-scheme:dark){
-  .ov-wm{color:rgba(214,222,236,.06); text-shadow:0 0 18px rgba(190,210,234,.05)}
+  .ov-wm{color:rgba(214,222,236,.16); text-shadow:0 0 20px rgba(190,210,234,.06)}
 }
 /* 竖屏手机：详情变单列（信息在上，卡片在下） */
 @media (orientation:portrait){
@@ -523,6 +523,11 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
 .env.open .env-letter{transform:translateZ(10px) translateY(0) scale(1); opacity:1; filter:blur(0)}
 .env.out{opacity:0; transition:opacity .9s ease}
 .env.out .env-wrap{transform:scale(.97) translateY(-2%)}
+/* 手机竖屏：信封缩短、不顶满，避免过长 */
+@media (orientation:portrait){
+  .env-wrap{width:88vw; height:min(46vh,430px)}
+  .env-ltitle{font-size:26px}
+}
 /* 信封里的信纸即「现有的卡」：第一次点抽出（轻微上浮），再点进入该页 */
 .env.open .env-letter{cursor:pointer}
 .env.open .env-letter.pulled{transform:translateZ(40px) translateY(-22%) scale(1.03) !important;
