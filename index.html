@@ -6,14 +6,14 @@
 <title>别皱眉 · Milestone</title>
 <style>
 :root{
-  --paper:#f6f5f2; --ink:#191b20; --soft:#8a8c93; --body:#33353b; --faint:rgba(25,27,32,.12);
+  --paper:#f2f1ee; --ink:#1c1e23; --soft:#8a8c93; --body:#33353b; --faint:rgba(25,27,32,.12);
   --line:rgba(25,27,32,.16); --card:#fffefb; --accent:#a8433a;
-  --shadow:rgba(20,22,26,.10);
+  --shadow:rgba(20,22,26,.10); --folio:#fdfcfa;
 }
 body[data-theme="dark"]{
   --paper:#0b0e15; --ink:#eae8e0; --soft:#7c8190; --body:#cdd0d8; --faint:rgba(234,232,224,.12);
   --line:rgba(234,232,224,.18); --card:#121621; --accent:#c9705c;
-  --shadow:rgba(0,0,0,.5);
+  --shadow:rgba(0,0,0,.5); --folio:#171b26;
 }
 *{box-sizing:border-box; margin:0; padding:0; -webkit-tap-highlight-color:transparent}
 html,body{height:100%; overflow:hidden; overscroll-behavior:none}
@@ -24,20 +24,42 @@ body{background:#101014; color:var(--ink);
 body[data-theme="dark"] #noise{mix-blend-mode:screen; opacity:.13}
 
 .stage{position:relative; z-index:2; width:100%; height:100vh; height:100dvh; margin:0 auto;
-  background:#e6e4df; overflow:hidden; transition:background .5s}
+  background:var(--paper); overflow:hidden; transition:background .5s}
 #bgCv{position:absolute; inset:0; width:100%; height:100%; z-index:0; pointer-events:none;
   transition:opacity .8s ease}
 /* 里页背景：与开场同款黑白移动光晕朦胧（画布渲染，无 SVG） */
 .stage > .panel{position:relative; z-index:1}
-@media (min-width:700px){
-  .stage{width:414px; height:92vh; margin-top:4vh; border-radius:30px;
-    box-shadow:0 34px 90px rgba(0,0,0,.65), 0 0 0 1px rgba(255,255,255,.06)}
+@media (min-width:1100px) and (min-height:620px){
+  .stage{max-width:1560px; margin:0 auto;
+    box-shadow:0 0 0 1px rgba(0,0,0,.08), 0 30px 90px rgba(0,0,0,.30)}
+}
+/* 宽屏：卡片与侧栏同步放大 */
+@media (min-width:1100px) and (min-height:620px) and (orientation:landscape){
+  .panel{grid-template-columns:minmax(250px,330px) 1fr}
+  .s-no{font-size:72px}
+  .s-title{font-size:31px}
+  .s-en{font-size:9px}
+  .s-desc{font-size:14px}
+  .s-meta dd{font-size:13px}
+  .folio-inner{padding:30px}
+  .card{padding:22px 22px 20px; border-radius:6px}
+  .card h5{font-size:19px}
+  .card p{font-size:13px; line-height:1.95}
+  .card .tag{font-size:8px; letter-spacing:.26em}
+  .card .kr,.card .en{font-size:12px}
+  .cks li{font-size:12.5px}
+  .c-ticket .tk-stub{flex-basis:80px}
+  .c-ticket .tk-stub b{font-size:32px}
+  .c-ticket .tk-main h5{font-size:18px}
+  .c-label b{font-size:21px}
+  .c-label .seal{width:38px; height:38px; font-size:11px}
+  .foot{font-size:8.5px}
 }
 #track{display:flex; height:100%; will-change:transform; touch-action:pan-y; cursor:grab}
 body.dragging #track{cursor:grabbing}
 .panel{position:relative; flex:0 0 100%; height:100%; overflow:hidden;
-  padding:calc(52px + env(safe-area-inset-top,0px)) 24px calc(60px + env(safe-area-inset-bottom,0px));
-  display:flex; flex-direction:column}
+  padding:calc(54px + env(safe-area-inset-top,0px)) 22px calc(58px + env(safe-area-inset-bottom,0px));
+  display:flex; flex-direction:column; gap:14px}
 
 /* ===== top progress ===== */
 .progress{position:absolute; top:0; left:0; right:0; height:2px; z-index:61;
@@ -55,163 +77,163 @@ body.dragging #track{cursor:grabbing}
   box-shadow:0 4px 14px var(--shadow); transition:.3s; font-family:ui-monospace,Menlo,monospace}
 .hud button:hover{transform:translateY(-1px)}
 .hud .count{font-family:ui-monospace,Menlo,monospace; font-size:7.5px; font-weight:400; letter-spacing:.3em; color:var(--soft)}
+.hud .grp{display:flex; gap:8px}
 
-/* ===== app top bar (in-screen style) ===== */
-.appbar{display:flex; align-items:center; justify-content:space-between;
-  padding:9px 14px 11px; border-radius:16px; position:relative; z-index:5; margin-bottom:6px;
-  background:rgba(255,255,255,.6); -webkit-backdrop-filter:blur(10px) saturate(1.1);
-  backdrop-filter:blur(10px) saturate(1.1);
-  border:1px solid rgba(255,255,255,.65); box-shadow:0 8px 26px rgba(30,32,38,.10)}
-body[data-theme="dark"] .appbar{background:rgba(20,25,36,.48); border-color:rgba(255,255,255,.16)}
-.appbar .back{font-size:15px; color:var(--soft); width:26px}
-.appbar .app{font-size:14px; font-weight:700; letter-spacing:.04em}
-.appbar .time{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.18em; color:var(--soft)}
-
-/* ===== stat block ===== */
-.stat{position:relative; z-index:5; margin-top:18px;
-  background:rgba(255,255,255,.72); -webkit-backdrop-filter:blur(14px) saturate(1.1);
-  backdrop-filter:blur(14px) saturate(1.1);
-  border:1px solid rgba(255,255,255,.72); border-radius:20px;
-  box-shadow:0 14px 44px rgba(30,32,38,.13); padding:18px 20px 20px}
-body[data-theme="dark"] .stat{background:rgba(20,25,36,.52); border-color:rgba(255,255,255,.16);
-  box-shadow:0 14px 44px rgba(0,0,0,.38)}
-.stat .n{font-size:64px; font-weight:700; letter-spacing:-.03em; line-height:.95}
-.stat .n small{font-size:22px; font-weight:400; vertical-align:18px; margin-left:4px}
-/* 页码大字：与封面 21 同款字号/字体/位置 */
-.stat .pn{font-size:64px; font-weight:700; letter-spacing:-.03em; line-height:.95; color:var(--ink)}
-.stat .pn small{font-size:9px; font-weight:400; color:var(--soft); margin-left:10px;
+/* ============================================================
+   cardart 里页：左信息栏 + 右对开册页（卡片散放）
+   ============================================================ */
+.side{position:relative; z-index:5; display:flex; flex-direction:column; min-height:0}
+.s-no{font-size:52px; font-weight:700; letter-spacing:-.03em; line-height:.95; color:var(--ink)}
+.s-no small{font-size:9px; font-weight:400; color:var(--soft); margin-left:9px;
   font-family:ui-monospace,monospace; letter-spacing:.16em; vertical-align:middle}
-/* 原位置的内容数字：缩小且不加粗 */
-.stat .n-old{font-size:14px; font-weight:400; letter-spacing:.02em; line-height:1.4; margin-top:7px; color:var(--ink)}
-.stat .n-old small{font-size:10px; font-weight:400; vertical-align:baseline; margin-left:2px; color:var(--soft)}
-.stat .lab{font-family:ui-monospace,monospace; font-size:9px; letter-spacing:.28em;
-  color:var(--body); margin-top:8px; text-transform:uppercase}
-.stat .lab2{font-family:ui-monospace,monospace; font-size:8.5px; letter-spacing:.2em;
-  color:var(--body); opacity:.85; margin-top:4px}
+.s-title{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:24px; font-weight:700;
+  letter-spacing:.06em; margin-top:12px; color:var(--ink)}
+.s-en{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.3em;
+  color:var(--soft); text-transform:uppercase; margin-top:6px}
+.s-desc{font-size:12.5px; line-height:1.9; color:var(--body); margin-top:14px; max-width:34em}
+.s-meta{margin-top:auto; padding-top:18px}
+.s-meta > div{display:flex; align-items:baseline; gap:8px; padding:6px 0; border-bottom:1px solid var(--faint)}
+.s-meta dt{color:var(--soft); font-family:ui-monospace,monospace; font-size:7.5px;
+  letter-spacing:.22em; text-transform:uppercase; white-space:nowrap}
+.s-meta i{flex:1; border-bottom:1px dotted var(--faint); transform:translateY(-3px); min-width:14px}
+.s-meta dd{color:var(--ink); font-size:11.5px; text-align:right; letter-spacing:.03em}
 
-/* ===== astro dashed circles (no SVG) ===== */
-.astro{position:absolute; border-radius:50%; pointer-events:none; z-index:1;
-  border:1px dashed rgba(120,122,130,.4)}
-.astro::before{content:""; position:absolute; inset:14%; border-radius:50%;
-  border:1px dashed rgba(120,122,130,.3)}
-.astro::after{content:""; position:absolute; inset:32%; border-radius:50%;
-  border:1px dashed rgba(120,122,130,.22)}
-.astro .dot{position:absolute; width:5px; height:5px; border-radius:50%;
-  background:rgba(120,122,130,.5); top:-3px; left:50%}
-body[data-theme="dark"] .astro{border-color:rgba(234,232,224,.28)}
-body[data-theme="dark"] .astro::before{border-color:rgba(234,232,224,.2)}
-body[data-theme="dark"] .astro::after{border-color:rgba(234,232,224,.15)}
-body[data-theme="dark"] .astro .dot{background:rgba(234,232,224,.4)}
-.astro.spin{animation:spin 60s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
+/* ===== folio 册页 ===== */
+.folio{position:relative; z-index:5; flex:1; min-height:0; display:flex}
+.folio-inner{position:relative; flex:1; background:rgba(255,255,255,.55);
+  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
+  border:1px solid rgba(255,255,255,.75); border-radius:12px;
+  box-shadow:0 24px 60px rgba(30,32,38,.13), inset 46px 0 70px -46px rgba(60,64,72,.20),
+    inset -6px 0 30px -20px rgba(60,64,72,.10);
+  display:flex; flex-direction:column; gap:12px; padding:16px; overflow:hidden}
+body[data-theme="dark"] .folio-inner{background:rgba(20,25,36,.42);
+  border-color:rgba(255,255,255,.14);
+  box-shadow:0 24px 60px rgba(0,0,0,.4), inset 46px 0 70px -46px rgba(0,0,0,.5)}
+/* 植物叶影（纯 CSS 渐变，无 SVG） */
+.leaf{position:absolute; inset:-10%; pointer-events:none; filter:blur(7px); opacity:.55;
+  transform:rotate(-14deg);
+  background:
+   radial-gradient(70px 20px at 16% 20%, rgba(96,106,96,.17), transparent 70%),
+   radial-gradient(90px 24px at 72% 10%, rgba(96,106,96,.15), transparent 70%),
+   radial-gradient(80px 22px at 44% 68%, rgba(96,106,96,.13), transparent 70%),
+   radial-gradient(56px 15px at 86% 54%, rgba(96,106,96,.14), transparent 70%),
+   radial-gradient(46px 12px at 60% 88%, rgba(96,106,96,.11), transparent 70%),
+   linear-gradient(115deg, transparent 42%, rgba(120,125,120,.09) 58%, transparent 74%)}
+body[data-theme="dark"] .leaf{opacity:.35}
 
-/* ===== 内容卡片：毛玻璃（高级感） ===== */
-.flow{position:relative; z-index:5; flex:1; margin-top:18px; overflow-x:hidden; overflow-y:auto;
-  -webkit-overflow-scrolling:touch; scrollbar-width:none; -ms-overflow-style:none;
-  display:flex; flex-direction:column;
-  background:rgba(255,255,255,.82);
-  -webkit-backdrop-filter:blur(18px) saturate(1.1);
-  backdrop-filter:blur(18px) saturate(1.1);
-  border:1px solid rgba(255,255,255,.75); border-radius:22px;
-  box-shadow:0 16px 48px rgba(30,32,38,.16); padding:22px 20px}
-.flow::-webkit-scrollbar{display:none}
-body[data-theme="dark"] .flow{background:rgba(20,25,36,.6); border-color:rgba(255,255,255,.16);
-  box-shadow:0 16px 48px rgba(0,0,0,.4)}
-/* --- about-me (verbatim copy) --- */
-.about-me{align-items:center; justify-content:center}
-.am{width:100%; padding:0 6px 0 22px; text-align:left; border-left:2px solid var(--accent); margin-left:2px}
-.am-1{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:30px; font-weight:700;
-  letter-spacing:.06em; line-height:1.5; color:var(--ink)}
-.am-2{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:18px; font-weight:600;
-  letter-spacing:.05em; line-height:2; color:var(--ink); margin-top:14px}
-.am-3{font-size:16px; font-weight:600; letter-spacing:.04em; line-height:2; color:var(--body); margin-top:6px}
-@media (min-height:700px){
-  .am-1{font-size:34px}
-  .am-2{font-size:20px}
-  .am-3{font-size:17px}
-}
-/* spacer trick: center content when short, collapse + scroll when long */
-.flow::before,.flow::after{content:""; flex:1 0 0}
-.ev{position:relative; padding-left:34px; margin-bottom:26px}
-.ev::before{content:""; position:absolute; left:7px; top:5px; width:9px; height:9px;
-  border-radius:50%; border:2px solid var(--accent); background:var(--paper);
-  box-shadow:0 0 0 3px rgba(168,67,58,.10)}
-.ev::after{content:""; position:absolute; left:11px; top:20px; bottom:-30px;
-  border-left:1px solid rgba(25,27,32,.14)}
-body[data-theme="dark"] .ev::after{border-left-color:rgba(234,232,224,.16)}
-.ev:last-child::after{display:none}
-.ev .date{display:flex; justify-content:space-between; align-items:baseline;
-  font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.26em;
-  color:var(--soft); text-transform:uppercase;
-  border-bottom:1px solid var(--line); padding-bottom:8px; margin-bottom:9px}
-.ev .date b{font-weight:400; font-size:9px; color:var(--body)}
-.ev h4{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:17px; font-weight:700;
-  margin:6px 0 6px; letter-spacing:.02em; line-height:1.45; color:var(--ink)}
-.ev h4 em{font-weight:400}
-.ev p{font-size:13px; line-height:1.9; color:var(--body)}
-.ev p b{color:var(--accent); font-weight:600}
-.ev .pic{width:104px; border-radius:6px; filter:grayscale(1); display:block; margin:8px 0 2px}
+/* ===== cards ===== */
+.card{position:relative; z-index:1; background:var(--folio); color:var(--ink);
+  border-radius:5px; padding:16px 16px 15px; cursor:pointer;
+  box-shadow:0 12px 28px rgba(30,32,38,.16), 0 1px 3px rgba(30,32,38,.10);
+  transform:rotate(var(--r,0deg));
+  transition:transform .45s cubic-bezier(.22,.61,.36,1), box-shadow .45s;
+  overflow:hidden; flex:none}
+.card::after{content:""; position:absolute; inset:0; pointer-events:none;
+  background:linear-gradient(160deg, rgba(255,255,255,.5), transparent 38%)}
+body[data-theme="dark"] .card{box-shadow:0 12px 28px rgba(0,0,0,.45), 0 1px 3px rgba(0,0,0,.4)}
+.card:hover{z-index:6; transform:rotate(var(--r,0deg)) translateY(-5px);
+  box-shadow:0 20px 40px rgba(30,32,38,.22), 0 1px 3px rgba(30,32,38,.10)}
+.card h5{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:15px; font-weight:700;
+  letter-spacing:.04em; line-height:1.5; color:var(--ink)}
+.card .tag{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.24em;
+  color:var(--soft); text-transform:uppercase; margin-bottom:7px; display:flex; gap:8px; align-items:baseline}
+.card .tag b{font-weight:400; color:var(--body); font-size:7.5px}
+.card p{font-size:11px; line-height:1.9; color:var(--body)}
+.card p b{color:var(--accent); font-weight:600}
+.card .kr{font-size:10px; color:var(--soft); margin-top:8px; letter-spacing:.04em}
+.card .en{font-size:10px; color:var(--soft); margin-top:3px; letter-spacing:.03em}
 
-/* ===== checkbox list ===== */
-.cks{margin-top:8px}
-.cks li{list-style:none; display:flex; gap:9px; align-items:flex-start;
-  font-size:11.5px; line-height:1.8; color:var(--soft); padding:5px 0}
-.cks li b{color:var(--accent); font-weight:400}
-.cks li i{flex:0 0 13px; width:13px; height:13px; margin-top:4px;
+/* 钤印标签卡（封面感） */
+.c-label{display:flex; flex-direction:column; align-items:center; justify-content:center;
+  text-align:center; gap:10px; padding:22px 14px;
+  border:1px solid rgba(25,27,32,.14); background:var(--folio)}
+.c-label b{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:17px; font-weight:700; letter-spacing:.14em}
+.c-label .seal{width:30px; height:30px; border:1.4px solid var(--accent); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; font-size:9px; letter-spacing:.1em;
+  border-radius:3px; writing-mode:vertical-rl; line-height:1.1; font-family:"Songti SC",serif}
+.c-label small{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.26em; color:var(--soft); text-transform:uppercase}
+
+/* A4 纸卡 */
+.c-paper{padding:18px 18px 16px}
+.c-paper h5{font-size:16px}
+.c-paper .rule{border-top:1px solid var(--line); margin:10px 0 8px}
+
+/* 票根卡 */
+.c-ticket{display:flex; padding:0; overflow:hidden}
+.c-ticket .tk-main{flex:1; padding:13px 14px; min-width:0}
+.c-ticket .tk-main h5{font-size:14px}
+.c-ticket .tk-main .tk-sub{font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.2em;
+  color:var(--soft); text-transform:uppercase; margin-top:5px}
+.c-ticket .tk-main .tk-line{border-top:1px dashed var(--line); margin-top:9px; padding-top:7px;
+  font-family:ui-monospace,monospace; font-size:8.5px; letter-spacing:.06em; color:var(--body);
+  display:flex; justify-content:space-between; gap:8px; flex-wrap:wrap}
+.c-ticket .tk-stub{flex:0 0 58px; background:#3d5578; color:#f3f5f9; display:flex;
+  flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  border-left:1.5px dashed rgba(255,255,255,.4)}
+.c-ticket .tk-stub b{font-family:Georgia,serif; font-size:24px; font-weight:700; line-height:1}
+.c-ticket .tk-stub small{font-family:ui-monospace,monospace; font-size:6px; letter-spacing:.2em; opacity:.75}
+
+/* 拍立得 */
+.c-photo{padding:10px 10px 12px}
+.c-photo img{width:100%; display:block; border-radius:2px; filter:grayscale(1) contrast(1.02)}
+.c-photo figcaption{font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.24em;
+  color:var(--soft); text-transform:uppercase; margin-top:8px; text-align:center}
+
+/* checklist 卡 */
+.cks{margin-top:6px}
+.cks li{list-style:none; display:flex; gap:8px; align-items:flex-start;
+  font-size:10.5px; line-height:1.8; color:var(--body); padding:4px 0}
+.cks li b{color:var(--accent); font-weight:600}
+.cks li i{flex:0 0 12px; width:12px; height:12px; margin-top:4px;
   border:1.4px solid var(--soft); border-radius:3px; position:relative}
 .cks li em{font-style:normal; color:var(--ink)}
-@media (min-height:700px){.cks li{font-size:12.5px}}
 
-/* ===== tags ===== */
-.tags{position:relative; z-index:5; display:flex; justify-content:center; gap:9px;
-  margin:10px 0 14px; flex-wrap:wrap}
-.tags span{border:1px solid rgba(255,255,255,.72); border-radius:18px; background:rgba(255,255,255,.72);
-  -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px);
-  font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.26em;
-  padding:7px 13px; color:var(--ink); text-transform:uppercase; box-shadow:0 6px 18px rgba(30,32,38,.10)}
-body[data-theme="dark"] .tags span{background:rgba(255,255,255,.1); border-color:rgba(255,255,255,.2); color:var(--ink)}
-
-/* ===== jump links (external) ===== */
-.links{position:relative; z-index:5; display:flex; justify-content:center; gap:12px;
-  margin:6px 0 2px; flex-wrap:wrap}
-.links a{display:flex; align-items:center; gap:8px; text-decoration:none; cursor:pointer;
-  border:1px solid var(--line); border-radius:18px; background:var(--card);
-  padding:9px 16px; color:var(--ink); box-shadow:0 4px 14px var(--shadow); transition:.3s}
-.links a:hover{transform:translateY(-2px); border-color:var(--accent); color:var(--accent)}
-.links a .t{font-size:12.5px; font-weight:700; letter-spacing:.04em}
-.links a small{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.2em;
-  color:var(--soft); text-transform:uppercase}
-.links a .ic{font-size:10px; color:var(--accent)}
-.menu-ext{margin-top:26px; border-top:1px solid var(--line); padding-top:18px}
-.menu-ext .h{font-family:ui-monospace,monospace; font-size:9px; letter-spacing:.34em;
-  color:var(--soft); margin-bottom:14px; font-weight:400}
-.menu-ext a{display:flex; justify-content:space-between; align-items:baseline;
-  color:var(--ink); text-decoration:none; padding:10px 0; border-bottom:1px solid var(--line); font-size:16px}
-.menu-ext a small{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.26em; color:var(--soft)}
+/* 磁带卡 */
+.tape{width:100%; background:#22252c; border-radius:10px; padding:9px;
+  box-shadow:0 16px 34px rgba(20,22,26,.28)}
+.tape .shell{background:var(--folio); border-radius:6px; padding:10px 10px 8px}
+.tape .lab{border:1.5px solid var(--ink); border-radius:4px; padding:6px 10px 7px; position:relative; color:var(--ink)}
+.tape .lab .a{position:absolute; right:8px; top:6px; width:18px; height:18px; border-radius:50%;
+  border:1.5px solid var(--ink); font-family:ui-monospace,monospace; font-size:8.5px;
+  display:flex; align-items:center; justify-content:center}
+.tape .lab .t{font-weight:700; font-size:15px}
+.tape .lab .s{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.2em;
+  color:var(--soft); margin-top:2px}
+.tape .win{display:flex; align-items:center; justify-content:center; gap:22px; margin-top:8px;
+  border:1px solid var(--faint); border-radius:5px; padding:8px 0; background:rgba(0,0,0,.03)}
+body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
+.reel{width:28px; height:28px; border-radius:50%; border:3px solid #3a3d44; position:relative;
+  background:repeating-conic-gradient(#3a3d44 0 8deg, transparent 8deg 30deg)}
+.reel::after{content:""; position:absolute; inset:8px; border-radius:50%;
+  background:var(--folio); border:2px solid #3a3d44}
+.card.tape:hover .reel{animation:spin 1.6s linear infinite}
+.tape .holes{display:flex; justify-content:space-between; padding:6px 5px 0}
+.tape .holes i{width:10px; height:6px; background:#22252c; border-radius:2px}
+@keyframes spin{to{transform:rotate(360deg)}}
 
 /* ===== foot ===== */
-.foot{position:absolute; z-index:5; left:50%; transform:translateX(-50%); bottom:calc(16px + env(safe-area-inset-bottom,0px));
-  width:max-content; max-width:calc(100% - 36px); text-align:center;
+.foot{position:absolute; z-index:5; left:50%; transform:translateX(-50%); bottom:calc(15px + env(safe-area-inset-bottom,0px));
+  width:max-content; max-width:calc(100% - 90px); text-align:center;
   font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.3em; color:var(--ink);
   text-transform:uppercase; padding:7px 16px; border-radius:16px;
   background:rgba(255,255,255,.7); -webkit-backdrop-filter:blur(10px) saturate(1.1);
   backdrop-filter:blur(10px) saturate(1.1); border:1px solid rgba(255,255,255,.7);
   box-shadow:0 8px 24px rgba(30,32,38,.12)}
-body[data-theme="dark"] .foot{background:rgba(20,25,36,.55); border-color:rgba(255,255,255,.18); color:var(--ink)}
+body[data-theme="dark"] .foot{background:rgba(20,25,36,.55); border-color:rgba(255,255,255,.18)}
 .foot b{color:var(--accent); font-weight:400}
-.corner{position:absolute; z-index:5; right:18px; bottom:calc(16px + env(safe-area-inset-bottom,0px));
+.corner{position:absolute; z-index:5; right:18px; bottom:calc(15px + env(safe-area-inset-bottom,0px));
   width:38px; height:38px;
   border-radius:50%; border:1.5px solid var(--accent); background:var(--card);
   display:flex; align-items:center; justify-content:center; font-size:16px; color:var(--accent);
   box-shadow:0 4px 12px var(--shadow); cursor:pointer; font-family:ui-monospace,monospace;
   font-weight:700}
 
-/* ===== edges（翻页键，明显化） ===== */
-.edge{position:absolute; z-index:55; top:50%; width:46px; height:78px; margin-top:-39px;
+/* ===== edges（翻页键） ===== */
+.edge{position:absolute; z-index:55; top:50%; width:44px; height:74px; margin-top:-37px;
   display:flex; align-items:center; justify-content:center; cursor:pointer;
-  color:var(--ink); font-size:30px; font-weight:700; line-height:1;
-  background:rgba(255,255,255,.82); border:1.5px solid var(--line); border-radius:24px;
-  box-shadow:0 6px 18px var(--shadow); opacity:.95; transition:.25s; user-select:none}
+  color:var(--ink); font-size:28px; font-weight:700; line-height:1;
+  background:rgba(255,255,255,.82); border:1.5px solid var(--line); border-radius:22px;
+  box-shadow:0 6px 18px var(--shadow); opacity:.9; transition:.25s; user-select:none}
 .edge:hover{opacity:1; transform:scale(1.06)}
 .edge.l{left:8px}.edge.r{right:8px}
 body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
@@ -233,73 +255,107 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
   color:var(--ink); text-decoration:none; padding:12px 0; border-bottom:1px solid var(--line); font-size:18px}
 .menu a small{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.26em; color:var(--soft)}
 
-/* ===== cassette ===== */
-.tape{width:min(74%,270px); background:#22252c; border-radius:13px; padding:11px; cursor:pointer;
-  box-shadow:0 22px 46px var(--shadow); position:relative; z-index:5; margin:6px auto 0;
-  display:block; text-decoration:none; color:inherit; transition:transform .3s}
-.tape:hover{transform:translateY(-3px)}
-.tape .shell{background:var(--card); border-radius:7px; padding:11px 11px 9px}
-.tape .lab{border:1.5px solid var(--ink); border-radius:4px; padding:6px 10px 7px; position:relative}
-.tape .lab .a{position:absolute; right:8px; top:6px; width:19px; height:19px; border-radius:50%;
-  border:1.5px solid var(--ink); font-family:ui-monospace,monospace; font-size:8.5px;
-  display:flex; align-items:center; justify-content:center}
-.tape .lab .t{font-weight:700; font-size:16px}
-.tape .lab .s{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.2em;
-  color:var(--soft); margin-top:2px}
-.tape .win{display:flex; align-items:center; justify-content:center; gap:24px; margin-top:9px;
-  border:1px solid var(--faint); border-radius:5px; padding:9px 0; background:rgba(0,0,0,.03)}
-body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
-.reel{width:31px; height:31px; border-radius:50%; border:3px solid #3a3d44; position:relative;
-  background:repeating-conic-gradient(#3a3d44 0 8deg, transparent 8deg 30deg)}
-.reel::after{content:""; position:absolute; inset:8px; border-radius:50%;
-  background:var(--card); border:2px solid #3a3d44}
-.tape.playing .reel,
-.tape:hover .reel{animation:spin 1.6s linear infinite}
-.tape .holes{display:flex; justify-content:space-between; padding:7px 5px 0}
-.tape .holes i{width:11px; height:7px; background:#22252c; border-radius:2px}
-.tape-meta{display:flex; justify-content:center; gap:18px; margin-top:12px;
-  font-family:ui-monospace,monospace; font-size:7.5px; letter-spacing:.2em; color:var(--soft); position:relative; z-index:5}
-.eq{display:inline-flex; gap:2.5px; align-items:flex-end; height:9px; margin-right:6px}
-.eq i{width:2.5px; background:var(--accent); height:30%}
-.tape.playing ~ .tape-meta .eq i,
-.playing .eq i{animation:eq .7s ease-in-out infinite alternate}
-.eq i:nth-child(2){animation-delay:.15s}.eq i:nth-child(3){animation-delay:.3s}
-@keyframes eq{from{height:20%}to{height:100%}}
-
-/* ===== 适配手机屏幕：竖屏高屏加满排版 ===== */
-@media (min-height:700px){
-  .panel{padding-left:26px; padding-right:26px}
-  .stat{margin-top:26px}
-  .stat .n{font-size:76px}
-  .stat .n small{font-size:26px}
-  .stat .pn{font-size:76px}
-  .stat .n-old{font-size:14px}
-  .stat .n-old small{font-size:10px}
-  .stat .lab{font-size:9px; margin-top:10px}
-  .flow{margin-top:28px}
-  .ev{margin-bottom:36px}
-  .ev .date{font-size:8.5px}
-  .ev h4{font-size:17.5px; margin:7px 0 5px}
-  .ev p{font-size:12.5px; line-height:1.95}
-  .ev .pic{width:128px}
-  .ev::after{bottom:-40px}
-  .tags{margin:10px 0 16px}
-  .tags span{font-size:8.5px; padding:8px 16px}
-  .links a{padding:11px 18px}
-  .links a .t{font-size:13.5px}
-  .foot{font-size:8.5px}
+/* ===== detail overlay（卡片详情：规格 + 放大展示 + Put it back） ===== */
+.ov{position:fixed; inset:0; z-index:250; background:var(--paper); color:var(--ink);
+  display:none; overflow:hidden; opacity:0; transition:opacity .45s}
+.ov.open{display:block}
+.ov.vis{opacity:1}
+.ov-x{position:absolute; top:calc(14px + env(safe-area-inset-top,0px)); right:14px; z-index:20;
+  width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--card);
+  color:var(--ink); font-size:13px; cursor:pointer; box-shadow:0 4px 14px var(--shadow)}
+.dt-wrap{position:absolute; inset:0; display:grid;
+  grid-template-columns:minmax(230px,300px) 1fr; column-gap:4vw;
+  padding:calc(64px + env(safe-area-inset-top,0px)) 5vw calc(80px + env(safe-area-inset-bottom,0px))}
+.dt-side{display:flex; flex-direction:column; min-height:0; overflow-y:auto; scrollbar-width:none}
+.dt-side::-webkit-scrollbar{display:none}
+.dt-no{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.3em; color:var(--soft)}
+.dt-title{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:26px; font-weight:700;
+  letter-spacing:.04em; margin-top:10px; color:var(--ink)}
+.dt-en{font-family:ui-monospace,monospace; font-size:8px; letter-spacing:.28em;
+  color:var(--soft); text-transform:uppercase; margin-top:6px}
+.dt-desc{font-size:12.5px; line-height:1.9; color:var(--body); margin-top:16px}
+.dt-spec{margin-top:22px}
+.dt-spec > div{display:flex; align-items:baseline; gap:8px; padding:7px 0; border-bottom:1px solid var(--faint)}
+.dt-spec dt{color:var(--soft); font-family:ui-monospace,monospace; font-size:7.5px;
+  letter-spacing:.22em; text-transform:uppercase; white-space:nowrap}
+.dt-spec i{flex:1; border-bottom:1px dotted var(--faint); transform:translateY(-3px); min-width:14px}
+.dt-spec dd{color:var(--ink); font-size:11.5px; text-align:right; letter-spacing:.03em}
+.dt-stage{position:relative; display:flex; align-items:center; justify-content:center; min-height:0}
+.dt-card{max-width:min(66%,520px); width:100%; max-height:calc(100vh - 200px); overflow-y:auto; scrollbar-width:none;
+  filter:drop-shadow(0 30px 60px rgba(30,32,38,.28));
+  transform:rotate(-1.2deg) scale(.92); opacity:0; transition:transform .5s cubic-bezier(.22,.61,.36,1), opacity .5s}
+.dt-card::-webkit-scrollbar{display:none}
+.ov.vis .dt-card{transform:rotate(-1.2deg) scale(1); opacity:1}
+/* 克隆卡在详情里恢复「平面」状态：占满、无散放位移 */
+.dt-card .card{position:static !important; transform:none !important; width:100% !important; margin:0;
+  cursor:default; box-shadow:none; left:auto; top:auto}
+.dt-card .card::after{display:none}
+.dt-card .card:hover{transform:none; box-shadow:none}
+.dt-foot{position:absolute; z-index:10; left:0; right:0;
+  bottom:calc(20px + env(safe-area-inset-bottom,0px));
+  display:flex; align-items:center; justify-content:center; gap:14px}
+.dt-foot button{border:1px solid var(--line); background:var(--card); color:var(--ink);
+  font-family:ui-monospace,monospace; font-size:8.5px; letter-spacing:.26em; text-transform:uppercase;
+  padding:11px 20px; border-radius:20px; cursor:pointer; box-shadow:0 6px 18px var(--shadow); transition:.3s;
+  text-decoration:none; display:inline-flex; align-items:center; gap:8px}
+.dt-foot button:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-2px)}
+.dt-foot button.acc{border-color:var(--accent); color:var(--accent); font-weight:700}
+/* 竖屏手机：详情变单列（信息在上，卡片在下） */
+@media (orientation:portrait){
+  .dt-wrap{grid-template-columns:1fr; grid-template-rows:auto 1fr; row-gap:10px;
+    padding:calc(56px + env(safe-area-inset-top,0px)) 22px calc(86px + env(safe-area-inset-bottom,0px));
+    overflow-y:auto}
+  .dt-title{font-size:21px; margin-top:6px}
+  .dt-desc{margin-top:8px}
+  .dt-spec{margin-top:12px}
+  .dt-stage{align-items:center}
+  .dt-card{max-width:min(92%,420px)}
 }
-/* 矮横屏 / 小窗：收紧 */
-@media (max-height:600px){
-  .stat{margin-top:10px}
-  .stat .n{font-size:50px}
-  .stat .n small{font-size:18px}
-  .stat .pn{font-size:50px}
-  .stat .n-old{font-size:13px}
-  .stat .n-old small{font-size:9px}
-  .flow{margin-top:14px}
-  .ev{margin-bottom:14px}
-  .panel{padding-top:48px; padding-bottom:52px}
+
+/* ============================================================
+   横屏 / 电脑：两栏对开，卡片散放
+   ============================================================ */
+@media (orientation:landscape){
+  .panel{display:grid; grid-template-columns:minmax(215px,290px) 1fr; column-gap:4.5vw;
+    padding:calc(58px + env(safe-area-inset-top,0px)) 4.5vw calc(58px + env(safe-area-inset-bottom,0px));
+    gap:0}
+  .s-no{font-size:60px}
+  .s-title{font-size:26px; margin-top:14px}
+  .s-desc{font-size:12px; margin-top:16px}
+  .folio-inner{padding:20px}
+  /* 卡片散放：内联变量 --x --y --w --r */
+  .folio-inner .card{position:absolute; left:var(--x); top:var(--y); width:var(--w); margin:0}
+  .card.lift{z-index:30; transform:rotate(0deg) scale(1.04)}
+}
+@media (orientation:landscape) and (max-height:520px){
+  .panel{grid-template-columns:minmax(185px,225px) 1fr; column-gap:3vw;
+    padding-top:calc(48px + env(safe-area-inset-top,0px)); padding-bottom:50px}
+  .s-no{font-size:44px}
+  .s-title{font-size:20px; margin-top:8px}
+  .s-en{margin-top:4px}
+  .s-desc{font-size:10.5px; margin-top:8px}
+  .s-meta > div{padding:4px 0}
+  .folio-inner{padding:14px}
+  .card{padding:12px 12px 11px}
+  .card h5{font-size:12.5px}
+  .card p{font-size:9.5px; line-height:1.75}
+  .c-ticket .tk-stub{flex-basis:46px}
+  .c-ticket .tk-stub b{font-size:19px}
+  .foot{font-size:6.5px; padding:6px 13px}
+  .corner{width:32px; height:32px; font-size:14px}
+}
+/* 竖屏手机：side 紧凑 + folio 竖排滚动 */
+@media (orientation:portrait){
+  .s-no{font-size:46px}
+  .s-title{font-size:21px; margin-top:10px}
+  .s-meta{display:none}
+  .s-desc{margin-top:10px; font-size:12px}
+  .folio-inner{overflow-y:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+  .folio-inner::-webkit-scrollbar{display:none}
+  .card.lift{transform:rotate(0deg) scale(1.01)}
+}
+@media (max-height:600px) and (orientation:landscape){
+  .edge{width:36px; height:60px; margin-top:-30px; font-size:22px}
 }
 
 /* ===== intro poster — strict video replica ===== */
@@ -358,26 +414,6 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   mix-blend-mode:overlay; opacity:.5; pointer-events:none}
 .in-skip{position:absolute; z-index:6; right:18px; top:20px; font-family:ui-monospace,monospace;
   font-size:8px; letter-spacing:.3em; color:rgba(210,220,232,.45)}
-
-/* ===== full-screen overlays ===== */
-.ov{position:fixed; inset:0; z-index:250; background:var(--paper); color:var(--ink);
-  display:none; overflow:hidden; opacity:0; transition:opacity .45s}
-.ov.open{display:block}
-.ov.vis{opacity:1}
-.ov-x{position:absolute; top:calc(14px + env(safe-area-inset-top,0px)); right:14px; z-index:20;
-  width:34px; height:34px; border-radius:50%; border:1px solid var(--line); background:var(--card);
-  color:var(--ink); font-size:13px; cursor:pointer; box-shadow:0 4px 14px var(--shadow)}
-
-
-@keyframes paraIn{to{opacity:1; transform:none}}
-.lr-foot{position:absolute; z-index:10; left:0; right:0;
-  bottom:calc(20px + env(safe-area-inset-bottom,0px));
-  display:flex; align-items:center; justify-content:center; gap:22px}
-.lr-foot button{width:32px; height:32px; border-radius:50%; border:1px solid var(--line);
-  background:var(--card); color:var(--ink); font-size:13px; cursor:pointer; box-shadow:0 4px 12px var(--shadow)}
-.dots{display:flex; gap:7px}
-.dots i{width:5px; height:5px; border-radius:50%; background:var(--faint); transition:.3s}
-.dots i.on{background:var(--accent)}
 </style>
 </head>
 <body data-theme="light">
@@ -387,7 +423,7 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   <canvas id="introCv"></canvas>
   <div class="i-big i" style="transition-delay:1.15s; transition-duration:1.6s">WATER<span class="w2">HEART</span></div>
   <div class="i-tl i" style="transition-delay:2.5s"><span class="c">© 水心</span><div class="row"><em>Layout Design</em><em>Info</em></div></div>
-  <div class="i-cn i" style="transition-delay:3.2s">情<br>緒混<span class="g">亂</span></div>
+  <div class="i-cn i" style="transition-delay:3.2s">情<br>緒混<span class="g">乱</span></div>
   <div class="i-now i" style="transition-delay:3.7s"><span class="u">此刻</span>&nbsp; <b>你的情绪温度</b><span class="qq">是？</span></div>
   <div class="i-en i" style="transition-delay:4.1s">The duration of emotions<br>is usually only 90S<br><span class="ind">But physical memory</span><br>can last up to 72H</div>
   <div class="i-bl i" style="transition-delay:5s"><b>Poster</b><br>Copyright © 2026 水心.<br>All rights reserved.</div>
@@ -415,34 +451,45 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   <div class="hud">
     <button id="menuBtn">✕</button>
     <div class="count" id="count">01 / 07</div>
-    <button id="themeBtn">☾</button>
+    <div class="grp">
+      <button id="shakeBtn" title="Shake · 抖动卡片">≋</button>
+      <button id="themeBtn">☾</button>
+    </div>
   </div>
   <div class="edge l" id="prevBtn">‹</div>
   <div class="edge r" id="nextBtn">›</div>
 
   <div id="track">
 
-    <!-- 01 Milestone 封面 -->
+    <!-- 01 封面 Milestone -->
     <section class="panel active">
-      <div class="astro spin" style="width:230px;height:230px;top:-40px;right:-60px"><i class="dot"></i></div>
-      <div class="astro" style="width:120px;height:120px;bottom:70px;left:-46px"><i class="dot"></i></div>
-      <div class="appbar rv">
-        <span class="back">‹</span><span class="app">Milestone</span><span class="time">9:41</span>
-      </div>
-      <div class="stat rv d1">
-        <div class="n">21<small>★</small></div>
-        <div class="lab">水心 · SUIXIN — GLASS EDITION</div>
-        <div class="lab2">INTJ · VIRGO · LIBRA RISING</div>
-      </div>
-      <div class="flow rv d2">
-        <div class="ev">
-          <div class="date">START HERE <b>01</b></div>
-          <h4>模糊的視線只為妳聚焦</h4>
-          <p>흐릿한 시선은 오직 너에게만 집중한다<br>The blurred gaze is only focused on you</p>
-        </div>
-        <div class="ev">
-          <div class="date">NOTE <b>02</b></div>
-          <h4>别皱眉</h4>
+      <aside class="side rv d1">
+        <div class="s-no">21<small>★</small></div>
+        <h2 class="s-title">Milestone</h2>
+        <div class="s-en">别皱眉 · Cover</div>
+        <p class="s-desc">水心 · SUIXIN</p>
+        <dl class="s-meta">
+          <div><dt>MBTI</dt><i></i><dd>INTJ</dd></div>
+          <div><dt>Sun</dt><i></i><dd>土象处女</dd></div>
+          <div><dt>Rising</dt><i></i><dd>上升天秤</dd></div>
+        </dl>
+      </aside>
+      <div class="folio rv d2">
+        <div class="folio-inner">
+          <i class="leaf"></i>
+          <article class="card c-paper" style="--x:5%; --y:9%; --w:47%; --r:-1.6deg"
+            data-no="01 / 02" data-title="模糊的視線只為妳聚焦" data-en="Gaze · Focus">
+            <h5>模糊的視線只為妳聚焦</h5>
+            <div class="rule"></div>
+            <p class="kr">흐릿한 시선은 오직 너에게만 집중한다</p>
+            <p class="en">The blurred gaze is only focused on you</p>
+          </article>
+          <article class="card c-label" style="--x:58%; --y:44%; --w:33%; --r:2.2deg"
+            data-no="02 / 02" data-title="别皱眉" data-en="Don't Frown">
+            <b>别皱眉</b>
+            <span class="seal">水心</span>
+            <small>Milestone · 21</small>
+          </article>
         </div>
       </div>
       <div class="foot"><b>MILESTONE</b> · 别皱眉 · 水心</div>
@@ -451,18 +498,35 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
 
     <!-- 02 关于我 -->
     <section class="panel">
-      <div class="astro" style="width:200px;height:200px;top:-30px;right:-70px"><i class="dot"></i></div>
-      <div class="appbar rv">
-        <span class="back">‹</span><span class="app">关于我</span><span class="time">9:41</span>
-      </div>
-      <div class="stat rv d1">
-        <div class="pn">02<small>/ 07</small></div>
-      </div>
-      <div class="flow rv d2 about-me">
-        <div class="am">
-          <div class="am-1">水心&nbsp;&nbsp;21t&nbsp;&nbsp;INTJ</div>
-          <div class="am-2">土象处女&nbsp;上升天秤</div>
-          <div class="am-3">常驻建模1号耳坠高马尾&nbsp;虚荣</div>
+      <aside class="side rv d1">
+        <div class="s-no">02<small>/ 07</small></div>
+        <h2 class="s-title">关于我</h2>
+        <div class="s-en">About</div>
+        <dl class="s-meta">
+          <div><dt>Name</dt><i></i><dd>水心</dd></div>
+          <div><dt>Age</dt><i></i><dd>21t</dd></div>
+          <div><dt>MBTI</dt><i></i><dd>INTJ</dd></div>
+        </dl>
+      </aside>
+      <div class="folio rv d2">
+        <div class="folio-inner">
+          <i class="leaf"></i>
+          <article class="card c-label" style="--x:7%; --y:10%; --w:34%; --r:-2.4deg"
+            data-no="01 / 03" data-title="水心 21t INTJ" data-en="Name card">
+            <b>水心&nbsp;&nbsp;21t&nbsp;&nbsp;INTJ</b>
+            <span class="seal">水心</span>
+            <small>Lin Wen — Folio</small>
+          </article>
+          <article class="card" style="--x:47%; --y:6%; --w:44%; --r:1.8deg"
+            data-no="02 / 03" data-title="土象处女 上升天秤" data-en="Star sign">
+            <div class="tag">STAR SIGN <b>星象</b></div>
+            <h5>土象处女&nbsp;上升天秤</h5>
+          </article>
+          <article class="card" style="--x:22%; --y:56%; --w:56%; --r:-1.2deg"
+            data-no="03 / 03" data-title="常驻建模1号耳坠高马尾 虚荣" data-en="Look">
+            <div class="tag">LOOK <b>常驻</b></div>
+            <h5>常驻建模1号耳坠高马尾&nbsp;虚荣</h5>
+          </article>
         </div>
       </div>
       <div class="foot"><b>ABOUT</b> · 21T · INTJ · 土象处女 上升天秤</div>
@@ -471,33 +535,41 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
 
     <!-- 03 风格特点 -->
     <section class="panel">
-      <div class="astro spin" style="width:180px;height:180px;top:8%;left:-70px"><i class="dot"></i></div>
-      <div class="appbar rv">
-        <span class="back">‹</span><span class="app">风格特点</span><span class="time">9:41</span>
-      </div>
-      <div class="stat rv d1">
-        <div class="pn">03<small>/ 07</small></div>
-        <div class="n n-old">02</div>
-        <div class="lab">STYLE · 主调 × 副调</div>
-        <div class="lab2">见人说人话 · 见鬼说鬼话</div>
-      </div>
-      <div class="flow rv d2">
-        <div class="ev">
-          <div class="date">MAIN TONE <b>主调</b></div>
-          <h4>中恋剖析 / Dom / 低无逻辑 / 高恋引导</h4>
-        </div>
-        <div class="ev">
-          <div class="date">SUB TONE <b>副调</b></div>
-          <h4>温病 · 白骑士 · 病虐</h4>
-        </div>
-        <div class="ev">
-          <div class="date">INCLUDED <b>包含风格</b></div>
-          <h4>反差 / 低转高 / 引导</h4>
-        </div>
-        <div class="ev">
-          <div class="date">REMARK <b>备注</b></div>
-          <p>全风格都有体现，<b>见人说人话，见鬼说鬼话</b>。表达形式多以平铺直叙或隐晦转折为基调，追求话语的完整性和观赏度。</p>
-          <p style="margin-top:6px">非常规型病恋 — 可以以爱为基调，也可以以你的特别为主体。你呈现的样子决定我们的过程：没有迁就你的习惯，但也可以因你的态度折腰。<b>互相尊重为基本。</b>非指定风格加价不接下位。</p>
+      <aside class="side rv d1">
+        <div class="s-no">03<small>/ 07</small></div>
+        <h2 class="s-title">风格特点</h2>
+        <div class="s-en">Style</div>
+        <p class="s-desc">全风格都有体现，<b>见人说人话，见鬼说鬼话</b>。</p>
+        <dl class="s-meta">
+          <div><dt>Main</dt><i></i><dd>主调 × 4</dd></div>
+          <div><dt>Sub</dt><i></i><dd>副调 × 3</dd></div>
+          <div><dt>Included</dt><i></i><dd>包含 × 3</dd></div>
+        </dl>
+      </aside>
+      <div class="folio rv d2">
+        <div class="folio-inner">
+          <i class="leaf"></i>
+          <article class="card" style="--x:4%; --y:8%; --w:42%; --r:-1.8deg"
+            data-no="01 / 04" data-title="主调" data-en="Main tone">
+            <div class="tag">MAIN TONE <b>主调</b></div>
+            <h5>中恋剖析 / Dom<br>低无逻辑 / 高恋引导</h5>
+          </article>
+          <article class="card" style="--x:54%; --y:5%; --w:40%; --r:2.4deg"
+            data-no="02 / 04" data-title="副调" data-en="Sub tone">
+            <div class="tag">SUB TONE <b>副调</b></div>
+            <h5>温病 · 白骑士 · 病虐</h5>
+          </article>
+          <article class="card" style="--x:60%; --y:56%; --w:36%; --r:-2.6deg"
+            data-no="03 / 04" data-title="包含风格" data-en="Included">
+            <div class="tag">INCLUDED <b>包含风格</b></div>
+            <h5>反差 / 低转高 / 引导</h5>
+          </article>
+          <article class="card c-paper" style="--x:6%; --y:50%; --w:46%; --r:1.4deg"
+            data-no="04 / 04" data-title="备注" data-en="Remark">
+            <div class="tag">REMARK <b>备注</b></div>
+            <p>表达形式多以平铺直叙或隐晦转折为基调，追求话语的完整性和观赏度。</p>
+            <p style="margin-top:7px">非常规型病恋 — 可以以爱为基调，也可以以你的特别为主体。你呈现的样子决定我们的过程：没有迁就你的习惯，但也可以因你的态度折腰。<b>互相尊重为基本。</b>非指定风格加价不接下位。</p>
+          </article>
         </div>
       </div>
       <div class="foot"><b>STYLE</b> · MUTUAL RESPECT FIRST</div>
@@ -506,36 +578,63 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
 
     <!-- 04 须知价格表 -->
     <section class="panel">
-      <div class="astro" style="width:210px;height:210px;top:-36px;right:-64px"><i class="dot"></i></div>
-      <div class="appbar rv">
-        <span class="back">‹</span><span class="app">须知价格表</span><span class="time">9:41</span>
-      </div>
-      <div class="stat rv d1">
-        <div class="pn">04<small>/ 07</small></div>
-        <div class="n n-old">40<small>/h</small></div>
-        <div class="lab">PRICE · 价格表</div>
-        <div class="lab2">有团走团 · 低于这个价格自带</div>
-      </div>
-      <div class="flow rv d2">
-        <div class="ev">
-          <div class="date">LIST A <b>01</b></div>
-          <h4>普病 40/h <em>半 21</em></h4>
-          <p>有团走团，低于这个价格自带。<b>旁观位 +8</b>。</p>
-        </div>
-        <div class="ev">
-          <div class="date">LIST B <b>02</b></div>
-          <h4>修罗 52/h <em>半 27</em> · 反修 48/h <em>半 25</em></h4>
-          <p><b>旁观位 +10</b>。</p>
-        </div>
-        <div class="ev">
-          <div class="date">LIST C <b>03</b></div>
-          <h4>Dom 45/h <em>半 24</em> · 恋物价 59/h <em>半 31</em></h4>
-          <p>Dom：高擦、纯调、纯风格自带。</p>
-        </div>
-        <div class="ev">
-          <div class="date">EXTRA <b>04</b></div>
-          <h4>注* 半单口 +5 · 全单 +10</h4>
-          <p>旁观位多一人，按旁观价格二分之一依次 +。</p>
+      <aside class="side rv d1">
+        <div class="s-no">04<small>/ 07</small></div>
+        <h2 class="s-title">须知价格表</h2>
+        <div class="s-en">Price</div>
+        <p class="s-desc">有团走团，低于这个价格自带。</p>
+        <dl class="s-meta">
+          <div><dt>Lists</dt><i></i><dd>4 张票根</dd></div>
+          <div><dt>Unit</dt><i></i><dd>每小时</dd></div>
+        </dl>
+      </aside>
+      <div class="folio rv d2">
+        <div class="folio-inner">
+          <i class="leaf"></i>
+          <article class="card c-ticket" style="--x:5%; --y:7%; --w:52%; --r:-1.5deg"
+            data-no="01 / 04" data-title="普病" data-en="Common · List A"
+            data-desc="有团走团，低于这个价格自带。"
+            data-spec="单价~40 / h|半单~21|旁观位~+8">
+            <div class="tk-main">
+              <div class="tag" style="margin-bottom:5px">LIST A <b>普病</b></div>
+              <h5>普病 40/h <em style="font-weight:400">半 21</em></h5>
+              <div class="tk-sub">By the hour</div>
+              <div class="tk-line"><span>有团走团</span><span>低于自带</span></div>
+            </div>
+            <div class="tk-stub"><b>40</b><small>/ H</small></div>
+          </article>
+          <article class="card c-ticket" style="--x:52%; --y:26%; --w:52%; --r:2deg"
+            data-no="02 / 04" data-title="修罗 · 反修" data-en="List B"
+            data-desc="旁观位 +10。"
+            data-spec="修罗~52 / h 半 27|反修~48 / h 半 25|旁观位~+10">
+            <div class="tk-main">
+              <div class="tag" style="margin-bottom:5px">LIST B <b>修罗 · 反修</b></div>
+              <h5>修罗 52/h 半 27</h5>
+              <div class="tk-sub">反修 48/h 半 25</div>
+              <div class="tk-line"><span>旁观位 +10</span></div>
+            </div>
+            <div class="tk-stub"><b>52</b><small>/ H</small></div>
+          </article>
+          <article class="card c-ticket" style="--x:8%; --y:60%; --w:52%; --r:1.6deg"
+            data-no="03 / 04" data-title="Dom · 恋物价" data-en="List C"
+            data-desc="Dom：高擦、纯调、纯风格自带。"
+            data-spec="Dom~45 / h 半 24|恋物价~59 / h 半 31">
+            <div class="tk-main">
+              <div class="tag" style="margin-bottom:5px">LIST C <b>Dom · 恋物价</b></div>
+              <h5>Dom 45/h 半 24</h5>
+              <div class="tk-sub">恋物价 59/h 半 31</div>
+              <div class="tk-line"><span>高擦 · 纯调 · 纯风格自带</span></div>
+            </div>
+            <div class="tk-stub"><b>45</b><small>/ H</small></div>
+          </article>
+          <article class="card" style="--x:60%; --y:66%; --w:40%; --r:-2.2deg"
+            data-no="04 / 04" data-title="注*" data-en="Extra"
+            data-desc="旁观位多一人，按旁观价格二分之一依次 +。"
+            data-spec="半单口~+5|全单~+10">
+            <div class="tag">EXTRA <b>注*</b></div>
+            <h5>半单口 +5 · 全单 +10</h5>
+            <p style="margin-top:5px">旁观位多一人，按旁观价格二分之一依次 +。</p>
+          </article>
         </div>
       </div>
       <div class="foot"><b>PRICE</b> · ONE BAR AN HOUR</div>
@@ -544,92 +643,118 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
 
     <!-- 05 单前后注意事项 -->
     <section class="panel">
-      <div class="astro spin" style="width:190px;height:190px;bottom:60px;right:-70px"><i class="dot"></i></div>
-      <div class="appbar rv">
-        <span class="back">‹</span><span class="app">单前后注意事项</span><span class="time">9:41</span>
-      </div>
-      <div class="stat rv d1">
-        <div class="pn">05<small>/ 07</small></div>
-        <div class="n n-old">06</div>
-        <div class="lab">NOTES · 单前后注意事项</div>
-        <div class="lab2">整理好自己的情绪 · 互相尊重</div>
-      </div>
-      <div class="flow rv d2">
-        <div class="ev">
-          <div class="date">BEFORE <b>单前 · 单间</b></div>
-          <ul class="cks">
-            <li><i></i><span>单前<em>整理好自己的情绪</em>，把我代入任何人看出来<b>请加钱</b>。</span></li>
-            <li><i></i><span>单间<em>提及他人</em>，自动视为<b>转普</b>。</span></li>
-            <li><i></i><span>如果你寻求你来我往的对峙恋感，默认<b>高开低走</b>。</span></li>
-          </ul>
-        </div>
-        <div class="ev">
-          <div class="date">AFTER <b>底线 · 结束后</b></div>
-          <ul class="cks">
-            <li><i></i><span>非指定下位<em>恶意压我</em>，有权<b>直退</b>。</span></li>
-            <li><i></i><span>同行请<em>互相尊重</em>。</span></li>
-            <li><i></i><span>结束后欢迎和我交流，<em>你也可以是我的老师</em>。</span></li>
-          </ul>
+      <aside class="side rv d1">
+        <div class="s-no">05<small>/ 07</small></div>
+        <h2 class="s-title">单前后注意事项</h2>
+        <div class="s-en">Notes</div>
+        <p class="s-desc">整理好自己的情绪 · 互相尊重。</p>
+        <dl class="s-meta">
+          <div><dt>Before</dt><i></i><dd>单前 · 单间</dd></div>
+          <div><dt>After</dt><i></i><dd>底线 · 结束后</dd></div>
+        </dl>
+      </aside>
+      <div class="folio rv d2">
+        <div class="folio-inner">
+          <i class="leaf"></i>
+          <article class="card" style="--x:5%; --y:8%; --w:52%; --r:-1.4deg"
+            data-no="01 / 02" data-title="单前 · 单间" data-en="Before">
+            <div class="tag">BEFORE <b>单前 · 单间</b></div>
+            <ul class="cks">
+              <li><i></i><span>单前<em>整理好自己的情绪</em>，把我代入任何人看出来<b>请加钱</b>。</span></li>
+              <li><i></i><span>单间<em>提及他人</em>，自动视为<b>转普</b>。</span></li>
+              <li><i></i><span>如果你寻求你来我往的对峙恋感，默认<b>高开低走</b>。</span></li>
+            </ul>
+          </article>
+          <article class="card" style="--x:52%; --y:38%; --w:52%; --r:2deg"
+            data-no="02 / 02" data-title="底线 · 结束后" data-en="After">
+            <div class="tag">AFTER <b>底线 · 结束后</b></div>
+            <ul class="cks">
+              <li><i></i><span>非指定下位<em>恶意压我</em>，有权<b>直退</b>。</span></li>
+              <li><i></i><span>同行请<em>互相尊重</em>。</span></li>
+              <li><i></i><span>结束后欢迎和我交流，<em>你也可以是我的老师</em>。</span></li>
+            </ul>
+          </article>
         </div>
       </div>
       <div class="foot"><b>NOTES</b> · 单前后注意事项</div>
       <div class="corner" data-next="1">›</div>
     </section>
 
-    <!-- 06 板评 · 话术链接 -->
+    <!-- 06 板评 -->
     <section class="panel">
-      <div class="astro spin" style="width:250px;height:250px;top:50%;left:50%;margin:-125px 0 0 -125px"><i class="dot"></i></div>
-      <div class="appbar rv">
-        <span class="back">‹</span><span class="app">板评</span><span class="time">9:41</span>
-      </div>
-      <div class="stat rv d1">
-        <div class="pn">06<small>/ 07</small></div>
-        <div class="lab">REVIEWS · 板评</div>
-        <div class="lab2">朦胧 · 留白</div>
-      </div>
-      <div class="flow rv d2">
-        <div class="ev">
-          <div class="date">SOFT BLOOM <b>01</b></div>
-          <img class="pic" src="assets/flowers-blur.jpg" alt="">
+      <aside class="side rv d1">
+        <div class="s-no">06<small>/ 07</small></div>
+        <h2 class="s-title">板评</h2>
+        <div class="s-en">Reviews</div>
+        <p class="s-desc">朦胧 · 留白</p>
+        <dl class="s-meta">
+          <div><dt>Photo</dt><i></i><dd>Soft Bloom</dd></div>
+        </dl>
+      </aside>
+      <div class="folio rv d2">
+        <div class="folio-inner">
+          <i class="leaf"></i>
+          <figure class="card c-photo" style="--x:12%; --y:10%; --w:52%; --r:-2deg"
+            data-no="01 / 01" data-title="板评" data-en="Soft Bloom">
+            <img src="assets/flowers-blur.jpg" alt="板评">
+            <figcaption>板评 · 朦胧 留白</figcaption>
+          </figure>
+          <article class="card c-label" style="--x:64%; --y:52%; --w:28%; --r:2.6deg"
+            data-no="02 / 02" data-title="留白" data-en="Blank space">
+            <b>留白</b>
+            <span class="seal">水心</span>
+            <small>Reviews</small>
+          </article>
         </div>
       </div>
       <div class="foot"><b>REVIEWS</b> · 板评 · 留白</div>
       <div class="corner" data-next="1">›</div>
     </section>
 
-    <!-- 07 话术堆砌 · Casette -->
+    <!-- 07 话术堆砌 -->
     <section class="panel">
-      <div class="astro" style="width:190px;height:190px;top:-30px;left:-66px"><i class="dot"></i></div>
-      <div class="appbar rv">
-        <span class="back">‹</span><span class="app">话术堆砌</span><span class="time">9:41</span>
-      </div>
-      <div class="stat rv d1">
-        <div class="pn">07<small>/ 07</small></div>
-        <div class="n n-old">0:09</div>
-        <div class="lab">RIPPLES · 话术堆砌</div>
-        <div class="lab2">Took photographs like Brautigan's book covers</div>
-      </div>
-      <div class="flow rv d2" style="align-items:center">
-        <a class="tape" id="tape" href="https://www.kdocs.cn/l/cgcpEDreeALF" target="_blank" rel="noopener">
-          <div class="shell">
-            <div class="lab">
-              <span class="a">A</span>
-              <div class="t">Sunsetz</div>
-              <div class="s">CIGARETTES AFTER SEX · 点击字体查看 ↗</div>
+      <aside class="side rv d1">
+        <div class="s-no">07<small>/ 07</small></div>
+        <h2 class="s-title">话术堆砌</h2>
+        <div class="s-en">Script</div>
+        <p class="s-desc">Took photographs like Brautigan's book covers</p>
+        <dl class="s-meta">
+          <div><dt>Tape</dt><i></i><dd>Sunsetz · 0:09</dd></div>
+          <div><dt>Band</dt><i></i><dd>Cigarettes After Sex</dd></div>
+        </dl>
+      </aside>
+      <div class="folio rv d2">
+        <div class="folio-inner">
+          <i class="leaf"></i>
+          <div class="card tape" style="--x:10%; --y:12%; --w:58%; --r:-1.8deg"
+            data-no="01 / 02" data-title="Sunsetz" data-en="Cassette · Side A"
+            data-desc="点击字体查看话术堆砌。"
+            data-url="https://www.kdocs.cn/l/cgcpEDreeALF">
+            <div class="shell">
+              <div class="lab">
+                <span class="a">A</span>
+                <div class="t">Sunsetz</div>
+                <div class="s">CIGARETTES AFTER SEX · 点击字体查看 ↗</div>
+              </div>
+              <div class="win"><span class="reel"></span><span class="reel"></span></div>
+              <div class="holes"><i></i><i></i></div>
             </div>
-            <div class="win"><span class="reel"></span><span class="reel"></span></div>
-            <div class="holes"><i></i><i></i></div>
           </div>
-        </a>
-        <div class="tape-meta" id="tapeMeta">
-          <span id="tapeState"><span class="eq"><i></i><i></i><i></i></span>话术 · SCRIPT</span>
-          <span id="tapeTime">Sunsetz · 0:09 ↗</span>
+          <article class="card c-ticket" style="--x:40%; --y:58%; --w:52%; --r:2.2deg"
+            data-no="02 / 02" data-title="Sunsetz" data-en="Ticket · 0:09">
+            <div class="tk-main">
+              <div class="tag" style="margin-bottom:5px">SCRIPT <b>话术堆砌</b></div>
+              <h5>Sunsetz</h5>
+              <div class="tk-sub">Cigarettes After Sex</div>
+              <div class="tk-line"><span>Side A</span><span>0:09</span></div>
+            </div>
+            <div class="tk-stub"><b>09</b><small>SEC</small></div>
+          </article>
         </div>
       </div>
       <div class="foot"><b>CASSETTE</b> · SUNSETZ · 0:09</div>
       <div class="corner" data-next="1">›</div>
     </section>
-
 
   </div>
 
@@ -648,7 +773,24 @@ body[data-theme="dark"] .tape .win{background:rgba(255,255,255,.04)}
   </div>
 </div>
 
-
+<!-- ===== detail overlay：卡片详情（规格表 + 放大 + Put it back） ===== -->
+<div class="ov" id="detail">
+  <button class="ov-x" id="detailClose">✕</button>
+  <div class="dt-wrap">
+    <aside class="dt-side">
+      <div class="dt-no" id="dtNo"></div>
+      <h3 class="dt-title" id="dtTitle"></h3>
+      <div class="dt-en" id="dtEn"></div>
+      <p class="dt-desc" id="dtDesc"></p>
+      <dl class="dt-spec" id="dtSpec"></dl>
+    </aside>
+    <div class="dt-stage"><div class="dt-card" id="dtCard"></div></div>
+  </div>
+  <div class="dt-foot">
+    <button id="dtOpen" style="display:none">Open it ↗</button>
+    <button id="putBack" class="acc">Put it back · 放回册页</button>
+  </div>
+</div>
 
 <script>
 /* ===== noise (canvas, no SVG) ===== */
@@ -700,18 +842,20 @@ document.querySelectorAll('.corner').forEach(b=>{
 });
 
 /* pointer drag — finger / mouse follows, snap on release */
+let dragMovedPx = 0;
 const stageW = () => track.clientWidth;
 let down=false, sx=0, base=0, moved=0, lastX=0, lastT=0, vx=0, dragT=0;
 function onDown(e){
   if(lock) return;
   down=true; moved=0; sx=e.clientX; base=-idx*100; lastX=e.clientX; lastT=Date.now();
-  vx=0; dragT=lastT;
+  vx=0; dragT=lastT; dragMovedPx=0;
   track.style.transition='none';
   document.body.classList.add('dragging');
 }
 function onMove(e){
   if(!down) return;
   const x=e.clientX;
+  dragMovedPx = Math.max(dragMovedPx, Math.abs(x-sx));
   let delta=(x-sx)/stageW()*100;
   if((idx===0 && delta>0) || (idx===N-1 && delta<0)) delta*=0.32; // rubber band
   let p=Math.max(-(N-1)*100, Math.min(0, base+delta));
@@ -742,8 +886,8 @@ let wl = 0;
 addEventListener('wheel', e=>{
   if(overlayOpen()) return;
   const now = Date.now(); if(now - wl < 620 || lock) return;
-  /* inner scrollable card flow consumes vertical wheel first */
-  const f = e.target.closest ? e.target.closest('.flow') : null;
+  /* inner scrollable folio consumes vertical wheel first */
+  const f = e.target.closest ? e.target.closest('.folio-inner') : null;
   if(f && f.scrollHeight > f.clientHeight + 2){
     const atTop = f.scrollTop <= 1;
     const atBottom = f.scrollTop + f.clientHeight >= f.scrollHeight - 1;
@@ -754,7 +898,7 @@ addEventListener('wheel', e=>{
   if(Math.abs(e.deltaY) > 18 || Math.abs(e.deltaX) > 18) go(idx + (e.deltaY>0 || e.deltaX>0 ? 1 : -1));
 }, {passive:true});
 addEventListener('keydown', e=>{
-  if(overlayOpen()) return;
+  if(overlayOpen()){ if(e.key==='Escape') closeDetail(); return; }
   if(e.key==='ArrowRight'||e.key==='ArrowDown'||e.key===' ') go(idx+1);
   if(e.key==='ArrowLeft'||e.key==='ArrowUp') go(idx-1);
 });
@@ -773,10 +917,73 @@ themeBtn.onclick = ()=>{
   themeBtn.textContent = b.dataset.theme==='light' ? '☾' : '☀';
   window.__rebuildNoise();
 };
-/* cassette is now an external script link — reels spin on hover */
 
 /* ===== overlay plumbing ===== */
 function overlayOpen(){ return !!(document.querySelector('.ov.open') || introUp); }
+
+/* ===== cardart cards: click → detail ===== */
+const detail = document.getElementById('detail');
+const dtNo = document.getElementById('dtNo');
+const dtTitle = document.getElementById('dtTitle');
+const dtEn = document.getElementById('dtEn');
+const dtDesc = document.getElementById('dtDesc');
+const dtSpec = document.getElementById('dtSpec');
+const dtCard = document.getElementById('dtCard');
+const dtOpen = document.getElementById('dtOpen');
+
+function openDetail(card){
+  dtNo.textContent = card.dataset.no || '';
+  dtTitle.textContent = card.dataset.title || '';
+  dtEn.textContent = card.dataset.en || '';
+  dtDesc.textContent = card.dataset.desc || '';
+  dtDesc.style.display = card.dataset.desc ? '' : 'none';
+  /* spec rows: "key~value|key~value" */
+  const rows = (card.dataset.spec || '').split('|').filter(Boolean).map(s=>{
+    const p = s.split('~');
+    return '<div><dt>' + p[0] + '</dt><i></i><dd>' + (p[1]||'') + '</dd></div>';
+  }).join('');
+  dtSpec.innerHTML = rows;
+  dtSpec.style.display = rows ? '' : 'none';
+  /* clone整张卡片（保留 c-ticket 等类）并去掉散放定位 */
+  const clone = card.cloneNode(true);
+  clone.removeAttribute('style');
+  dtCard.replaceChildren(clone);
+  /* external link */
+  if(card.dataset.url){
+    dtOpen.style.display = '';
+    dtOpen.onclick = ()=>window.open(card.dataset.url, '_blank', 'noopener');
+  } else dtOpen.style.display = 'none';
+  detail.classList.add('open');
+  requestAnimationFrame(()=>detail.classList.add('vis'));
+}
+function closeDetail(){
+  if(!detail.classList.contains('open')) return;
+  detail.classList.remove('vis');
+  setTimeout(()=>detail.classList.remove('open'), 460);
+}
+document.querySelectorAll('.folio .card').forEach(c=>{
+  c.addEventListener('click', ()=>{
+    if(dragMovedPx > 12) return;   /* drag ≠ click */
+    openDetail(c);
+  });
+});
+document.getElementById('detailClose').onclick = closeDetail;
+document.getElementById('putBack').onclick = closeDetail;
+detail.addEventListener('click', e=>{ if(e.target === detail) closeDetail(); });
+
+/* ===== shake：抖动重排当前册页的卡片 ===== */
+document.getElementById('shakeBtn').onclick = ()=>{
+  const p = panels[idx];
+  p.querySelectorAll('.folio .card').forEach(c=>{
+    const r = 4 + Math.random()*5;
+    c.style.setProperty('--r', (Math.random()*2*r - r).toFixed(1) + 'deg');
+    if(matchMedia('(orientation:landscape)').matches){
+      const w = parseFloat(c.style.getPropertyValue('--w')) || 40;
+      c.style.setProperty('--x', (3 + Math.random()*(94-w)) + '%');
+      c.style.setProperty('--y', (4 + Math.random()*(88 - Math.min(62,w))) + '%');
+    }
+  });
+};
 
 /* ===== intro poster — strict replica of reference video ===== */
 let introUp = true;
@@ -963,7 +1170,7 @@ let introUp = true;
 
   function frame(){
     const dark = document.body.dataset.theme === 'dark';
-    // 基础底色：深色=近黑微蓝；浅色=灰白
+    // 基础底色：深色=近黑微蓝；浅色=灰白纸面
     const base = dark ? [12,15,22] : [216,214,209];
     x.fillStyle=`rgb(${base[0]},${base[1]},${base[2]})`;
     x.fillRect(0,0,W,H);
