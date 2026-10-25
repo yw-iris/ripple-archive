@@ -319,13 +319,12 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
 .dt-spec dd{color:var(--ink); font-size:11.5px; text-align:right; letter-spacing:.03em}
 .dt-stage{position:relative; display:flex; align-items:center; justify-content:center; min-height:0}
 .dt-card{max-width:min(66%,520px); width:100%; max-height:calc(100vh - 200px); overflow-y:auto; scrollbar-width:none;
-  filter:drop-shadow(0 30px 60px rgba(30,32,38,.28));
   transform:rotate(-1.2deg) scale(.92); opacity:0; transition:transform .5s cubic-bezier(.22,.61,.36,1), opacity .5s}
 .dt-card::-webkit-scrollbar{display:none}
 .ov.vis .dt-card{transform:rotate(-1.2deg) scale(1); opacity:1}
 /* 克隆卡在详情里恢复「平面」状态：占满、无散放位移 */
 .dt-card .card{position:static !important; transform:none !important; width:100% !important; margin:0;
-  cursor:default; box-shadow:none; left:auto; top:auto}
+  cursor:default; box-shadow:none !important; background:transparent !important; border:none !important; border-radius:0 !important; left:auto; top:auto}
 .dt-card .card::after{display:none}
 .dt-card .card:hover{transform:none; box-shadow:none}
 .dt-foot{position:absolute; z-index:10; left:0; right:0;
@@ -398,9 +397,11 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
   .s-title{font-size:21px; margin-top:10px}
   .s-meta{display:none}
   .s-desc{margin-top:10px; font-size:12px}
-  .folio-inner{overflow-y:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+  .panel:nth-child(3) .folio-inner,
+  .panel:nth-child(4) .folio-inner{overflow-y:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
     justify-content:safe center; gap:18px; padding:20px}
-  .folio-inner::-webkit-scrollbar{display:none}
+  .panel:nth-child(3) .folio-inner::-webkit-scrollbar,
+  .panel:nth-child(4) .folio-inner::-webkit-scrollbar{display:none}
   .card{padding:20px 20px 18px}
   .card h5{font-size:17px}
   .card p{font-size:12.5px; line-height:2}
@@ -991,11 +992,14 @@ const envTitle = document.getElementById('envTitle');
 const envEn = document.getElementById('envEn');
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
 let envBusy = false;
+let envUsed = false;
 function go(i, instant){
   i = Math.max(0, Math.min(N-1, i));
   if(i === idx && !instant) return;
   if(instant || reduceMotion){ applyGo(i, true); return; }
-  playEnv(i);
+  /* 信封只在「第一次向后翻页」时播放；之后反复翻页直接切换，不再出现 */
+  if(!envUsed && i > idx){ envUsed = true; playEnv(i); return; }
+  applyGo(i, true);
 }
 const envLetter = document.getElementById('envLetter');
 let envPulled = false, envAutoTimer = null;
