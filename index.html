@@ -860,23 +860,36 @@ document.querySelectorAll('.corner').forEach(b=>{
 /* pointer drag — finger / mouse follows, snap on release */
 let dragMovedPx = 0;
 const stageW = () => track.clientWidth;
-let down=false, sx=0, base=0, moved=0, lastX=0, lastT=0, vx=0, dragT=0;
+let down=false, sx=0, sy=0, base=0, moved=0, lastX=0, lastT=0, vx=0, dragT=0, axis=null;
 function onDown(e){
   if(lock) return;
-  down=true; moved=0; sx=e.clientX; base=-idx*100; lastX=e.clientX; lastT=Date.now();
+  down=true; axis=null; moved=0; sx=e.clientX; sy=e.clientY; base=-idx*100; lastX=e.clientX; lastT=Date.now();
   vx=0; dragT=lastT; dragMovedPx=0;
   track.style.transition='none';
   document.body.classList.add('dragging');
 }
 function onMove(e){
   if(!down) return;
-  const x=e.clientX;
-  dragMovedPx = Math.max(dragMovedPx, Math.abs(x-sx));
-  let delta=(x-sx)/stageW()*100;
+  const x=e.clientX, y=e.clientY;
+  const dx=x-sx, dy=y-sy;
+  /* 手势前 8px 内判定主方向：竖向意图交给原生滚动，不翻页 */
+  if(axis===null && Math.hypot(dx,dy) > 8){
+    axis = Math.abs(dx) > Math.abs(dy) ? 'h' : 'v';
+    if(axis==='v'){
+      down=false;
+      track.style.transition='';
+      track.style.transform='translateX('+base+'%)';
+      document.body.classList.remove('dragging');
+      return;
+    }
+  }
+  if(axis!=='h') return;        /* 非横向意图：不拖动、不翻页 */
+  dragMovedPx = Math.max(dragMovedPx, Math.abs(dx));
+  let delta=dx/stageW()*100;
   if((idx===0 && delta>0) || (idx===N-1 && delta<0)) delta*=0.32; // rubber band
   let p=Math.max(-(N-1)*100, Math.min(0, base+delta));
   track.style.transform='translateX('+p+'%)';
-  moved=Math.max(moved, Math.abs(x-sx));
+  moved=Math.max(moved, Math.abs(dx));
   const now=Date.now(), dt=now-lastT;
   if(dt>0) vx=(x-lastX)/dt;
   lastX=x; lastT=now; dragT=now;
