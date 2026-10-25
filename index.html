@@ -217,6 +217,10 @@ body[data-theme="dark"] .card{box-shadow:0 12px 28px rgba(0,0,0,.45), 0 1px 3px 
 .c-photo img{width:100%; display:block; border-radius:2px; filter:grayscale(1) contrast(1.02)}
 .c-photo figcaption{font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.24em;
   color:var(--soft); text-transform:uppercase; margin-top:8px; text-align:center}
+.c-photo .ph-hint{margin-top:5px; text-align:center; font-family:ui-monospace,monospace;
+  font-size:7.5px; letter-spacing:.18em; color:var(--accent); text-transform:none;
+  animation:hintPulse 2.4s ease-in-out infinite}
+@keyframes hintPulse{0%,100%{opacity:.55} 50%{opacity:1}}
 
 /* checklist 卡 */
 .cks{margin-top:6px}
@@ -838,6 +842,7 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
             data-url="https://www.kdocs.cn/l/cgcpEDreeALF">
             <img src="assets/flowers-blur.jpg" alt="板评">
             <figcaption>板评 · 朦胧 留白</figcaption>
+            <div class="ph-hint">轻触图片 · 跳转话术堆砌 ↗</div>
           </figure>
           <article class="card c-label" style="--x:29%; --y:62%; --w:42%; --r:0deg"
             data-no="02 / 02" data-title="留白" data-en="Blank space">
@@ -1319,6 +1324,15 @@ let introUp = true;
   const x = cv.getContext('2d');
   const DPR = Math.min(devicePixelRatio||1, 2);
   let W=0,H=0, off=null, og=null, OW=0, OH=0, blobs=[], gTick=0;
+  /* 背景光晕随手指/指针滑动反向偏移 —— 光晕"避开"手指 */
+  let gTox=0,gToy=0,gCurx=0,gCury=0;
+  function setShift(px,py){
+    const fx=(px-innerWidth/2)/(innerWidth/2), fy=(py-innerHeight/2)/(innerHeight/2);
+    gTox=-Math.max(-1,Math.min(1,fx)); gToy=-Math.max(-1,Math.min(1,fy));
+  }
+  addEventListener('pointermove', e=>setShift(e.clientX,e.clientY), {passive:true});
+  addEventListener('pointerup',   ()=>{ gTox=0; gToy=0; });
+  addEventListener('pointercancel',()=>{ gTox=0; gToy=0; });
 
   function rs(){
     W = cv.width = Math.floor(innerWidth*DPR); H = cv.height = Math.floor(innerHeight*DPR);
@@ -1354,11 +1368,14 @@ let introUp = true;
     og.clearRect(0,0,OW,OH);
     const md=Math.min(OW,OH), t=performance.now()/1000;
     const halo = dark ? [232,237,246] : [255,255,255];
+    /* 平滑跟随的反向偏移：手指在某侧，光晕移向对侧（避开手指） */
+    gCurx += (gTox-gCurx)*0.06; gCury += (gToy-gCury)*0.06;
+    const gsx=gCurx*0.26, gsy=gCury*0.26;
     for(const b of blobs){
       b.x+=b.vx/60; b.y+=b.vy/60; b.x+=Math.sin(t*.35+b.ph)*.0005;
       if(b.x<-.4)b.x=1.4; if(b.x>1.4)b.x=-.4;
       if(b.y<-.4)b.y=1.4; if(b.y>1.4)b.y=-.4;
-      const cx=b.x*OW, cy=b.y*OH, r=b.r*md*2.6;
+      const cx=(b.x+gsx)*OW, cy=(b.y+gsy)*OH, r=b.r*md*2.6;
       const a=b.a;
       const g=og.createRadialGradient(cx,cy,0,cx,cy,r);
       g.addColorStop(0,`rgba(${halo[0]},${halo[1]},${halo[2]},${a})`);
