@@ -158,6 +158,27 @@ body[data-theme="dark"] .card{box-shadow:0 12px 28px rgba(0,0,0,.45), 0 1px 3px 
 .c-paper h5{font-size:16px}
 .c-paper .rule{border-top:1px solid var(--line); margin:10px 0 8px}
 
+/* 整块卡（封面 / 关于我）：单块融合，横屏铺满册页、竖屏居中堆叠 */
+.c-block{display:flex; flex-direction:column; padding:7% 8%; background:var(--folio)}
+.c-block .blk-head{flex:1 1 auto; display:flex; flex-direction:column; justify-content:center; gap:4px}
+.c-block .blk-head h5{font-size:clamp(19px,2.2vw,30px); line-height:1.35}
+.c-block .rule{border-top:1px solid var(--line); margin:16px 0 12px}
+.c-block .blk-seal{display:flex; flex-direction:column; align-items:center; gap:10px;
+  padding-top:18px; margin-top:18px; border-top:1px solid var(--line)}
+.c-block .blk-seal b{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:22px; font-weight:700; letter-spacing:.14em; color:var(--ink)}
+.c-block .blk-seal .seal{width:32px; height:32px; border:1.4px solid var(--accent); color:var(--accent);
+  display:flex; align-items:center; justify-content:center; font-size:9px; letter-spacing:.1em;
+  border-radius:3px; writing-mode:vertical-rl; line-height:1.1; font-family:"Songti SC",serif}
+.c-block .blk-seal small{font-family:ui-monospace,monospace; font-size:7px; letter-spacing:.26em; color:var(--soft); text-transform:uppercase}
+.c-block .blk-row{display:flex; gap:18px; flex-wrap:wrap}
+.c-block .blk-cell{flex:1 1 0; min-width:140px; display:flex; flex-direction:column; justify-content:center}
+.c-block .blk-cell b{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:18px; font-weight:700; letter-spacing:.1em; color:var(--ink)}
+.c-block .blk-cell .seal{width:30px; height:30px; border:1.4px solid var(--accent); color:var(--accent);
+  display:inline-flex; align-items:center; justify-content:center; font-size:9px; letter-spacing:.1em;
+  border-radius:3px; writing-mode:vertical-rl; line-height:1.1; font-family:"Songti SC",serif; margin-top:8px}
+.c-block .blk-div{border-top:1px solid var(--line); margin:18px 0}
+.c-block .blk-look{flex-basis:100%}
+
 /* 票根卡 */
 .c-ticket{display:flex; padding:0; overflow:hidden}
 .c-ticket .tk-main{flex:1; padding:13px 14px; min-width:0}
@@ -325,6 +346,7 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
   .folio-inner{padding:20px}
   /* 卡片散放：内联变量 --x --y --w --r */
   .folio-inner .card{position:absolute; left:var(--x); top:var(--y); width:var(--w); margin:0}
+  .folio-inner .c-block{left:3%; top:3%; width:94%; height:94%}
   .card.lift{z-index:30; transform:rotate(0deg) scale(1.04)}
 }
 @media (orientation:landscape) and (max-height:520px){
@@ -364,6 +386,7 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
   .c-ticket .tk-stub b{font-size:30px}
   .c-ticket .tk-main h5{font-size:16px}
   .folio-inner .c-label{width:min(64%,300px); align-self:center}
+  .c-block{padding:30px 26px}
   .c-label b{font-size:19px}
   .c-label .seal{width:36px; height:36px; font-size:10.5px}
   .c-photo{padding:13px 13px 15px}
@@ -493,18 +516,19 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
       <div class="folio rv d2">
         <div class="folio-inner">
           <i class="leaf"></i>
-          <article class="card c-paper" style="--x:16%; --y:12%; --w:56%; --r:0deg"
-            data-no="01 / 02" data-title="模糊的視線只為妳聚焦" data-en="Gaze · Focus">
-            <h5>模糊的視線只為妳聚焦</h5>
-            <div class="rule"></div>
-            <p class="kr">흐릿한 시선은 오직 너에게만 집중한다</p>
-            <p class="en">The blurred gaze is only focused on you</p>
-          </article>
-          <article class="card c-label" style="--x:33%; --y:58%; --w:34%; --r:0deg"
-            data-no="02 / 02" data-title="别皱眉" data-en="Don't Frown">
-            <b>别皱眉</b>
-            <span class="seal">水心</span>
-            <small>Milestone · 21</small>
+          <article class="card c-block" style="--x:3%; --y:3%; --w:94%; --r:0deg"
+            data-no="01 / 01" data-title="别皱眉 · Milestone" data-en="Cover">
+            <div class="blk-head">
+              <h5>模糊的視線只為妳聚焦</h5>
+              <div class="rule"></div>
+              <p class="kr">흐릿한 시선은 오직 너에게만 집중한다</p>
+              <p class="en">The blurred gaze is only focused on you</p>
+            </div>
+            <div class="blk-seal">
+              <b>别皱眉</b>
+              <span class="seal">水心</span>
+              <small>Milestone · 21★</small>
+            </div>
           </article>
         </div>
       </div>
@@ -527,21 +551,27 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
       <div class="folio rv d2">
         <div class="folio-inner">
           <i class="leaf"></i>
-          <article class="card c-label" style="--x:6%; --y:8%; --w:44%; --r:0deg"
-            data-no="01 / 03" data-title="水心 21t INTJ" data-en="Name card">
-            <b>水心&nbsp;&nbsp;21t&nbsp;&nbsp;INTJ</b>
-            <span class="seal">水心</span>
-            <small>Lin Wen — Folio</small>
-          </article>
-          <article class="card" style="--x:52%; --y:8%; --w:42%; --r:0deg"
-            data-no="02 / 03" data-title="土象处女 上升天秤" data-en="Star sign">
-            <div class="tag">STAR SIGN <b>星象</b></div>
-            <h5>土象处女&nbsp;上升天秤</h5>
-          </article>
-          <article class="card" style="--x:29%; --y:56%; --w:44%; --r:0deg"
-            data-no="03 / 03" data-title="常驻建模1号耳坠高马尾 虚荣" data-en="Look">
-            <div class="tag">LOOK <b>常驻</b></div>
-            <h5>常驻建模1号耳坠高马尾&nbsp;虚荣</h5>
+          <article class="card c-block" style="--x:3%; --y:3%; --w:94%; --r:0deg"
+            data-no="01 / 01" data-title="关于我" data-en="About">
+            <div class="blk-head">
+              <div class="blk-row">
+                <div class="blk-cell">
+                  <b>水心&nbsp;&nbsp;21t&nbsp;&nbsp;INTJ</b>
+                  <span class="seal">水心</span>
+                </div>
+                <div class="blk-cell">
+                  <div class="tag">STAR SIGN <b>星象</b></div>
+                  <h5>土象处女&nbsp;上升天秤</h5>
+                </div>
+              </div>
+              <div class="blk-div"></div>
+              <div class="blk-row">
+                <div class="blk-cell blk-look">
+                  <div class="tag">LOOK <b>常驻</b></div>
+                  <h5>常驻建模1号耳坠高马尾&nbsp;虚荣</h5>
+                </div>
+              </div>
+            </div>
           </article>
         </div>
       </div>
@@ -711,7 +741,9 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
         <div class="folio-inner">
           <i class="leaf"></i>
           <figure class="card c-photo" style="--x:6%; --y:8%; --w:52%; --r:0deg"
-            data-no="01 / 01" data-title="板评" data-en="Soft Bloom">
+            data-no="01 / 01" data-title="板评" data-en="Soft Bloom"
+            data-desc="朦胧留白 · 点击查看话术堆砌 ↗"
+            data-url="https://www.kdocs.cn/l/cgcpEDreeALF">
             <img src="assets/flowers-blur.jpg" alt="板评">
             <figcaption>板评 · 朦胧 留白</figcaption>
           </figure>
