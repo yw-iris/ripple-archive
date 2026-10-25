@@ -344,14 +344,30 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
   .foot{font-size:6.5px; padding:6px 13px}
   .corner{width:32px; height:32px; font-size:14px}
 }
-/* 竖屏手机：side 紧凑 + folio 竖排滚动 */
+/* 竖屏手机：side 紧凑 + folio 竖排滚动；卡片放大、少卡时垂直居中 */
 @media (orientation:portrait){
   .s-no{font-size:46px}
   .s-title{font-size:21px; margin-top:10px}
   .s-meta{display:none}
   .s-desc{margin-top:10px; font-size:12px}
-  .folio-inner{overflow-y:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none}
+  .folio-inner{overflow-y:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+    justify-content:safe center; gap:18px; padding:20px}
   .folio-inner::-webkit-scrollbar{display:none}
+  .card{padding:20px 20px 18px}
+  .card h5{font-size:17px}
+  .card p{font-size:12.5px; line-height:2}
+  .card .kr,.card .en{font-size:11px}
+  .cks li{font-size:12px}
+  .c-paper{padding:22px 22px 20px}
+  .c-paper h5{font-size:18px}
+  .c-ticket .tk-stub{flex-basis:76px}
+  .c-ticket .tk-stub b{font-size:30px}
+  .c-ticket .tk-main h5{font-size:16px}
+  .folio-inner .c-label{width:min(64%,300px); align-self:center}
+  .c-label b{font-size:19px}
+  .c-label .seal{width:36px; height:36px; font-size:10.5px}
+  .c-photo{padding:13px 13px 15px}
+  .tape .lab .t{font-size:17px}
   .card.lift{transform:rotate(0deg) scale(1.01)}
 }
 @media (max-height:600px) and (orientation:landscape){
