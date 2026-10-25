@@ -138,10 +138,6 @@ body[data-theme="dark"] .card{box-shadow:0 12px 28px rgba(0,0,0,.45), 0 1px 3px 
 .card:hover{z-index:6; transform:rotate(var(--r,0deg)) translateY(-5px);
   box-shadow:0 22px 46px rgba(30,32,38,.22), 0 1px 3px rgba(30,32,38,.10),
     0 0 40px color-mix(in srgb, var(--accent) 22%, transparent)}
-.card::before{content:""; position:absolute; top:-30%; left:-70%; width:55%; height:160%;
-  background:linear-gradient(110deg, transparent 32%, rgba(255,255,255,.55) 50%, transparent 68%);
-  transform:skewX(-16deg); pointer-events:none; opacity:0; z-index:2}
-.card:hover::before{animation:sweep 1s ease forwards}
 .card h5{font-family:Georgia,"Songti SC","Noto Serif SC",serif; font-size:15px; font-weight:700;
   letter-spacing:.04em; line-height:1.5; color:var(--ink)}
 .card .tag{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.24em;
@@ -163,19 +159,11 @@ body[data-theme="dark"] .card{box-shadow:0 12px 28px rgba(0,0,0,.45), 0 1px 3px 
 .c-label small{font-family:ui-monospace,monospace; font-size:6.5px; letter-spacing:.26em; color:var(--soft); text-transform:uppercase}
 
 /* ===== 高级感特效 ===== */
-/* 钤印箔光扫光 */
-.seal{position:relative; overflow:hidden}
-.seal::after{content:""; position:absolute; inset:0; transform:translateX(-130%) skewX(-12deg);
-  background:linear-gradient(110deg, transparent 35%, rgba(255,255,255,.92) 50%, transparent 65%);
-  animation:sheen 5s ease-in-out infinite; mix-blend-mode:screen}
 /* 标题箔金渐变 */
 .s-title,.c-block .blk-head h5,.c-block .blk-seal b{
   background:linear-gradient(100deg, var(--ink) 62%, var(--accent));
   -webkit-background-clip:text; background-clip:text;
   -webkit-text-fill-color:transparent; color:transparent}
-@keyframes sheen{0%{transform:translateX(-130%) skewX(-12deg)}
-  55%{transform:translateX(130%) skewX(-12deg)} 100%{transform:translateX(130%) skewX(-12deg)}}
-@keyframes sweep{0%{left:-70%; opacity:0} 22%{opacity:.9} 100%{left:140%; opacity:0}}
 @keyframes breathe{0%,100%{opacity:.28} 50%{opacity:.62}}
 @keyframes leafDrift{0%{transform:rotate(-14deg) translate(0,0)} 100%{transform:rotate(-9deg) translate(10px,-7px)}}
 
