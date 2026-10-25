@@ -337,6 +337,16 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
   text-decoration:none; display:inline-flex; align-items:center; gap:8px}
 .dt-foot button:hover{border-color:var(--accent); color:var(--accent); transform:translateY(-2px)}
 .dt-foot button.acc{border-color:var(--accent); color:var(--accent); font-weight:700}
+/* 详情页背景：复用开场「WATER HEART」英文字母水印（淡墨，贴合纸感） */
+.ov-wm{position:absolute; right:1%; top:50%; transform:translateY(-50%) rotate(-90deg); transform-origin:center;
+  font-family:Georgia,"Times New Roman",serif; font-weight:400;
+  font-size:min(24vw,182px); line-height:.9; letter-spacing:0; white-space:nowrap;
+  color:rgba(60,66,82,.06); text-shadow:0 0 18px rgba(130,150,180,.05);
+  pointer-events:none; z-index:0; user-select:none}
+.ov-wm span{display:block}
+@media (prefers-color-scheme:dark){
+  .ov-wm{color:rgba(214,222,236,.06); text-shadow:0 0 18px rgba(190,210,234,.05)}
+}
 /* 竖屏手机：详情变单列（信息在上，卡片在下） */
 @media (orientation:portrait){
   .dt-wrap{grid-template-columns:1fr; grid-template-rows:auto 1fr; row-gap:10px;
@@ -912,6 +922,7 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
 
 <!-- ===== detail overlay：卡片详情（规格表 + 放大 + Put it back） ===== -->
 <div class="ov" id="detail">
+  <div class="ov-wm" aria-hidden="true">WATER<span>HEART</span></div>
   <button class="ov-x" id="detailClose">✕</button>
   <div class="dt-wrap">
     <aside class="dt-side">
