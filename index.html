@@ -479,6 +479,40 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
   mix-blend-mode:overlay; opacity:.5; pointer-events:none}
 .in-skip{position:absolute; z-index:6; right:18px; top:20px; font-family:ui-monospace,monospace;
   font-size:8px; letter-spacing:.3em; color:rgba(210,220,232,.45)}
+
+/* ===== 信封翻页过渡（立体信封打开） ===== */
+.env{position:absolute; inset:0; z-index:150; display:none; perspective:1500px; perspective-origin:50% 36%}
+.env.show{display:block}
+.env-scene{position:absolute; inset:0; display:grid; place-items:center; transform-style:preserve-3d}
+.env-wrap{position:relative; width:min(84vw,780px); height:min(72vh,540px); transform-style:preserve-3d;
+  filter:drop-shadow(0 34px 64px rgba(20,22,28,.36)); transition:transform .34s ease}
+.env-back{position:absolute; inset:0; border-radius:10px; transform:translateZ(-3px);
+  background:linear-gradient(155deg,#efece5,#d9d4c8); box-shadow:inset 0 0 70px rgba(40,38,32,.12)}
+.env-letter{position:absolute; inset:8% 9%; border-radius:6px; transform:translateZ(-1px) translateY(36%) scale(.9);
+  opacity:0; background:linear-gradient(180deg,#fffdf7,#f3efe4); box-shadow:0 14px 34px rgba(20,22,28,.20);
+  display:flex; flex-direction:column; align-items:center; justify-content:center; text-align:center; gap:10px;
+  transition:transform .52s cubic-bezier(.2,.75,.3,1), opacity .4s ease; padding:18px}
+.env-lno{font-family:ui-monospace,monospace; font-size:11px; letter-spacing:.34em; color:var(--soft)}
+.env-ltitle{font-size:30px; font-weight:700; letter-spacing:.04em; line-height:1.1;
+  background:linear-gradient(100deg,var(--ink),var(--accent)); -webkit-background-clip:text; background-clip:text; color:transparent}
+.env-len{font-family:ui-monospace,monospace; font-size:10px; letter-spacing:.4em; text-transform:uppercase; color:var(--soft)}
+.env-lrule{width:54px; height:1px; background:var(--line); margin:2px 0}
+.env-lseal{font-size:22px; color:var(--accent); opacity:.85}
+.env-flap{position:absolute; inset:0; backface-visibility:hidden}
+.env-flap-l{clip-path:polygon(0 0,50% 57%,0 100%); background:linear-gradient(150deg,#f1eee7,#ddd8cc); transform:translateZ(0)}
+.env-flap-r{clip-path:polygon(100% 0,50% 57%,100% 100%); background:linear-gradient(210deg,#ece8e0,#d6d1c4); transform:translateZ(0)}
+.env-flap-t{clip-path:polygon(0 0,100% 0,50% 57%); transform-origin:top center; transform:translateZ(2px) rotateX(0deg);
+  background:linear-gradient(200deg,#f4f1ea,#e0dbce); transition:transform .56s cubic-bezier(.32,.78,.3,1)}
+.env.open .env-flap-t{transform:translateZ(2px) rotateX(-156deg)}
+.env.open .env-letter{transform:translateZ(10px) translateY(0) scale(1); opacity:1}
+.env.out{opacity:0; transition:opacity .34s ease}
+.env.out .env-wrap{transform:scale(.97) translateY(-2%)}
+@media (max-width:560px){
+  .env-ltitle{font-size:24px}
+}
+@media (prefers-reduced-motion: reduce){
+  .env-flap-t,.env-letter,.env-wrap,.env.out{transition:none}
+}
 </style>
 </head>
 <body data-theme="light">
@@ -832,6 +866,25 @@ body[data-theme="dark"] .edge{background:rgba(18,22,33,.78)}
 
   </div>
 
+  <!-- 信封翻页过渡 -->
+  <div class="env" id="env" aria-hidden="true">
+    <div class="env-scene">
+      <div class="env-wrap">
+        <div class="env-back"></div>
+        <div class="env-letter">
+          <div class="env-lno" id="envNo"></div>
+          <div class="env-ltitle" id="envTitle"></div>
+          <div class="env-len" id="envEn"></div>
+          <div class="env-lrule"></div>
+          <div class="env-lseal">✉</div>
+        </div>
+        <div class="env-flap env-flap-l"></div>
+        <div class="env-flap env-flap-r"></div>
+        <div class="env-flap env-flap-t"></div>
+      </div>
+    </div>
+  </div>
+
   <div class="menu" id="menu">
     <button id="menuClose" style="position:absolute; top:16px; right:16px">✕</button>
     <h3>INDEX — MILESTONE</h3>
@@ -895,7 +948,7 @@ const prog = document.getElementById('prog');
 const N = panels.length;
 let idx = 0, lock = false;
 const pad = n => n<10 ? '0'+n : ''+n;
-function go(i, instant){
+function applyGo(i, instant){
   i = Math.max(0, Math.min(N-1, i));
   idx = i;
   track.style.transition = instant ? 'none' : 'transform .58s cubic-bezier(.22,.61,.36,1)';
@@ -903,7 +956,38 @@ function go(i, instant){
   panels.forEach((p,k)=>p.classList.toggle('active', k===i));
   count.textContent = pad(i+1) + ' / ' + pad(N);
   prog.style.width = ((i+1)/N*100) + '%';
-  lock = true; setTimeout(()=>lock=false, 620);
+  lock = true; setTimeout(()=>{ if(!envBusy) lock=false; }, instant ? 80 : 620);
+}
+/* 翻页过渡：默认用立体信封打开；instant 或 reduce-motion 直接切换 */
+const envEl = document.getElementById('env');
+const envNo = document.getElementById('envNo');
+const envTitle = document.getElementById('envTitle');
+const envEn = document.getElementById('envEn');
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)').matches;
+let envBusy = false;
+function go(i, instant){
+  i = Math.max(0, Math.min(N-1, i));
+  if(i === idx && !instant) return;
+  if(instant || reduceMotion){ applyGo(i, true); return; }
+  playEnv(i);
+}
+function playEnv(target){
+  if(envBusy) return;
+  envBusy = true; lock = true;
+  const tp = panels[target];
+  envNo.textContent = tp.querySelector('.s-no') ? tp.querySelector('.s-no').textContent.trim() : '';
+  envTitle.textContent = tp.querySelector('.s-title') ? tp.querySelector('.s-title').textContent.trim() : '';
+  envEn.textContent = tp.querySelector('.s-en') ? tp.querySelector('.s-en').textContent.trim() : '';
+  /* 信封盖合上 + 信纸藏好，立即把底层轨道切到目标页（被信封盖住，看不见滑动） */
+  envEl.classList.add('show');
+  envEl.classList.remove('open','out');
+  void envEl.offsetWidth;
+  applyGo(target, true);
+  /* 下一帧：封盖立体翻开 + 信纸升起 */
+  requestAnimationFrame(()=>requestAnimationFrame(()=>{ envEl.classList.add('open'); }));
+  /* 信封整体淡出，露出已就位的新页 */
+  setTimeout(()=>{ envEl.classList.add('out'); }, 780);
+  setTimeout(()=>{ envEl.classList.remove('show'); envBusy = false; lock = false; }, 1140);
 }
 document.getElementById('nextBtn').onclick = ()=>go(idx+1);
 document.getElementById('prevBtn').onclick = ()=>go(idx-1);
